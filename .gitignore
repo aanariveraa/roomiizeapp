@@ -1,0 +1,40 @@
+# General
+.DS_Store
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase files
+firebase-debug.log
+**/firebase-functions/lib
+**/firebase-functions/node_modules
+
+# Build folder
+build
+
+# Dependencies
+/package-lock.json
+/yarn.lock
+
+# Logs
+logs
+*.log
+*.txt
+
+# IDEs and editors
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# System files
+tmp
