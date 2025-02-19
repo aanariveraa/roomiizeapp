@@ -34,21 +34,6 @@ Install dependencies: npm install
 Start the app: npm start
 
 
-
-### Project Structure
-
-myroomiizeapp/
-│── 3D Rooms/            # Separate directory for 3D components
-│   ├── src/
-│── src/
-│   ├── components/      # UI components (Login, Signup, etc.)
-│   ├── context/         # Context API for user authentication
-│   ├── App.js           # Main entry point
-│── firebase/            # Firebase configuration
-│── assets/              # Static assets
-│── package.json         # Dependencies and scripts
-│── README.md            # Project documentation
-
 ### Future Enhancements
 
 AR Support: Implement augmented reality for furniture placement.
