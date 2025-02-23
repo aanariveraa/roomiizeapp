@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import GoogleButton from "react-google-button";
 import { useUserAuth } from "../context/UserAuthContext";
 import Rooms3d from '../rooms/rooms3d';
+import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -47,7 +48,7 @@ const Login = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Control
               type="email"
-              placeholder="Email address"
+              placeholder="Email Address"
               onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
