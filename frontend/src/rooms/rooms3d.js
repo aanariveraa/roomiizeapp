@@ -1,43 +1,130 @@
-import React, { useState, Suspense, useRef, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useState, useRef, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
   PerspectiveCamera,
   OrthographicCamera,
   useGLTF,
-  Html
-} from '@react-three/drei';
-import './rooms.css';
+  Html,
+  TransformControls
+} from "@react-three/drei";
+import "./rooms.css";
 
-// Preload all suite models so that switching back loads from cache.
-useGLTF.preload('/models/suite1.glb');
-useGLTF.preload('/models/suite2.glb');
-useGLTF.preload('/models/suite3.glb');
+// Preload Room Models
+useGLTF.preload("/models/suite1.glb");
+useGLTF.preload("/models/suite2.glb");
+useGLTF.preload("/models/suite3.glb");
 
-// Room Navigation Component (using your original button style)
-const RoomNav = ({ rooms, selectedRoom, onSelectRoom }) => {
+// Preload Object Models
+useGLTF.preload("/objects/test.glb");
+
+// Object Options
+const objectOptions = [
+  { id: 1, name: "test", modelPath: "/objects/test.glb", image: "/images/test.png" }
+];
+
+// Room List
+const roomsData = [
+  { id: 1, title: "Suite 1", modelPath: "/models/suite1.glb" },
+  { id: 2, title: "Suite 2", modelPath: "/models/suite2.glb" },
+  { id: 3, title: "Suite 3", modelPath: "/models/suite3.glb" }
+];
+
+const RoomNav = ({ selectedRoom, onSelectRoom }) => (
+  <div className="room-nav-container">
+    {roomsData.map((room) => (
+      <button
+        key={room.id}
+        className={`room-nav-item ${selectedRoom.id === room.id ? "active" : ""}`}
+        onClick={() => onSelectRoom(room)}
+      >
+        {room.title}
+      </button>
+    ))}
+  </div>
+);
+
+const SuiteModel = ({ modelPath }) => {
+  const { scene } = useGLTF(modelPath);
+  return <primitive object={scene} scale={[2, 2, 2]} />;
+};
+
+const ObjectModel = ({
+  object,
+  isSelected,
+  onSelect,
+  onTransform,
+  rotateObject,
+  onDragStart,
+  onDragEnd,
+  onRemoveObject
+}) => {
+  const { scene } = useGLTF(object.modelPath);
   return (
-    <div className="room-nav-container">
-      {rooms.map((room) => (
-        <button
-          key={room.id}
-          className={`room-nav-item ${selectedRoom.id === room.id ? 'active' : ''}`}
-          onClick={() => onSelectRoom(room)}
-        >
-          <div className="room-title">{room.title}</div>
-        </button>
-      ))}
+    <>
+      <TransformControls
+        mode="translate"
+        enabled={isSelected}
+        onMouseDown={(e) => { if (e && e.stopPropagation) e.stopPropagation(); }}
+        onDragStart={(e) => { if (onDragStart) onDragStart(); }}
+        onDragEnd={(e) => {
+          if (onDragEnd) onDragEnd();
+          const pos = e.target.object.position;
+          const rot = e.target.object.rotation;
+          onTransform(object, [pos.x, pos.y, pos.z], [rot.x, rot.y, rot.z]);
+        }}
+      >
+        <primitive
+          object={scene}
+          scale={[1, 1, 1]}
+          position={object.position}
+          rotation={object.rotation}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            onSelect(object);
+          }}
+        />
+      </TransformControls>
+      {isSelected && (
+        <Html position={[0, 1.5, 0]} style={{ pointerEvents: "auto" }}>
+          <div className="object-popup">
+            <button onClick={() => rotateObject(object, -15)}>
+              <img src="/icons/rotate_left.svg" alt="Rotate Left" />
+            </button>
+            <button onClick={() => rotateObject(object, 15)}>
+              <img src="/icons/rotate_right.svg" alt="Rotate Right" />
+            </button>
+            <button onClick={onRemoveObject}>
+              <img src="/icons/remove.svg" alt="Remove" />
+            </button>
+          </div>
+        </Html>
+      )}
+    </>
+  );
+};
+
+const ObjectSelectionPanel = ({ onAddObject }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className={`object-selection-panel ${isOpen ? "open" : ""}`}>
+      <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? "Close" : "Objects"}
+      </button>
+      {isOpen && (
+        <div className="object-grid">
+          {objectOptions.map((object) => (
+            <div key={object.id} className="object-item">
+              <img src={object.image} alt={object.name} className="object-preview-image" />
+              <button onClick={() => onAddObject(object)}>Place Item</button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-// Component to load and display the 3D model for the selected suite.
-const SuiteModel = ({ modelPath }) => {
-  const { scene } = useGLTF(modelPath);
-  return <primitive object={scene} />;
-};
-
-// Control Panel for zoom controls, display mode tabs, and person view toggle.
 const ControlPanel = ({
   onZoomIn,
   onZoomOut,
@@ -45,105 +132,92 @@ const ControlPanel = ({
   setDisplayMode,
   controlMode,
   toggleControlMode
-}) => {
-  return (
-    <div className="control-panel">
-      <button onClick={onZoomIn} className="zoom-button">
-        <img src="/icons/zoom_in.svg" alt="Zoom In" />
+}) => (
+  <div className="control-panel">
+    <button onClick={onZoomIn} className="zoom-button">
+      <img src="/icons/zoom_in.svg" alt="Zoom In" />
+    </button>
+    <button onClick={onZoomOut} className="zoom-button">
+      <img src="/icons/zoom_out.svg" alt="Zoom Out" />
+    </button>
+    <div className="display-toggle-tabs">
+      <button className={`display-tab ${displayMode === "3D" ? "active" : ""}`}
+              onClick={() => setDisplayMode("3D")}>
+        3D
       </button>
-      <button onClick={onZoomOut} className="zoom-button">
-        <img src="/icons/zoom_out.svg" alt="Zoom Out" />
-      </button>
-      <div className="display-toggle-tabs">
-        <button
-          className={`display-tab ${displayMode === '3D' ? 'active' : ''}`}
-          onClick={() => setDisplayMode('3D')}
-        >
-          3D
-        </button>
-        <button
-          className={`display-tab ${displayMode === '2D' ? 'active' : ''}`}
-          onClick={() => setDisplayMode('2D')}
-        >
-          2D
-        </button>
-      </div>
-      <button
-        onClick={toggleControlMode}
-        className={`control-button ${controlMode === 'person' ? 'active' : ''}`}
-      >
-        <img src="/icons/person_view.svg" alt="Person View" className="person-view-icon" />
-        Person View
+      <button className={`display-tab ${displayMode === "2D" ? "active" : ""}`}
+              onClick={() => setDisplayMode("2D")}>
+        2D
       </button>
     </div>
-  );
-};
+    <button onClick={toggleControlMode}
+            className={`control-button ${controlMode === "person" ? "active" : ""}`}>
+      <img src="/icons/person_view.svg" alt="Person View" className="person-view-icon" />
+      Person View
+    </button>
+  </div>
+);
 
 const Rooms3d = () => {
-  // Room (suite) data.
-  const roomsData = [
-    { id: 1, title: 'Suite 1', modelPath: '/models/suite1.glb' },
-    { id: 2, title: 'Suite 2', modelPath: '/models/suite2.glb' },
-    { id: 3, title: 'Suite 3', modelPath: '/models/suite3.glb' },
-  ];
-
-  // State for selected room, display mode (3D/2D), control mode, and zoom factor.
   const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
-  const [displayMode, setDisplayMode] = useState("3D"); // "3D" uses Perspective, "2D" uses Orthographic.
-  const [controlMode, setControlMode] = useState("orbit"); // "orbit" (default) or "person"
+  const [roomObjects, setRoomObjects] = useState({});
+  const [selectedObject, setSelectedObject] = useState(null);
+  const [displayMode, setDisplayMode] = useState("3D");
+  const [controlMode, setControlMode] = useState("orbit");
   const [zoomFactor, setZoomFactor] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
 
-  // Refs for the camera and OrbitControls.
   const cameraRef = useRef();
-  const controlsRef = useRef();
 
-  // When switching rooms or control mode, reset zoom and update camera position.
-  useEffect(() => {
-    setZoomFactor(1);
-    if (controlsRef.current) {
-      // Reset the OrbitControls target.
-      if (controlMode === "person") {
-        controlsRef.current.target.set(0, 1.6, 0);
-      } else {
-        controlsRef.current.target.set(0, 0, 0);
-      }
-      controlsRef.current.reset();
-    }
-    if (cameraRef.current && displayMode === "3D") {
-      if (controlMode === "person") {
-        cameraRef.current.position.set(0, 1.6, 5);
-      } else {
-        cameraRef.current.position.set(0, 0, 5);
-      }
-    }
-  }, [selectedRoom, controlMode, displayMode]);
+  const addObject = (object) => {
+    const newObject = {
+      ...object,
+      uid: Date.now() + Math.random(),
+      position: [0, 0, 0],
+      rotation: [0, 0, 0]
+    };
+    setRoomObjects((prev) => ({
+      ...prev,
+      [selectedRoom.id]: [...(prev[selectedRoom.id] || []), newObject]
+    }));
+  };
 
-  // Update camera position when zoom changes (for 3D mode).
-  useEffect(() => {
-    if (cameraRef.current && displayMode === "3D") {
-      if (controlMode === "orbit") {
-        cameraRef.current.position.z = 5 * zoomFactor;
-      } else if (controlMode === "person") {
-        cameraRef.current.position.z = 5 * zoomFactor;
-        cameraRef.current.position.y = 1.6;
-      }
+  const transformObject = (object, position, rotation) => {
+    const updated = { ...object, position, rotation };
+    setRoomObjects((prev) => ({
+      ...prev,
+      [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
+        obj.uid === object.uid ? updated : obj
+      )
+    }));
+    if (selectedObject && selectedObject.uid === object.uid) {
+      setSelectedObject(updated);
     }
-  }, [zoomFactor, displayMode, controlMode]);
+  };
 
-  const zoomIn = () => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5));
-  const zoomOut = () => setZoomFactor((prev) => prev / 0.9);
-  const toggleControlMode = () => {
-    setControlMode((prev) => (prev === "orbit" ? "person" : "orbit"));
+  const rotateObject = (object, angle) => {
+    const currentRotation = object.rotation || [0, 0, 0];
+    const newY = currentRotation[1] + (angle * Math.PI) / 180;
+    transformObject(object, object.position, [currentRotation[0], newY, currentRotation[2]]);
+  };
+
+  const removeObject = () => {
+    if (!selectedObject) return;
+    setRoomObjects((prev) => ({
+      ...prev,
+      [selectedRoom.id]: (prev[selectedRoom.id] || []).filter(
+        (obj) => obj.uid !== selectedObject.uid
+      )
+    }));
+    setSelectedObject(null);
   };
 
   return (
     <div className="App">
-      {/* Room Navigation */}
-      <RoomNav rooms={roomsData} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
-
-      {/* 3D Model Viewer Container */}
+      <RoomNav selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
+      <ObjectSelectionPanel onAddObject={addObject} />
       <div className="model-viewer">
-        <Canvas>
+        <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
           {displayMode === "3D" ? (
             <PerspectiveCamera
               makeDefault
@@ -169,19 +243,32 @@ const Rooms3d = () => {
           <pointLight position={[10, 10, 10]} />
           <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
             <SuiteModel modelPath={selectedRoom.modelPath} />
+            {(roomObjects[selectedRoom.id] || []).map((obj) => (
+              <ObjectModel
+                key={obj.uid}
+                object={obj}
+                isSelected={selectedObject && selectedObject.uid === obj.uid}
+                onSelect={setSelectedObject}
+                onTransform={transformObject}
+                rotateObject={rotateObject}
+                onRemoveObject={removeObject}
+                onDragStart={() => setIsDragging(true)}
+                onDragEnd={() => setIsDragging(false)}
+              />
+            ))}
           </Suspense>
-          <OrbitControls ref={controlsRef} />
+          <OrbitControls enabled={!selectedObject} />
         </Canvas>
       </div>
-
-      {/* Control Panel for Zoom, Display Mode Tabs, and Person View Toggle */}
       <ControlPanel
-        onZoomIn={zoomIn}
-        onZoomOut={zoomOut}
+        onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
+        onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
         displayMode={displayMode}
         setDisplayMode={setDisplayMode}
         controlMode={controlMode}
-        toggleControlMode={toggleControlMode}
+        toggleControlMode={() =>
+          setControlMode(controlMode === "orbit" ? "person" : "orbit")
+        }
       />
     </div>
   );

@@ -1,4 +1,8 @@
 /* Global Styles */
+* {
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -12,10 +16,11 @@ body {
   overflow: hidden;
 }
 
-/* Navigation Container (RoomNav) */
+/* Room Navigation */
 .room-nav-container {
   display: flex;
   overflow-x: auto;
+  white-space: nowrap;
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.95);
@@ -24,7 +29,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px; /* Thinner navigation tab */
+  height: 80px;
   z-index: 10;
 }
 
@@ -32,7 +37,7 @@ body {
   display: none;
 }
 
-/* Navigation Items (Buttons) */
+/* Navigation Items */
 .room-nav-item {
   background: none;
   border: none;
@@ -49,19 +54,13 @@ body {
 
 .room-nav-item.active {
   transform: scale(1.1);
-  border-bottom: 3px solid #4CAF50; /* Green accent for active button */
+  border-bottom: 3px solid #4CAF50;
 }
 
-.room-nav-item .room-title {
-  margin: 0;
-  padding: 0;
-  font-weight: bold;
-}
-
-/* 3D Model Viewer Container */
+/* 3D Model Viewer */
 .model-viewer {
   position: absolute;
-  top: 80px; /* Positioned below the navigation tab */
+  top: 80px;
   left: 0;
   width: 100%;
   height: calc(100vh - 80px);
@@ -71,6 +70,9 @@ canvas {
   display: block;
   width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* Control Panel */
@@ -84,6 +86,7 @@ canvas {
   z-index: 10;
 }
 
+/* Zoom Buttons */
 .zoom-button {
   background-color: white;
   border: 2px solid whitesmoke;
@@ -101,10 +104,9 @@ canvas {
 .zoom-button img {
   width: 24px;
   height: 24px;
-  object-fit: contain;
 }
 
-/* Display Toggle Tabs */
+/* Display Toggle */
 .display-toggle-tabs {
   display: flex;
   gap: 10px;
@@ -121,19 +123,14 @@ canvas {
   transition: all 0.3s ease;
 }
 
-.display-tab:hover {
-  background-color: rgb(151, 148, 148);
-  color: white;
-  transform: translateY(-3px);
-}
-
+.display-tab:hover,
 .display-tab.active {
   background-color: rgb(151, 148, 148);
   color: white;
   transform: translateY(-3px);
 }
 
-/* Control Button for Person View Toggle */
+/* Person View Toggle */
 .control-button {
   background-color: white;
   border: 2px solid whitesmoke;
@@ -147,22 +144,114 @@ canvas {
   align-items: center;
 }
 
-.control-button:hover {
-  background-color: rgb(151, 148, 148);
-  color: white;
-  transform: translateY(-3px);
-}
-
+.control-button:hover,
 .control-button.active {
   background-color: rgb(151, 148, 148);
   color: white;
   transform: translateY(-3px);
 }
 
-/* Person View Icon styling */
+/* Person View Icon */
 .person-view-icon {
   width: 24px;
   height: 24px;
   margin-right: 8px;
-  vertical-align: middle;
+}
+
+/* Object Selection Panel */
+.object-selection-panel {
+  position: fixed;
+  top: 80px;
+  left: -220px; /* Initially hidden */
+  width: 200px;
+  height: auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.object-selection-panel.open {
+  left: 10px; /* Slides in when open */
+}
+
+/* Object Selection Toggle Button (Now fixed) */
+.toggle-button {
+  position: fixed; /* Keep it visible even when panel is closed */
+  top: 90px;
+  left: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+  z-index: 30; /* Ensure it's above everything */
+}
+
+.toggle-button:hover {
+  background: #45a049;
+}
+
+/* Object Grid */
+.object-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Object Items */
+.object-item {
+  text-align: center;
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.object-item:hover {
+  transform: scale(1.05);
+}
+
+/* Object Preview Image */
+.object-preview-image {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+/* Place Item Button */
+.object-item button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.object-item button:hover {
+  background: #45a049;
+  transform: scale(1.1);
+}
+
+.object-popup {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+.object-popup img {
+  width: 15px; /* or any desired size */
+  height: auto;
 }
