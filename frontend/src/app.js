@@ -12,7 +12,7 @@ import { UserAuthProvider } from "./context/UserAuthContext";
 function App() {
   return (
     <BrowserRouter>
-    <Container style={{ width: "500px" }}>
+    <Container>
       <Row>
         <Col>
           <UserAuthProvider>

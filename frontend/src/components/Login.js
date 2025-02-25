@@ -7,7 +7,11 @@ import { useUserAuth } from "../context/UserAuthContext";
 import Rooms3d from '../rooms/rooms3d';
 import "./Login.css";
 
+
+
+
 const Login = () => {
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,13 +23,13 @@ const Login = () => {
     setError("");
     try {
       await logIn(email, password);
-      navigate("/home"); // Redirect to homepage after successful login
+      navigate("/home"); 
     } catch (err) {
       setError(err.message);
     }
   };
 
-  //GOOGLE SIGN UP 
+ 
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
     try {
@@ -38,8 +42,11 @@ const Login = () => {
 
   return (
     <>
+      <div className="logo">
+      
+      </div>
       <div className="p-4 box">
-        <h2 className="mb-3">Firebase/ React Auth Login</h2>
+        <h2 className="mb-3">Roomiize</h2>
 
         {error && <Alert variant="danger">{error}</Alert>}
 

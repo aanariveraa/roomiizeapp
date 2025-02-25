@@ -1,14 +1,20 @@
-.box { 
+* {
+    
+    padding: 0;
+    margin: 0;
+}
+
+.box {   
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: aqua;  /* Matches your previous styles */
+    background-color: #a3c5a7;  
     border-radius: 25px;
     border: 5px solid black;
     padding: 20px;
-    width: 400px; /* Adjust width */
-    margin: 50px auto; /* Centers the box */
+    width: 400px; 
+    margin: 50px auto; 
 }
 
 .box input {
@@ -34,3 +40,16 @@ button {
 button:hover {
     filter: brightness(85%);
 }
+.logo{
+    display: flex;
+
+}
+.logo img {
+    margin: 0 auto;
+    width: 80%;
+    /* height:100% */
+    
+}
+
+
+

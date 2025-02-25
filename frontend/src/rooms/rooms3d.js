@@ -137,12 +137,21 @@ const Rooms3d = () => {
   };
 
   return (
+    
     <div className="App">
+      <div id='sidebar'>
+      
+            <ul>
+              <li>t1</li>
+              <li>t2</li>
+            </ul>
+   
+    </div>
       {/* Room Navigation */}
       <RoomNav rooms={roomsData} selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
 
       {/* 3D Model Viewer Container */}
-      <div className="model-viewer">
+      <div className="model-viewer" >
         <Canvas>
           {displayMode === "3D" ? (
             <PerspectiveCamera

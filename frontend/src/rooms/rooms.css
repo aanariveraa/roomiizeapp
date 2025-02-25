@@ -2,20 +2,13 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
 }
 
-.App {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* Navigation Container (RoomNav) */
+/* Room Navigation Bar (Fixed at the top) */
 .room-nav-container {
   display: flex;
-  overflow-x: auto;
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.95);
@@ -24,54 +17,100 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px; /* Thinner navigation tab */
+  height: 80px;
   z-index: 10;
+  padding: 0 20px;
 }
 
-.room-nav-container::-webkit-scrollbar {
-  display: none;
-}
-
-/* Navigation Items (Buttons) */
 .room-nav-item {
   background: none;
   border: none;
   margin: 0 15px;
   cursor: pointer;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  outline: none;
-  flex: 0 0 auto;
   font-size: 18px;
   color: #333;
   padding: 10px 20px;
+  transition: all 0.3s ease;
+  outline: none;
+  font-weight: bold;
+}
+
+.room-nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .room-nav-item.active {
-  transform: scale(1.1);
   border-bottom: 3px solid #4CAF50; /* Green accent for active button */
 }
 
 .room-nav-item .room-title {
   margin: 0;
   padding: 0;
-  font-weight: bold;
 }
 
-/* 3D Model Viewer Container */
-.model-viewer {
-  position: absolute;
-  top: 80px; /* Positioned below the navigation tab */
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
   left: 0;
-  width: 100%;
-  height: calc(100vh - 80px);
+  width: 50000px;
+  height: 100%;
+  background-color: #343a40;
+  color: #fff;
+  padding-top: 20px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
 }
 
-canvas {
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar .nav-item {
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-item.active {
+  background-color: #007bff;
+}
+
+.sidebar .nav-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar .dropdown-menu {
+  background-color: #343a40;
+  border: none;
+}
+
+/* Main Content Area */
+.model-container {
+  margin-left: 250px; /* For sidebar space */
+  padding: 20px;
+  height: 100vh;
+  position: relative;
+}
+
+/* 3D Model Container */
+.model-container canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
+
 
 /* Control Panel */
 .control-panel {
@@ -81,12 +120,12 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  z-index: 10;
+  z-index: 15;
 }
 
 .zoom-button {
-  background-color: white;
-  border: 2px solid whitesmoke;
+  background-color: #fff;
+  border: 2px solid #ddd;
   border-radius: 50%;
   padding: 10px;
   cursor: pointer;
@@ -104,15 +143,14 @@ canvas {
   object-fit: contain;
 }
 
-/* Display Toggle Tabs */
 .display-toggle-tabs {
   display: flex;
   gap: 10px;
 }
 
 .display-tab {
-  background-color: white;
-  border: 2px solid whitesmoke;
+  background-color: #fff;
+  border: 2px solid #ddd;
   border-radius: 12px;
   padding: 10px 20px;
   cursor: pointer;
@@ -122,21 +160,20 @@ canvas {
 }
 
 .display-tab:hover {
-  background-color: rgb(151, 148, 148);
+  background-color: #ccc;
   color: white;
   transform: translateY(-3px);
 }
 
 .display-tab.active {
-  background-color: rgb(151, 148, 148);
+  background-color: #007bff;
   color: white;
   transform: translateY(-3px);
 }
 
-/* Control Button for Person View Toggle */
 .control-button {
-  background-color: white;
-  border: 2px solid whitesmoke;
+  background-color: #fff;
+  border: 2px solid #ddd;
   border-radius: 12px;
   padding: 10px 20px;
   cursor: pointer;
@@ -148,21 +185,49 @@ canvas {
 }
 
 .control-button:hover {
-  background-color: rgb(151, 148, 148);
+  background-color: #ccc;
   color: white;
   transform: translateY(-3px);
 }
 
 .control-button.active {
-  background-color: rgb(151, 148, 148);
+  background-color: #007bff;
   color: white;
   transform: translateY(-3px);
 }
 
-/* Person View Icon styling */
+/* Person View Icon Styling */
 .person-view-icon {
   width: 24px;
   height: 24px;
   margin-right: 8px;
   vertical-align: middle;
+}
+
+#sidebar
+{
+  position:absolute;
+  display: flex;
+  padding:0;
+  margin:0;
+  z-index: 100;
+  /*top:calc(50% - 15vh);
+*/  background-color: #87cfb1;
+  width:15vw;
+  border-radius: 20px;
+  height:80vh;
+  margin-top:8%;
+  
+ 
+}
+#sidebar ul li
+{
+  text-align: center;
+}
+
+.model-viewer
+{
+  padding-top: 10%;
+  height:90vh;
+
 }
