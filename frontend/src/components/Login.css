@@ -1,139 +1,104 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&display=swap');
 
-
-
-{
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
+/* ✅ Fix horizontal scrolling */
 body, html {
-    height: 100%;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* ✅ Prevents horizontal scroll */
 }
 
-.login-container {
-    display:flex;
-    height: 100vh;
-    width: 100vw;
-    align-items: stretch;
+.login-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  font-family: Arial, sans-serif;
+  position: relative;
+  overflow: hidden; /* ✅ Ensures no overflow */
 }
 
-#main-wrapper
-{
-    display: flex;
-    height:100vh;
-    width:100vw;
-    position:absolute;
-    left: 0;
-   /* background-color: rgb(125, 72, 7);*/
-    
-
-
-}
-.rs img
-{
-    height:100vh;
-    width:100%; 
-    object-fit: cover;
-
-
-
-}
-.rs
-{
-    position: absolute;
-    z-index: -1;
-
+/* ✅ Background image stays fixed & covers full screen */
+.login-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* ✅ Prevents background from overflowing */
+  height: 100vh;
+  background: url("/public/images/roomize.png") center/cover no-repeat;
+  z-index: -2;
 }
 
-
-.box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0.37);
-    border-radius: 25px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 40%;
-    min-width: 350px; 
-    margin: 0;
-    height: 100vh; 
-
+/* ✅ Left-side transparent login box (full height) */
+.login-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2); /* ✅ Transparent effect */
+  backdrop-filter: blur(10px);
+  width: 40%;
+  min-width: 350px;
+  height: 100vh;
+  padding: 40px;
+  box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
 }
 
-.box input {
-    margin: 10px 0;
-    padding: 8px;
-    width: 100%;
-
+/* ✅ Input fields */
+.login-box input {
+  margin: 10px 0;
+  padding: 12px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
-.box h2 {
-    margin-bottom: 15px;
-    text-align: center;
-
+/* ✅ Title styling */
+.login-box h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #0b0b0b;
+  font-family: "Lexend Giga", serif;
+  font-weight: 700;
 }
 
-button {
-    background-color: #ddb395;
-    border: 2px solid black;
-    border-radius: 5px;
-    padding: 10px;
-    width: 100%;
-    cursor: pointer;
-
+/* ✅ Buttons */
+.login-button {
+  background-color: #ddb395;
+  border: none;
+  border-radius: 5px;
+  padding: 12px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-button:hover {
-    filter: brightness(85%);
-}
-.logo{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-.logo img {
-    margin: 0 auto;
-    max-width: 150px;
-    width: 80%;
-    /* height:100% /
-
+.login-button:hover {
+  filter: brightness(90%);
 }
 
-.box h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #0b0b0b;
-    font-family: "Lexend Giga", serif;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
-  font-style: normal;
+/* ✅ Google button */
+.g-btn {
+  width: 100%;
 }
 
-/this is right side/
-.illustration-wrapper {
-    flex: 1; / Takes up the remaining space /
-    background: url("roomize.png") center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/adjusts /
+/* ✅ Responsive adjustments */
 @media (max-width: 768px) {
-    .login-container {
-        flex-direction: column;
-    }
+  .login-page {
+    flex-direction: column;
+  }
 
-    .box {
-        width: 100%;
-        height: auto;
-    }
-
-    .illustration-wrapper {
-        display: none; /hides on small screen */
-    }
+  .login-box {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    position: relative;
+  }
+}
