@@ -175,6 +175,8 @@ canvas {
 
 .object-selection-panel.open {
   left: 10px; /* Slides in when open */
+  bottom: 100px;
+  top: 150px;
 }
 
 /* Object Selection Toggle Button (Now fixed) */
@@ -182,18 +184,18 @@ canvas {
   position: fixed; /* Keep it visible even when panel is closed */
   top: 90px;
   left: 10px;
-  background: #4CAF50;
+  background: #ddb395;
   color: white;
   border: none;
   padding: 10px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 999px;
   transition: 0.3s;
   z-index: 30; /* Ensure it's above everything */
 }
 
 .toggle-button:hover {
-  background: #45a049;
+  background: #fbf9eb;
 }
 
 /* Object Grid */
@@ -227,10 +229,10 @@ canvas {
 
 /* Place Item Button */
 .object-item button {
-  background: #4CAF50;
-  color: white;
+  background: #a3c5a7;
+  color: black;
   border: none;
-  padding: 6px 10px;
+  padding: 10px 10px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 14px;
@@ -238,7 +240,7 @@ canvas {
 }
 
 .object-item button:hover {
-  background: #45a049;
+  background: #ddb395;
   transform: scale(1.1);
 }
 
@@ -254,4 +256,34 @@ canvas {
 .object-popup img {
   width: 15px; /* or any desired size */
   height: auto;
+}
+.logout-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  background-color: #ddb395;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 99px;
+  cursor: pointer;
+}
+.logout-button:hover {
+  background-color: #d32f2f;
+}
+.back-button{
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  background-color: #ddb395;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.back-button:hover {
+  background-color: #1976d2;
 }
