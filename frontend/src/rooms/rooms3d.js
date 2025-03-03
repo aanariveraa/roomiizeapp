@@ -9,6 +9,10 @@ import {
   TransformControls
 } from "@react-three/drei";
 import "./rooms.css";
+import { Navbar, Container, Nav, Button} from "react-bootstrap";
+import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate} from "react-router-dom";
+import "./rooms.css";
 
 // Preload Room Models
 useGLTF.preload("/models/suite1.glb");
@@ -124,6 +128,34 @@ const ObjectSelectionPanel = ({ onAddObject }) => {
     </div>
   );
 };
+function TopNavbar() {
+  const { logOut } = useUserAuth();
+  
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      // Optionally navigate("/login")
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <Navbar bg="light" expand="md" className="mb-2">
+      <Container fluid>
+        <Navbar.Brand>My 3D Rooms</Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar-collapse" />
+        <Navbar.Collapse id="navbar-collapse">
+          <Nav className="ms-auto">
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}
 
 const ControlPanel = ({
   onZoomIn,
@@ -159,6 +191,7 @@ const ControlPanel = ({
 );
 
 const Rooms3d = () => {
+  const { logOut} = useUserAuth(); //logout
   const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
@@ -211,67 +244,92 @@ const Rooms3d = () => {
     }));
     setSelectedObject(null);
   };
+    
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      //this is optional
+    } catch (error){
+      console.error("logout error:", error);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    //goes back one page 
+    navigate(-1);
+  }
+
 
   return (
     <div className="App">
-      <RoomNav selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
-      <ObjectSelectionPanel onAddObject={addObject} />
-      <div className="model-viewer">
-        <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
-          {displayMode === "3D" ? (
-            <PerspectiveCamera
-              makeDefault
-              ref={cameraRef}
-              position={
-                controlMode === "person"
-                  ? [0, 1.6, 5 * zoomFactor]
-                  : [0, 0, 5 * zoomFactor]
-              }
-              fov={75}
-            />
-          ) : (
-            <OrthographicCamera
-              makeDefault
-              ref={cameraRef}
-              position={[0, 50, 0]}
-              zoom={50 * zoomFactor}
-              near={0.1}
-              far={1000}
-            />
-          )}
-          <ambientLight intensity={1.0} />
-          <pointLight position={[10, 10, 10]} />
-          <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
-            <SuiteModel modelPath={selectedRoom.modelPath} />
-            {(roomObjects[selectedRoom.id] || []).map((obj) => (
-              <ObjectModel
-                key={obj.uid}
-                object={obj}
-                isSelected={selectedObject && selectedObject.uid === obj.uid}
-                onSelect={setSelectedObject}
-                onTransform={transformObject}
-                rotateObject={rotateObject}
-                onRemoveObject={removeObject}
-                onDragStart={() => setIsDragging(true)}
-                onDragEnd={() => setIsDragging(false)}
-              />
-            ))}
-          </Suspense>
-          <OrbitControls enabled={!selectedObject} />
-        </Canvas>
-      </div>
-      <ControlPanel
-        onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
-        onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
-        displayMode={displayMode}
-        setDisplayMode={setDisplayMode}
-        controlMode={controlMode}
-        toggleControlMode={() =>
-          setControlMode(controlMode === "orbit" ? "person" : "orbit")
-        }
-      />
-    </div>
-  );
+      
+    <button className="back-button" onClick={goBack}>
+     Back
+   </button>
+
+   <button className="logout-button" onClick={handleLogout}>
+   Logout
+   </button>
+   <RoomNav selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
+   <ObjectSelectionPanel onAddObject={addObject} />
+   <div className="model-viewer">
+     <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
+       {displayMode === "3D" ? (
+         <PerspectiveCamera
+           makeDefault
+           ref={cameraRef}
+           position={
+             controlMode === "person"
+               ? [0, 1.6, 5 * zoomFactor]
+               : [0, 0, 5 * zoomFactor]
+           }
+           fov={75}
+         />
+       ) : (
+         <OrthographicCamera
+           makeDefault
+           ref={cameraRef}
+           position={[0, 50, 0]}
+           zoom={50 * zoomFactor}
+           near={0.1}
+           far={1000}
+         />
+       )}
+       <ambientLight intensity={1.0} />
+       <pointLight position={[10, 10, 10]} />
+       <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
+         <SuiteModel modelPath={selectedRoom.modelPath} />
+         {(roomObjects[selectedRoom.id] || []).map((obj) => (
+           <ObjectModel
+             key={obj.uid}
+             object={obj}
+             isSelected={selectedObject && selectedObject.uid === obj.uid}
+             onSelect={setSelectedObject}
+             onTransform={transformObject}
+             rotateObject={rotateObject}
+             onRemoveObject={removeObject}
+             onDragStart={() => setIsDragging(true)}
+             onDragEnd={() => setIsDragging(false)}
+           />
+         ))}
+       </Suspense>
+       <OrbitControls enabled={!selectedObject} />
+     </Canvas>
+   </div>
+   <ControlPanel
+     onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
+     onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
+     displayMode={displayMode}
+     setDisplayMode={setDisplayMode}
+     controlMode={controlMode}
+     toggleControlMode={() =>
+       setControlMode(controlMode === "orbit" ? "person" : "orbit")
+     }
+   />
+ </div>
+ );
 };
 
 export default Rooms3d;
