@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
-import { Button, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import "../styles/Home.css"; 
 
 const Home = () => {
   const { user, logOut } = useUserAuth();
@@ -19,29 +19,30 @@ const Home = () => {
     }
   };
 
+  // sidebar for users to navigate between pages
   return (
-    <Container className="text-center mt-5">
-      <h2>Welcome, {user?.email}!</h2>
-
-      <div className="mt-4">
-        <Link to="/rooms3d">
-          <Button variant="primary" className="m-2">
-            Go to 3D Rooms
-          </Button>
-        </Link>
-
-        <Link to="/profile">
-          <Button variant="info" className="m-2">
-            Go to Profile Settings
-          </Button>
-        </Link>
-
-        <Button variant="danger" className="m-2" onClick={handleLogout}>
-          Sign Out
-        </Button>
-        
+    <div className="home-container">
+      <div className="sidebar">
+        <h3 className="sidebar-title">Menu</h3>
+        <ul className="sidebar-links">
+          <li>
+            <Link to="/rooms3d">Rooms</Link>
+          </li>
+          <li>
+            <Link to="/profile">Profile Settings</Link>
+          </li>
+          <li>
+            <Button variant="danger" className="button" onClick={handleLogout}>
+              Sign Out
+            </Button>
+          </li>
+        </ul>
       </div>
-    </Container>
+
+      <div className="content">
+          <h2>Welcome, {user?.email}!</h2>
+      </div>
+    </div>
   );
 };
 
