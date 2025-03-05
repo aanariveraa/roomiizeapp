@@ -4,17 +4,25 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { db, storage } from "../firebase/firebaseConfig";
-import { Form, Button, Alert, Container, Card } from "react-bootstrap";
+import { Form, Button, Alert, Container, Card, InputGroup } from "react-bootstrap";
+import { useNavigate} from "react-router-dom";
+import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import icons
 
 const Profile = () => {
   const { user } = useUserAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Password visibility
   const [profilePic, setProfilePic] = useState(null);
   const [photoURL, setPhotoURL] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   useEffect(() => {
     if (user) {
@@ -79,6 +87,13 @@ const Profile = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    //goes back one page 
+    navigate(-1);
+  }
+
   return (
     <Container className="mt-4">
       <Card className="p-4">
@@ -86,6 +101,10 @@ const Profile = () => {
 
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
+
+        <button className="back-button" onClick={goBack}>
+          Back
+        </button>
 
         <Form onSubmit={handleUpdate}>
           {/* Profile Picture */}
@@ -109,14 +128,20 @@ const Profile = () => {
           </Form.Group>
 
           {/* New Password */}
+          {/* NEW Password Field with Eye Icon */}
           <Form.Group className="mb-3">
-            <Form.Label>New Password (leave blank to keep current)</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter new password"
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </Form.Group>
+          <Form.Label>New Password (leave blank to keep current)</Form.Label>
+                <InputGroup>
+                    <Form.Control
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter new password"
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                      <InputGroup.Text onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                          {showPassword ? <EyeSlash /> : <Eye />}
+                      </InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
 
           <Button variant="primary" type="submit">
             Update Profile
