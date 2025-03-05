@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "../Home.css"; 
+import "../styles/Home.css"; 
 
 const Home = () => {
   const { user, logOut } = useUserAuth();
