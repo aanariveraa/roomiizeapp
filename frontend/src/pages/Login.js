@@ -43,9 +43,9 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page"> {/* Background applied via CSS */}
+    <div className="login-page"> 
       <div className="login-box">
-        <h2 className="mb-3">Roomiize</h2>
+        <h2 className="mb-3">ROOMIIZE</h2>
 
         {error && <Alert variant="danger">{error}</Alert>}
 
