@@ -17,6 +17,7 @@
     "firebase": "^11.3.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.9",
+    "react-bootstrap-icons": "^1.11.5",
     "react-dom": "^18.2.0",
     "react-google-button": "^0.8.0",
     "react-native": "^0.72.17",
