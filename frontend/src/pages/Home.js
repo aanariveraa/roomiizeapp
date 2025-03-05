@@ -30,9 +30,16 @@ const Home = () => {
           </Button>
         </Link>
 
+        <Link to="/profile">
+          <Button variant="info" className="m-2">
+            Go to Profile Settings
+          </Button>
+        </Link>
+
         <Button variant="danger" className="m-2" onClick={handleLogout}>
           Sign Out
         </Button>
+        
       </div>
     </Container>
   );
