@@ -1,28 +1,37 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Alert, Button } from "react-bootstrap";
+import { Form, Alert, Button, InputGroup} from "react-bootstrap";
 import GoogleButton from "react-google-button";
 import { useUserAuth } from "../context/UserAuthContext";
-import "./Login.css";
+import "../styles/Login.css";
+import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import icons
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Password visibility
   const [error, setError] = useState("");
   const { logIn, googleSignIn } = useUserAuth();
   const navigate = useNavigate();
 
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  //
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
       await logIn(email, password);
-      navigate("/home");
+      navigate("/home"); // Redirect to homepage after successful login
     } catch (err) {
       setError(err.message);
     }
   };
 
+  //GOOGLE SIGN IN
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
     try {
@@ -34,9 +43,9 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page"> {/* Background applied via CSS */}
+    <div className="login-page"> 
       <div className="login-box">
-        <h2 className="mb-3">Roomiize</h2>
+        <h2 className="mb-3">ROOMIIZE</h2>
 
         {error && <Alert variant="danger">{error}</Alert>}
 
@@ -49,13 +58,21 @@ const Login = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form.Group>
+          {/* Password Field with Eye Icon */}
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <InputGroup>
+                      <Form.Control
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                      <InputGroup.Text onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                          {showPassword ? <EyeSlash /> : <Eye />}
+                      </InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
 
           <div className="d-grid gap-2">
             <Button variant="primary" type="Submit">
@@ -67,7 +84,10 @@ const Login = () => {
         <hr />
 
         <div>
-          <GoogleButton className="g-btn" type="dark" onClick={handleGoogleSignIn} />
+          <GoogleButton 
+              className="g-btn" type="dark" 
+              onClick={handleGoogleSignIn} 
+          />
         </div>
 
         <div>

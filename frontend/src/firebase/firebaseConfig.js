@@ -5,6 +5,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider} from 'firebase/auth';
 import { getFirestore } from "firebase/firestore"; 
 import { getStorage } from "firebase/storage"; // Add Storage (if needed) 
 import { getDatabase } from "firebase/database";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 
 // Your web app's Firebase configuration
@@ -21,6 +22,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize App Check for more security - NOT yet figured out tho :(
+/*initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Le_ueYqAAAAANQ1FEhpKaNJLMljUb2r-MQ9wV1R'), // Replace with your site key from the Firebase console
+});*/
+
 const auth = getAuth(app); // Initialize Authentication 
 const db = getFirestore(app); // Initialize Firestore 
 const storage = getStorage(app); // Initialize Storage 
