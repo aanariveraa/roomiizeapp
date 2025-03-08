@@ -26,9 +26,7 @@ const Signup = () => {
     setError("");
 
     try {
-      const newUser = await signUp(email, password, name, "");
-    
-      await signUp(name, email, password, profilePicURL);
+      await signUp(email, password, name);
 
       //navigate("/login"); // Redirect to homepage after successful signup
       navigate("/home");

@@ -20,6 +20,11 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 //create a context
 const userAuthContext = createContext();
 
+//default profile pic 
+const DEFAULT_PROFILE_PIC =
+  "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg";
+
+
 //create a provider component
 export function UserAuthProvider({ children }) {
     const [user, setUser] = useState(null); 
@@ -51,10 +56,16 @@ export function UserAuthProvider({ children }) {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const newUser = userCredential.user;
 
+
+           // If no profilePic is provided (i.e., manual sign-up), use the default picture.
+          if (!profilePic) {
+            profilePic = DEFAULT_PROFILE_PIC;
+          }
+
           // Update Firebase Auth profile
           await updateProfile(newUser, {
             displayName: name,
-            photoURL: profilePic
+            photoURL: profilePic,
           });
 
           // Save user info in Firestore
@@ -144,6 +155,7 @@ export function UserAuthProvider({ children }) {
           email: googleUser.email,
           displayName: googleUser.displayName,
           photoURL: googleUser.photoURL,
+          providerData: googleUser.providerData, 
         });
 
         return googleUser;
