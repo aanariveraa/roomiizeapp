@@ -19,18 +19,43 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const navigate = useNavigate();
+
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
+  // Check if the user signed in with Google
+   const isGoogleUser = 
+   user?.providerData?.some((provider) => provider.providerId === "google.com") ||
+   user?.providerId === "google.com";
+
   useEffect(() => {
     if (user) {
       setName(user.displayName || "");
       setEmail(user.email || "");
-      setPhotoURL(user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg"); // Default avatar
+      //setPhotoURL(user.photoURL || "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg"); // Default avatar
+      
+      // Get photoURL from user.photoURL 
+      // or fall back to the providerData array
+      let userPhoto = user.photoURL;
+      if (!userPhoto && user.providerData && user.providerData.length > 0) {
+        userPhoto = user.providerData[0].photoURL;
+      }
+      
+      setPhotoURL(
+        userPhoto ||
+          "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small_2x/profile-icon-design-free-vector.jpg"
+      );
     }
-  }, [user]);
+
+    //if a user if GoogleUser 
+    if (user && isGoogleUser) {
+      console.log("User is signed in with Google");
+    }
+
+  }, [user, isGoogleUser]);
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -59,6 +84,7 @@ const Profile = () => {
         const storageRef = ref(storage, `profilePictures/${user.uid}`);
         await uploadBytes(storageRef, profilePic);
         updatedPhotoURL = await getDownloadURL(storageRef);
+        setPhotoURL(updatedPhotoURL); // Update local state immediately
       }
 
       // Update Firebase Auth profile
@@ -87,8 +113,6 @@ const Profile = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const goBack = () => {
     //goes back one page 
     navigate(-1);
@@ -102,50 +126,97 @@ const Profile = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
+        {/* if google account- cant't have access to update info*/}
+        {isGoogleUser && (
+        <Alert variant="info">
+          Note: Since you signed in with Google, your email and display name are managed by your Google account and cannot be edited here.
+        </Alert>
+      )}
+
         <button className="back-button" onClick={goBack}>
           Back
         </button>
 
         <Form onSubmit={handleUpdate}>
+
           {/* Profile Picture */}
           <div className="text-center mb-3">
-            <img src={photoURL} alt="Profile" className="rounded-circle" width="120" height="120" />
-            <Form.Group className="mt-2">
-              <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
-            </Form.Group>
+            <img 
+              src={photoURL} 
+              alt="Profile" 
+              className="rounded-circle" 
+              width="120" 
+              height="120" 
+              />
+
+              {/* Only show the file input if NOT a Google user */}
+              {!isGoogleUser && (
+                <Form.Group className="mt-2">
+                  <Form.Control 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    disabled={isGoogleUser} // Disable for Google users
+                />
+                </Form.Group>
+              )}
           </div>
 
           {/* Name */}
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
-            <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} />
+            <Form.Control 
+                type="text" 
+                value={name} 
+                onChange={(e) => setName(e.target.value)} 
+                disabled={isGoogleUser} // Disable for Google users
+            />
           </Form.Group>
 
           {/* Email */}
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Form.Control 
+                  type="email" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  disabled={isGoogleUser} // Disable for Google users
+            />
           </Form.Group>
 
           {/* New Password */}
           {/* NEW Password Field with Eye Icon */}
-          <Form.Group className="mb-3">
-          <Form.Label>New Password (leave blank to keep current)</Form.Label>
-                <InputGroup>
-                    <Form.Control
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Enter new password"
-                          onChange={(e) => setNewPassword(e.target.value)}
-                        />
-                      <InputGroup.Text onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
-                          {showPassword ? <EyeSlash /> : <Eye />}
-                      </InputGroup.Text>
-                </InputGroup>
-            </Form.Group>
-
+          {!isGoogleUser && (
+              <Form.Group className="mb-3">
+              <Form.Label>
+                New Password (leave blank to keep current)
+              </Form.Label>
+                    <InputGroup>
+                        <Form.Control
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter new password"
+                              onChange={(e) => setNewPassword(e.target.value)}
+                              disabled={isGoogleUser} // Disable for Google users
+                            />
+                          <InputGroup.Text onClick={togglePasswordVisibility} 
+                              style={{ cursor: "pointer" }}>
+                              {showPassword ? <EyeSlash /> : <Eye />}
+                          </InputGroup.Text>
+                      </InputGroup>
+              </Form.Group>
+          )}
+          {/*
           <Button variant="primary" type="submit">
             Update Profile
           </Button>
+          */}
+
+          {!isGoogleUser && (
+            <Button variant="primary" type="submit">
+              Update Profile
+            </Button>
+          )}
+
         </Form>
       </Card>
     </Container>
