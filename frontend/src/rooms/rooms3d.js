@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -11,6 +11,7 @@ import {
 import { Navbar, Container, Nav, Button} from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate} from "react-router-dom";
+import { HexColorPicker } from "react-colorful";
 import "./rooms.css";
 
 // Preload Room Models
@@ -60,18 +61,31 @@ const ObjectModel = ({
   rotateObject,
   onDragStart,
   onDragEnd,
-  onRemoveObject
+  onRemoveObject,
+  color // 🔹 New prop to update color
 }) => {
   const { scene } = useGLTF(object.modelPath);
+
+  // 🔹 Apply color dynamically when it changes
+  useEffect(() => {
+    if (scene) {
+      scene.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.color.set(color);
+        }
+      });
+    }
+  }, [color, scene]); // Runs whenever `color` changes
+
   return (
     <>
       <TransformControls
         mode="translate"
         enabled={isSelected}
-        onMouseDown={(e) => { if (e && e.stopPropagation) e.stopPropagation(); }}
-        onDragStart={(e) => { if (onDragStart) onDragStart(); }}
+        onMouseDown={(e) => e.stopPropagation && e.stopPropagation()}
+        onDragStart={() => onDragStart && onDragStart()}
         onDragEnd={(e) => {
-          if (onDragEnd) onDragEnd();
+          onDragEnd && onDragEnd();
           const pos = e.target.object.position;
           const rot = e.target.object.rotation;
           onTransform(object, [pos.x, pos.y, pos.z], [rot.x, rot.y, rot.z]);
@@ -88,6 +102,7 @@ const ObjectModel = ({
           }}
         />
       </TransformControls>
+
       {isSelected && (
         <Html position={[0, 1.5, 0]} style={{ pointerEvents: "auto" }}>
           <div className="object-popup">
@@ -194,6 +209,7 @@ const Rooms3d = () => {
   const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
+  const [objectColors, setObjectColors] = useState({});
   const [displayMode, setDisplayMode] = useState("3D");
   const [controlMode, setControlMode] = useState("orbit");
   const [zoomFactor, setZoomFactor] = useState(1);
@@ -213,6 +229,28 @@ const Rooms3d = () => {
       [selectedRoom.id]: [...(prev[selectedRoom.id] || []), newObject]
     }));
   };
+
+  const applyColor = (object, newColor) => {
+    if (!object || !object.uid) return; // Prevent errors
+  
+    setObjectColors((prev) => ({
+      ...prev,
+      [object.uid]: newColor
+    }));
+  
+    setRoomObjects((prev) => {
+      const updatedObjects = { ...prev };
+      if (updatedObjects[selectedRoom.id]) {
+        updatedObjects[selectedRoom.id] = updatedObjects[selectedRoom.id].map((obj) => {
+          if (obj.uid === object.uid) {
+            return { ...obj, color: newColor }; // Save color to object
+          }
+          return obj;
+        });
+      }
+      return updatedObjects;
+    });
+  };  
 
   const transformObject = (object, position, rotation) => {
     const updated = { ...object, position, rotation };
@@ -311,12 +349,25 @@ const Rooms3d = () => {
              onRemoveObject={removeObject}
              onDragStart={() => setIsDragging(true)}
              onDragEnd={() => setIsDragging(false)}
+             color={objectColors[obj.uid] || "#ffffff"} // ✅ Pass stored color
            />
          ))}
        </Suspense>
        <OrbitControls enabled={!selectedObject} />
      </Canvas>
    </div>
+
+   {/* ✅ Floating Color Wheel (Top-Right) */}
+   {selectedObject && (
+     <div className="color-picker-panel">
+       <h3>Color Picker</h3>
+       <HexColorPicker
+         color={objectColors[selectedObject.uid] || "#ffffff"}
+         onChange={(color) => applyColor(selectedObject, color)}
+       />
+     </div>
+   )}
+
    <ControlPanel
      onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
      onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
@@ -328,7 +379,7 @@ const Rooms3d = () => {
      }
    />
  </div>
- );
+);
 };
 
 export default Rooms3d;
