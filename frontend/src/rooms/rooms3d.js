@@ -8,7 +8,6 @@ import {
   Html,
   TransformControls
 } from "@react-three/drei";
-import "./rooms.css";
 import { Navbar, Container, Nav, Button} from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate} from "react-router-dom";
