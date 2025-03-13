@@ -65,8 +65,8 @@ body, html {
   margin-bottom: 20px;
   text-align: center;
   color: #0b0b0b;
-  font-family: "Lexend Giga", serif;
-  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
 }
 
 /* ✅ Buttons */

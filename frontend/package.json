@@ -17,11 +17,13 @@
     "firebase": "^11.3.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.9",
+    "react-bootstrap-icons": "^1.11.5",
     "react-dom": "^18.2.0",
     "react-google-button": "^0.8.0",
     "react-native": "^0.72.17",
     "react-native-web": "^0.18.10",
     "react-router-dom": "^7.2.0",
+    "react-scroll": "^1.9.3",
     "three": "^0.159.0",
     "three-mesh-bvh": "^0.8.3",
     "three-stdlib": "^2.35.2"
