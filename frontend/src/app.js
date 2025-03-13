@@ -3,18 +3,25 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import "./app.css";
 import Home from "./pages/Home";
-import Rooms3d from './rooms/rooms3d';
+//rooms
+import Rooms3d from './rooms/rooms3d';  // rooms
+import RoomSelection from "./rooms/RoomSelection";  //room selection
+import DefaultRooms from "./rooms/defaultRooms";    //og rooms 
+import CreateRooms from "./Designs/createRooms";   //user creates rooms
+import myDesigns from './Designs/MyDesigns';        //users saves rooms 
+//
 import Profile from './pages/Profile';
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { UserAuthProvider } from "./context/UserAuthContext";
 import LandingPage from "./pages/LandingPage";
+import MyDesigns from "./Designs/MyDesigns";
 
 function App() {
   return (
     <BrowserRouter>
-    <Container style={{ width: "500px" }}>
+    <Container style={{ width: "800px" }}>
       <Row>
         <Col>
           <UserAuthProvider>
@@ -31,10 +38,26 @@ function App() {
                     } 
                 />
                 <Route
+                  path="/defaultRooms"
+                  element={
+                    <ProtectedRoute>
+                      < DefaultRooms/>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/rooms3d"
                   element={
                     <ProtectedRoute>
-                      <Rooms3d />
+                      < Rooms3d/>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/createRooms"
+                  element={
+                    <ProtectedRoute>
+                      <CreateRooms />
                     </ProtectedRoute>
                   }
                 />
@@ -43,6 +66,22 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/design"
+                  element={
+                    <ProtectedRoute>
+                      <RoomSelection />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/myDesigns"
+                  element={
+                    <ProtectedRoute>
+                      < MyDesigns/>
                     </ProtectedRoute>
                   }
                 />

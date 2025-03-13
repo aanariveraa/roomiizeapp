@@ -139,6 +139,7 @@ const Profile = () => {
 
         <Form onSubmit={handleUpdate}>
 
+        
           {/* Profile Picture */}
           <div className="text-center mb-3">
             <img 
@@ -148,10 +149,10 @@ const Profile = () => {
               width="120" 
               height="120" 
               />
-
               {/* Only show the file input if NOT a Google user */}
               {!isGoogleUser && (
                 <Form.Group className="mt-2">
+                  <Form.Label>Upload Profile Picture Below</Form.Label>
                   <Form.Control 
                     type="file" 
                     accept="image/*"
@@ -160,6 +161,7 @@ const Profile = () => {
                 />
                 </Form.Group>
               )}
+              
           </div>
 
           {/* Name */}

@@ -31,10 +31,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); // Initialize Authentication 
 const db = getFirestore(app); // Initialize Firestore 
 const storage = getStorage(app); // Initialize Storage 
-const database = getDatabase(app); // Initilize Realtime databse 
+const rtdb = getDatabase(app); // Initilize Realtime databse 
 
 //export 
-export { db, auth, storage };
+export { db, auth, storage, rtdb};
 export default app;
 
 

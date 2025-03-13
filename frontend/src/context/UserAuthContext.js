@@ -79,12 +79,15 @@ export function UserAuthProvider({ children }) {
           });
 
           // 4️⃣ Update Global User State
-          setUser({
+          /*setUser({
             uid: newUser.uid,
             email: newUser.email,
             displayName: name,
             photoURL: profilePic,
-          });
+          });*/
+          setUser(newUser); 
+          //FULL FIREBASE user object
+          //full access to firebase methods
 
           console.log("✅ Signup complete:", newUser.email);
           return newUser;
@@ -150,13 +153,16 @@ export function UserAuthProvider({ children }) {
           });
         }
 
-        setUser({
+        /*setUser({
           uid: googleUser.uid,
           email: googleUser.email,
           displayName: googleUser.displayName,
           photoURL: googleUser.photoURL,
           providerData: googleUser.providerData, 
-        });
+        });*/
+        setUser(googleUser);
+        //FULL FIREBASE user object
+          //full access to firebase methods
 
         return googleUser;
 

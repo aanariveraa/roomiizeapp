@@ -26,7 +26,13 @@ const Home = () => {
         <h3 className="sidebar-title">Menu</h3>
         <ul className="sidebar-links">
           <li>
-            <Link to="/rooms3d">Rooms</Link>
+            <Link to="/defaultRooms">DefaultRooms</Link>
+          </li>
+          <li>
+            <Link to="/design">Design</Link>
+          </li>
+          <li>
+            <Link to="/myDesigns">My Designs</Link>
           </li>
           <li>
             <Link to="/profile">Profile Settings</Link>
