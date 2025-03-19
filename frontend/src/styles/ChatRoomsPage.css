@@ -1,0 +1,264 @@
+.chat-page {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  height: 100vh;
+}
+
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  background-color: #ddb395;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #1976d2;
+}
+
+.chat-page .create-chat-button {
+  align-items: center;
+  background-color: #ddb395 !important;
+  color: black !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px auto;  
+  display: block;
+  margin-top: 80px;
+}
+
+.chat-page .create-chat-button a {
+  align-items: center;
+  color: black;
+  text-decoration: none;
+  text-align: center;
+}
+
+.chat-page .create-chat-button a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.create-chat-button:hover {
+  color: white;
+}
+
+.create-chat-room {
+  width: 100%;
+  height: 100vh;
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.create-chat-room h3 {
+  margin-top: 150px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.create-chat-room form {
+  align-items: center;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.create-chat-room .form-group {
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.create-chat-room .form-control {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.create-chat-room .form-control:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.create-chat-room .button {
+  align-items: center;
+  margin: 5px;
+  background-color: #ddb395!important;
+  color: black !important;
+  border-color: #ddb395 !important;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 0;
+}
+
+.create-chat-room .button:hover {
+  background-color: #c59e73 !important;
+  border-color: #c59e73 !important;
+}
+
+.create-chat-room p {
+  font-size: 1rem;
+  color: #666;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.chat-page h2 {
+  margin-top: 100px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.chat-page h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-top: 90px;
+  margin-bottom: 10px;
+}
+
+.chat-page ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.chat-page ul li {
+  margin: 10px 0;
+}
+
+.chat-page ul li a {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.chat-page ul li a:hover {
+  color: #0056b3;
+}
+
+.chat-page p {
+  color: #666;
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.create-chat-room .create-chat-button {
+  background-color: #ddb395 !important;
+  color: black !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  text-align: center; 
+  margin-top: 80px;
+}
+
+.create-chat-room .create-chat-button:hover {
+  color: #fff !important;
+  text-decoration: none; 
+}
+
+.chat-room {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-room h2 {
+  margin-top: 80px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
+
+.chat-room .messages-container {
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-room .message {
+  margin-bottom: 12px;
+  padding: 12px;
+  background-color: #F0FFFF;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-room .message strong {
+/*  color: #333;*/
+  color: #1E90FF;
+  font-weight: bold;
+}
+
+.chat-room .message small {
+  display: block;
+  margin-top: 5px;
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.chat-room .message.incoming {
+  background-color: #F8F8FF;
+
+}
+
+.chat-room .form-group {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.chat-room .message-input {
+  display: flex;
+  margin-top: 10px;
+}
+
+.chat-room .message-input-field {
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: 80%;
+}
+
+.chat-room .back-button {
+  background-color: #ddb395;
+  color: white;
+  border: none;
+  padding: 10px 20px; 
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 16px; 
+  margin-top: 20px;
+  width: auto;
+  display: inline-block; 
+}
+
+.chat-room .back-button:hover {
+  background-color: #1976d2;
+}

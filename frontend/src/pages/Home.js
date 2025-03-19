@@ -32,6 +32,9 @@ const Home = () => {
             <Link to="/profile">Profile Settings</Link>
           </li>
           <li>
+            <Link to="/chat-rooms">Chats</Link>
+          </li>
+          <li>
             <Button variant="danger" className="button" onClick={handleLogout}>
               Sign Out
             </Button>
