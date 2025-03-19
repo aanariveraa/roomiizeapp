@@ -287,3 +287,29 @@ canvas {
 .back-button:hover {
   background-color: #1976d2;
 }
+
+.color-picker-panel {
+  position: fixed; /* Keep it fixed to stay in view */
+  top: 100px; /* Distance from the top */
+  right: 15px; /* 🔹 Moves it towards the left */
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+  padding: 12px; /* Padding around the color wheel */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+  z-index: 1000; /* Ensure it appears above other elements */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.color-picker-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+
+.color-picker-panel .react-colorful {
+  width: 250px !important; /* Adjust width of the color wheel */
+  height: 250px !important; /* Adjust height to keep it circular */
+}
