@@ -3,7 +3,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { updateEmail, updatePassword, updateProfile } from "firebase/auth";
-import { db, storage } from "../firebase/firebaseConfig";
+import { db, storage } from '../firebase/firebaseConfig';
 import { Form, Button, Alert, Container, Card, InputGroup } from "react-bootstrap";
 import { useNavigate} from "react-router-dom";
 import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import icons
@@ -152,6 +152,7 @@ const Profile = () => {
               {/* Only show the file input if NOT a Google user */}
               {!isGoogleUser && (
                 <Form.Group className="mt-2">
+                  <Form.Label>Upload Profile Picture Below</Form.Label>
                   <Form.Control 
                     type="file" 
                     accept="image/*"

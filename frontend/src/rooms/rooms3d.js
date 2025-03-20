@@ -8,31 +8,58 @@ import {
   Html,
   TransformControls
 } from "@react-three/drei";
-import { Navbar, Container, Nav, Button} from "react-bootstrap";
+import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
-import { useNavigate} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { HexColorPicker } from "react-colorful";
 import "./rooms.css";
+import { saveRoomMetadata, saveRoomItems, loadRoomData } from "../services/roomDataService";
 
 // Preload Room Models
 useGLTF.preload("/models/suite1.glb");
 useGLTF.preload("/models/suite2.glb");
 useGLTF.preload("/models/suite3.glb");
-
-// Preload Object Models
+// Preload Object Model
 useGLTF.preload("/objects/test.glb");
 
-// Object Options
+// Static Data
+const roomsData = [
+  { id: 1, title: "Suite 1", modelPath: "/models/suite1.glb", roomtype: 1 },
+  { id: 2, title: "Suite 2", modelPath: "/models/suite2.glb", roomtype: 2 },
+  { id: 3, title: "Suite 3", modelPath: "/models/suite3.glb", roomtype: 3 }
+];
+
 const objectOptions = [
   { id: 1, name: "test", modelPath: "/objects/test.glb", image: "/images/test.png" }
 ];
 
-// Room List
-const roomsData = [
-  { id: 1, title: "Suite 1", modelPath: "/models/suite1.glb" },
-  { id: 2, title: "Suite 2", modelPath: "/models/suite2.glb" },
-  { id: 3, title: "Suite 3", modelPath: "/models/suite3.glb" }
-];
+function TopNavbar() {
+  const { logOut } = useUserAuth();
+  
+  const handleLogout = async () => {
+    try {
+      await logOut();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  return (
+    <Navbar bg="light" expand="md" className="mb-2">
+      <Container fluid>
+        <Navbar.Brand>My 3D Rooms</Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar-collapse" />
+        <Navbar.Collapse id="navbar-collapse">
+          <Nav className="ms-auto">
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}
 
 const RoomNav = ({ selectedRoom, onSelectRoom }) => (
   <div className="room-nav-container">
@@ -62,11 +89,11 @@ const ObjectModel = ({
   onDragStart,
   onDragEnd,
   onRemoveObject,
-  color // 🔹 New prop to update color
+  color
 }) => {
   const { scene } = useGLTF(object.modelPath);
 
-  // 🔹 Apply color dynamically when it changes
+  // Apply color dynamically to the object material.
   useEffect(() => {
     if (scene) {
       scene.traverse((child) => {
@@ -75,7 +102,7 @@ const ObjectModel = ({
         }
       });
     }
-  }, [color, scene]); // Runs whenever `color` changes
+  }, [color, scene]);
 
   return (
     <>
@@ -142,34 +169,6 @@ const ObjectSelectionPanel = ({ onAddObject }) => {
     </div>
   );
 };
-function TopNavbar() {
-  const { logOut } = useUserAuth();
-  
-  const handleLogout = async () => {
-    try {
-      await logOut();
-      // Optionally navigate("/login")
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return (
-    <Navbar bg="light" expand="md" className="mb-2">
-      <Container fluid>
-        <Navbar.Brand>My 3D Rooms</Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbar-collapse" />
-        <Navbar.Collapse id="navbar-collapse">
-          <Nav className="ms-auto">
-            <Button variant="outline-danger" onClick={handleLogout}>
-              Logout
-            </Button>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-  );
-}
 
 const ControlPanel = ({
   onZoomIn,
@@ -177,7 +176,8 @@ const ControlPanel = ({
   displayMode,
   setDisplayMode,
   controlMode,
-  toggleControlMode
+  toggleControlMode,
+  onSave
 }) => (
   <div className="control-panel">
     <button onClick={onZoomIn} className="zoom-button">
@@ -201,12 +201,20 @@ const ControlPanel = ({
       <img src="/icons/person_view.svg" alt="Person View" className="person-view-icon" />
       Person View
     </button>
+    <button onClick={onSave} className="save-button">
+      Save
+    </button>
   </div>
 );
 
 const Rooms3d = () => {
-  const { logOut} = useUserAuth(); //logout
-  const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
+  const { user, logOut } = useUserAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve initial room from router state or fallback to the first room.
+  const initialRoom = location.state?.selectedRoom || roomsData[0];
+  const [selectedRoom, setSelectedRoom] = useState(initialRoom);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
   const [objectColors, setObjectColors] = useState({});
@@ -214,43 +222,109 @@ const Rooms3d = () => {
   const [controlMode, setControlMode] = useState("orbit");
   const [zoomFactor, setZoomFactor] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
-
   const cameraRef = useRef();
+  const autoSaveTimeoutRef = useRef(null);
+
+  // Load saved room state from Firestore (if any)
+  useEffect(() => {
+    const loadRoomState = async () => {
+      try {
+        const savedData = await loadRoomData(selectedRoom.id);
+        if (savedData) {
+          console.log("Loaded room state:", savedData);
+          if (savedData.lastPositionofRoom && cameraRef.current) {
+            const { x, y, z } = savedData.lastPositionofRoom;
+            cameraRef.current.position.set(x, y, z);
+          }
+          if (savedData.items) {
+            setRoomObjects((prev) => ({
+              ...prev,
+              [selectedRoom.id]: savedData.items
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error loading room state:", error);
+      }
+    };
+    loadRoomState();
+  }, [selectedRoom]);
+
+  // Save initial room metadata when the room is selected.
+  useEffect(() => {
+    const saveInitialRoom = async () => {
+      try {
+        await saveRoomMetadata(selectedRoom.id, {
+          roomName: selectedRoom.title,
+          membersId: [user.uid],
+          lastPositionofRoom: cameraRef.current && cameraRef.current.position
+            ? {
+                x: cameraRef.current.position.x,
+                y: cameraRef.current.position.y,
+                z: cameraRef.current.position.z
+              }
+            : null,
+        });
+        console.log("Room metadata saved successfully.");
+        if (roomObjects[selectedRoom.id] && roomObjects[selectedRoom.id].length > 0) {
+          await saveRoomItems(selectedRoom.id, roomObjects[selectedRoom.id]);
+          console.log("Room items saved successfully.");
+        }
+      } catch (error) {
+        console.error("Error saving initial room:", error);
+      }
+    };
+    saveInitialRoom();
+  }, [selectedRoom, user.uid]);
+
+  // Function to manually save the current room state.
+  const saveCurrentRoomState = async () => {
+    try {
+      await saveRoomMetadata(selectedRoom.id, {
+        roomName: selectedRoom.title,
+        membersId: [user.uid],
+        lastPositionofRoom: cameraRef.current && cameraRef.current.position
+          ? {
+              x: cameraRef.current.position.x,
+              y: cameraRef.current.position.y,
+              z: cameraRef.current.position.z
+            }
+          : null,
+      });
+      if (roomObjects[selectedRoom.id] && roomObjects[selectedRoom.id].length > 0) {
+        await saveRoomItems(selectedRoom.id, roomObjects[selectedRoom.id]);
+      }
+      console.log("Room state saved");
+    } catch (error) {
+      console.error("Error saving room state:", error);
+    }
+  };
+
+  // Auto-save: debounce changes in roomObjects and save after 2 seconds of inactivity.
+  useEffect(() => {
+    if (autoSaveTimeoutRef.current) clearTimeout(autoSaveTimeoutRef.current);
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      saveCurrentRoomState();
+      console.log("Auto-saved room state after inactivity.");
+    }, 2000);
+    return () => clearTimeout(autoSaveTimeoutRef.current);
+  }, [roomObjects]);
 
   const addObject = (object) => {
     const newObject = {
       ...object,
       uid: Date.now() + Math.random(),
       position: [0, 0, 0],
-      rotation: [0, 0, 0]
+      rotation: [0, 0, 0],
+      color: "#ffffff"
     };
     setRoomObjects((prev) => ({
       ...prev,
       [selectedRoom.id]: [...(prev[selectedRoom.id] || []), newObject]
     }));
+    console.log("Adding object:", object.name, "to room:", selectedRoom.title);
+    saveCurrentRoomState();
   };
-
-  const applyColor = (object, newColor) => {
-    if (!object || !object.uid) return; // Prevent errors
-  
-    setObjectColors((prev) => ({
-      ...prev,
-      [object.uid]: newColor
-    }));
-  
-    setRoomObjects((prev) => {
-      const updatedObjects = { ...prev };
-      if (updatedObjects[selectedRoom.id]) {
-        updatedObjects[selectedRoom.id] = updatedObjects[selectedRoom.id].map((obj) => {
-          if (obj.uid === object.uid) {
-            return { ...obj, color: newColor }; // Save color to object
-          }
-          return obj;
-        });
-      }
-      return updatedObjects;
-    });
-  };  
 
   const transformObject = (object, position, rotation) => {
     const updated = { ...object, position, rotation };
@@ -263,12 +337,16 @@ const Rooms3d = () => {
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
+    console.log("Transformed object:", object.name, "to position:", position, "and rotation:", rotation);
+    saveCurrentRoomState();
   };
 
   const rotateObject = (object, angle) => {
     const currentRotation = object.rotation || [0, 0, 0];
     const newY = currentRotation[1] + (angle * Math.PI) / 180;
     transformObject(object, object.position, [currentRotation[0], newY, currentRotation[2]]);
+    console.log("Rotated object:", object.name, "by angle:", angle);
+    saveCurrentRoomState();
   };
 
   const removeObject = () => {
@@ -279,107 +357,109 @@ const Rooms3d = () => {
         (obj) => obj.uid !== selectedObject.uid
       )
     }));
+    console.log("Removing object:", selectedObject.name);
+    saveCurrentRoomState();
     setSelectedObject(null);
   };
-    
+
+  const applyColor = (object, newColor) => {
+    if (!object || !object.uid) return;
+    setObjectColors((prev) => ({
+      ...prev,
+      [object.uid]: newColor
+    }));
+    setRoomObjects((prev) => {
+      const updatedObjects = { ...prev };
+      if (updatedObjects[selectedRoom.id]) {
+        updatedObjects[selectedRoom.id] = updatedObjects[selectedRoom.id].map((obj) => {
+          if (obj.uid === object.uid) {
+            return { ...obj, color: newColor };
+          }
+          return obj;
+        });
+      }
+      return updatedObjects;
+    });
+  };
+
   const handleLogout = async () => {
     try {
       await logOut();
-      //this is optional
-    } catch (error){
-      console.error("logout error:", error);
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
 
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    //goes back one page 
-    navigate(-1);
-  }
-
+  const goBack = () => navigate(-1);
 
   return (
     <div className="App">
-      
-    <button className="back-button" onClick={goBack}>
-     Back
-   </button>
-
-   <button className="logout-button" onClick={handleLogout}>
-   Logout
-   </button>
-   <RoomNav selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
-   <ObjectSelectionPanel onAddObject={addObject} />
-   <div className="model-viewer">
-     <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
-       {displayMode === "3D" ? (
-         <PerspectiveCamera
-           makeDefault
-           ref={cameraRef}
-           position={
-             controlMode === "person"
-               ? [0, 1.6, 5 * zoomFactor]
-               : [0, 0, 5 * zoomFactor]
-           }
-           fov={75}
-         />
-       ) : (
-         <OrthographicCamera
-           makeDefault
-           ref={cameraRef}
-           position={[0, 50, 0]}
-           zoom={50 * zoomFactor}
-           near={0.1}
-           far={1000}
-         />
-       )}
-       <ambientLight intensity={1.0} />
-       <pointLight position={[10, 10, 10]} />
-       <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
-         <SuiteModel modelPath={selectedRoom.modelPath} />
-         {(roomObjects[selectedRoom.id] || []).map((obj) => (
-           <ObjectModel
-             key={obj.uid}
-             object={obj}
-             isSelected={selectedObject && selectedObject.uid === obj.uid}
-             onSelect={setSelectedObject}
-             onTransform={transformObject}
-             rotateObject={rotateObject}
-             onRemoveObject={removeObject}
-             onDragStart={() => setIsDragging(true)}
-             onDragEnd={() => setIsDragging(false)}
-             color={objectColors[obj.uid] || "#ffffff"} // ✅ Pass stored color
-           />
-         ))}
-       </Suspense>
-       <OrbitControls enabled={!selectedObject} />
-     </Canvas>
-   </div>
-
-   {/* ✅ Floating Color Wheel (Top-Right) */}
-   {selectedObject && (
-     <div className="color-picker-panel">
-       <h3>Color Picker</h3>
-       <HexColorPicker
-         color={objectColors[selectedObject.uid] || "#ffffff"}
-         onChange={(color) => applyColor(selectedObject, color)}
-       />
-     </div>
-   )}
-
-   <ControlPanel
-     onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
-     onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
-     displayMode={displayMode}
-     setDisplayMode={setDisplayMode}
-     controlMode={controlMode}
-     toggleControlMode={() =>
-       setControlMode(controlMode === "orbit" ? "person" : "orbit")
-     }
-   />
- </div>
-);
+      <TopNavbar />
+      <button className="back-button" onClick={goBack}>Back</button>
+      <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <RoomNav selectedRoom={selectedRoom} onSelectRoom={setSelectedRoom} />
+      <ObjectSelectionPanel onAddObject={addObject} />
+      <div className="model-viewer">
+        <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
+          {displayMode === "3D" ? (
+            <PerspectiveCamera
+              makeDefault
+              ref={cameraRef}
+              position={controlMode === "person" ? [0, 1.6, 5 * zoomFactor] : [0, 0, 5 * zoomFactor]}
+              fov={75}
+            />
+          ) : (
+            <OrthographicCamera
+              makeDefault
+              ref={cameraRef}
+              position={[0, 50, 0]}
+              zoom={50 * zoomFactor}
+              near={0.1}
+              far={1000}
+            />
+          )}
+          <ambientLight intensity={1.0} />
+          <pointLight position={[10, 10, 10]} />
+          <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
+            <SuiteModel modelPath={selectedRoom.modelPath} />
+            {(roomObjects[selectedRoom.id] || []).map((obj) => (
+              <ObjectModel
+                key={obj.uid}
+                object={obj}
+                isSelected={selectedObject && selectedObject.uid === obj.uid}
+                onSelect={setSelectedObject}
+                onTransform={transformObject}
+                rotateObject={rotateObject}
+                onRemoveObject={removeObject}
+                onDragStart={() => setIsDragging(true)}
+                onDragEnd={() => setIsDragging(false)}
+                color={objectColors[obj.uid] || obj.color || "#ffffff"}
+              />
+            ))}
+          </Suspense>
+          <OrbitControls enabled={!selectedObject} />
+        </Canvas>
+      </div>
+      {selectedObject && (
+        <div className="color-picker-panel">
+          <h3>Color Picker</h3>
+          <HexColorPicker
+            color={objectColors[selectedObject.uid] || selectedObject.color || "#ffffff"}
+            onChange={(color) => applyColor(selectedObject, color)}
+          />
+        </div>
+      )}
+      <ControlPanel
+        onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
+        onZoomOut={() => setZoomFactor((prev) => prev / 0.9)}
+        displayMode={displayMode}
+        setDisplayMode={setDisplayMode}
+        controlMode={controlMode}
+        toggleControlMode={() => setControlMode(controlMode === "orbit" ? "person" : "orbit")}
+        onSave={saveCurrentRoomState}
+      />
+    </div>
+  );
 };
 
 export default Rooms3d;
