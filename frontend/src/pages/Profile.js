@@ -152,6 +152,7 @@ const Profile = () => {
               {/* Only show the file input if NOT a Google user */}
               {!isGoogleUser && (
                 <Form.Group className="mt-2">
+                  <Form.Label>Upload Profile Picture Below</Form.Label>
                   <Form.Control 
                     type="file" 
                     accept="image/*"
