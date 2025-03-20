@@ -34,7 +34,7 @@ const storage = getStorage(app); // Initialize Storage
 const database = getDatabase(app); // Initilize Realtime databse 
 
 //export 
-export { db, auth, storage };
+export { db, auth, storage, firebaseConfig };
 export default app;
 
 
