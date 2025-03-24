@@ -45,14 +45,7 @@ const ChatRoomsPage = () => {
   return (
     <div className="chat-page">
       <button className="back-button" onClick={goBack}>Back</button>
-      <h2>Chat Rooms</h2>
-
-      <div>
-        <button className="create-chat-button">
-          <Link to="/create-chat-room">Create a New Chat Room</Link>
-        </button>
-      </div>
-
+      <h2>Chat Rooms</h2> 
       <h3>Existing Chat Rooms:</h3>
       <ul>
         {chatRooms.length === 0 ? (
@@ -65,7 +58,13 @@ const ChatRoomsPage = () => {
           ))
         )}
       </ul>
+      <div>
+        <button className="create-chat-button">
+          <Link to="/create-chat-room">Create a New Chat Room</Link>
+        </button>
+      </div>
     </div>
+
   );
 };
 

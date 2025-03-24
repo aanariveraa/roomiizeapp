@@ -1,8 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; 
+  width: 100%;  
+  overflow: hidden; 
+}
+
 .chat-page {
+  background-color: white;  
   margin: 0;
   font-family: Arial, sans-serif;
-  width: 100%;
-  height: 100vh;
+  width: 100%;             
+  min-height: 110vh;       
+  position: relative;      
+  box-sizing: border-box;
+  overflow: hidden;     
+  position: absolute;
+  top: -50px;           
+  left: 0;
 }
 
 .back-button {
@@ -53,21 +68,28 @@
 }
 
 .create-chat-room {
-  width: 100%;
-  height: 100vh;
-  margin: 20px;
+  background-color: white;  
+  margin: 0;
   font-family: Arial, sans-serif;
+  width: 100%;             
+  min-height: 110vh;       
+  position: relative;      
+  box-sizing: border-box;
+  overflow: hidden;     
+  position: absolute;
+  top: -50px;           
+  left: 0;
 }
 
 .create-chat-room h3 {
-  margin-top: 150px;
+  margin-top: 100px;
   color: #333;
   text-align: center;
   margin-bottom: 20px;
 }
 
 .create-chat-room form {
-  align-items: center;
+  text-align: center;
   margin-top: 100px;
   padding: 20px;
 }
@@ -79,12 +101,11 @@
 }
 
 .create-chat-room .form-control {
-  width: 100%;
+  width: 40%;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin: 10px auto 20px auto; 
 }
 
 .create-chat-room .form-control:focus {
@@ -125,26 +146,33 @@
 }
 
 .chat-page h3 {
+  text-align: center;
   color: #333;
   font-size: 1.2rem;
   margin-top: 90px;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
 .chat-page ul {
+  text-align: center;
   list-style-type: none;
+  width: 20%;
+  border: 2px solid rgb(222, 211, 211);
+  margin: auto;
   padding: 0;
-}
 
-.chat-page ul li {
-  margin: 10px 0;
 }
 
 .chat-page ul li a {
   text-decoration: none;
-  color: #007bff;
-  font-size: 1.1rem;
   font-weight: 600;
+  color: rgb(96, 90, 90);
+}
+
+.chat-page ul li {
+  text-align: center;
+  padding: 5px;
+  margin: 0;
 }
 
 .chat-page ul li a:hover {
@@ -178,10 +206,17 @@
 }
 
 .chat-room {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: white;  
+  margin: 0;
+  font-family: Arial, sans-serif;
+  width: 100%;             
+  min-height: 110vh;       
+  position: relative;      
+  box-sizing: border-box;
+  overflow: hidden;     
+  position: absolute;
+  top: -50px;           
+  left: 0;
 }
 
 .chat-room h2 {
@@ -193,6 +228,7 @@
 }
 
 .chat-room .messages-container {
+  margin: 10px auto 20px auto; 
   flex-grow: 1;
   max-height: 400px;
   overflow-y: auto;
@@ -201,6 +237,8 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 400px;
+  width: 70%;
 }
 
 .chat-room .message {
@@ -212,7 +250,6 @@
 }
 
 .chat-room .message strong {
-/*  color: #333;*/
   color: #1E90FF;
   font-weight: bold;
 }
@@ -226,8 +263,14 @@
 
 .chat-room .message.incoming {
   background-color: #F8F8FF;
-
+  width: 50%;
 }
+
+.chat-room .message.outgoing {
+  background-color: #F8F8FF;
+  width: 50%;
+}
+
 
 .chat-room .form-group {
   width: 100%;
@@ -235,15 +278,28 @@
 }
 
 .chat-room .message-input {
+  margin: 10px auto 20px auto; 
   display: flex;
   margin-top: 10px;
+  width: 40%;
 }
 
 .chat-room .message-input-field {
+  margin-top: 10px;
   border-radius: 20px;
   border: 1px solid #ddd;
   padding: 10px;
-  width: 80%;
+  width: 10%;
+}
+
+.chat-room .message-input button {
+  padding: 5px 15px; 
+  border-radius: 20px;
+  height: 40px; 
+  font-size: 16px;
+  display: flex;
+  align-items: center; 
+  margin-top: 10px;
 }
 
 .chat-room .back-button {
