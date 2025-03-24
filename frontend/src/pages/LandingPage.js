@@ -3,7 +3,8 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom"; 
 import "../app.css";
 import "./LandingPage.css";
-import Landing3DModel from "../pages/Landing3dModel"; // adjust path if needed
+import Landing3DModel from "../pages/Landing3dModel"; 
+import StepSection from "../pages/StepSection";
 
 
 const LandingPage = () => {
@@ -27,13 +28,20 @@ const LandingPage = () => {
             <button className="get-started-btn">Get Started</button>
           </Link>
       </div>
+     
       <div className="section" id="section-two">
+        <StepSection />
+      </div>
+
+
+      
+      <div className="section" id="section-three">
         <h2>Customize Your Space</h2>
         <p>Create & Share with fellow students</p>
       <Landing3DModel />
       </div>
 
-      <div className="section" id="section-three">
+      <div className="section" id="section-four">
         <h2>About Us</h2>
         <p>Meet the team behind ROOMIIZE</p>  
         <div className="team-members">

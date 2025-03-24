@@ -32,14 +32,14 @@
   }
   
   #section-one {
-    background-color: white; /* light peach */
+    background-color: white; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
   }
   
   #section-two {
-    background-color: white; /* light teal */
+    background-color: white; 
     left: 0;
     position: absolute;
     margin-top: 100vh;
@@ -47,17 +47,26 @@
   }
   
   #section-three {
-    background-color: white; /* light yellow */
+    background-color: white; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
     margin-top: 200vh;
   }
   
+  #section-four {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 300vh;
+  }
+  
   .landing-3d-model {
     width: 500px;
     height: 400px;
     min-width: 300px;
+    transform: scale(0.9);
   }
 
   .team-members {
@@ -73,10 +82,26 @@
   }
   
   .member img {
-    width: 120px;      /* 🔹 adjust size */
-    height: 120px;     /* 🔹 keep it square */
-    object-fit: cover; /* 🔹 makes the image fill the space neatly */
-    border-radius: 50%; /* 🔹 makes it a circle */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional polish */
+    width: 120px;      
+    height: 120px;    
+    object-fit: cover; 
+    border-radius: 50%; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   }
+  
+
+  .features-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1em;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  
+  .features-list li {
+    margin-bottom: 0.6em;
+    display: flex;
+    align-items: center;
+  }
+  
   
