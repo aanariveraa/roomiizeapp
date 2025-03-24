@@ -1,110 +1,82 @@
-/* ✅ Reset & Box-Sizing */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* ✅ Body Styling (Similar to Roomie) */
-body {
-    color: #333;
-    background-color: var(--home-bg, #f7f5f3); /* Light Beige */
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 1.5;
-    min-height: 100vh;
-    text-rendering: optimizeLegibility;
-}
-
-/* ✅ Full Page Scrollable Landing Layout */
-.landing-page {
+  }
+  
+  html, body {
+    height: 100%;
     width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-family: sans-serif;
+    scroll-behavior: smooth;
     overflow-x: hidden;
-}
-
-
-.hero-section {
-    width: 100%;
-    height: 100vh;
-    background-color: var(--home-bg, #f7f5f3);
+  }
+  
+  .landing-page {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 50px;
-}
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+  }
+  
 
-.hero-text {
-    font-size: 3.5rem;
-    font-weight: bold;
-    color: var(--dark-blue, #3e4659);
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.hero-subtext {
-    font-size: 1.2rem;
-    color: var(--dark-gray, #c7c7c7);
-    max-width: 700px;
-    margin-top: 10px;
-}
-
-.get-started-btn {
-    margin-top: 30px;
-    padding: 14px 30px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 50px;
-    background-color: var(--teal, #8dd6d6);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-.get-started-btn:hover {
-    background-color: var(--dark-blue, #3e4659);
-}
-
-.section {
+  .section {
     height: 100vh;
     width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 50px;
-}
+    padding: 0;
+    margin: 0;
+  }
+  
+  #section-one {
+    background-color: white; /* light peach */
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+  }
+  
+  #section-two {
+    background-color: white; /* light teal */
+    left: 0;
+    position: absolute;
+    margin-top: 100vh;
+    scroll-snap-align: start;
+  }
+  
+  #section-three {
+    background-color: white; /* light yellow */
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 200vh;
+  }
+  
+  .landing-3d-model {
+    width: 500px;
+    height: 400px;
+    min-width: 300px;
+  }
 
-
-.section:nth-child(odd) {
-    background-color: var(--light-red, #f7e0d7);
-}
-
-.section:nth-child(even) {
-    background-color: var(--light-teal, #dae8e8);
-}
-
-
-@media (max-width: 768px) {
-    .hero-text {
-        font-size: 2.5rem;
-    }
-
-    .hero-subtext {
-        font-size: 1rem;
-    }
-
-    .get-started-btn {
-        font-size: 1rem;
-        padding: 12px 25px;
-    }
-}
+  .team-members {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .member {
+    text-align: center;
+  }
+  
+  .member img {
+    width: 120px;      /* 🔹 adjust size */
+    height: 120px;     /* 🔹 keep it square */
+    object-fit: cover; /* 🔹 makes the image fill the space neatly */
+    border-radius: 50%; /* 🔹 makes it a circle */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional polish */
+  }
+  

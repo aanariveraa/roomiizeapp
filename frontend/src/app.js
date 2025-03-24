@@ -17,9 +17,9 @@ import ChatRoomsPage from "./chats/ChatRoomsPage";
 function App() {
   return (
     <BrowserRouter>
-    <Container style={{ width: "500px" }}>
-      <Row>
-        <Col>
+    <Container style={{width: "100vw"}}>
+      <Row style={{ width: "100vw" }}>
+        <Col style={{ width: "100vw" }}>
           <UserAuthProvider>
             <Routes>
               <Route path="/" element={<LandingPage />} />
