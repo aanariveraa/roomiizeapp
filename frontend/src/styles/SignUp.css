@@ -1,0 +1,76 @@
+/* background image */
+.SignUp-Page::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* ✅ Prevents background from overflowing */
+    height: 100vh;
+    background: url("/public/images/roomize.png") center/cover no-repeat;
+    z-index: -2;
+}
+
+/* Sign Up page styling */
+.SignUp-Page {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden; /* ✅ Ensures no overflow */
+}
+
+/* Sign Up box styline */
+.SignUp-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2); /* ✅ Transparent effect */
+    backdrop-filter: blur(10px);
+    width: 40%;
+    min-width: 350px;
+    height: 100vh;
+    padding: 40px;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
+
+/* input field styling */
+.SignUp-box input {
+    margin: 10px 0;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* title styling */
+.SignUp-box h2 {
+    margin: 0 !important;
+    text-align: center;
+    color: #0b0b0b;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+
+}
+ 
+/* responsive adjustments */
+@media (max-width: 768px) {
+    .SignUp-page {
+      flex-direction: column;
+    }
+  
+    .SignUp-box {
+      width: 100%;
+      height: 100vh;
+      border-radius: 0;
+      position: relative;
+    }
+}
+ 

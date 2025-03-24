@@ -75,8 +75,13 @@ const CreateChatRoom = () => {
     }
   };
 
+  const goBack = () => {
+    navigate('/chat-rooms');
+  };
+
   return (
     <div className="create-chat-room">
+       <button className="back-button" onClick={goBack}>Back</button>
       <h3>Create a New Chat Room</h3>
       <Form onSubmit={handleCreateChatRoom}>
         <Form.Group controlId="chatName">
