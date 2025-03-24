@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Alert, InputGroup } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import Eye icons
+import { Navbar } from "react-bootstrap";
 import "../styles/SignUp.css";
 
 const Signup = () => {
@@ -38,12 +39,15 @@ const Signup = () => {
   };
 
   return (
-
+<div>
     <div className="SignUp-Page">
       <div className="SignUp-box">
+        <div className="landing-page-link">
+          <Link to="/"className="top-left-text" style={{textDecoration: "none"}}>ROOMIIZE</Link>
+        </div>
         <h2 className="mb-3"> ROOMIIZE</h2>
         <h2 className="mb-3">Sign Up</h2> 
-        
+
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
@@ -93,6 +97,7 @@ const Signup = () => {
         Already have an account? <Link to="/login">Log In</Link>
         </div>
       </div>
+    </div>
     </div>
   );
 };

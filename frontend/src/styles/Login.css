@@ -102,3 +102,17 @@ body, html {
     position: relative;
   }
 }
+
+.landing-page-link .top-left-text{
+  position: fixed;
+  top: 10px; 
+  left: 10px; 
+  z-index: 1000; 
+  text-decoration: none !important;
+  color: #0b0b0b !important;
+  font-size: 20px;
+}
+
+.landing-page-link .top-left-text:hover {
+  color: blue !important;
+}

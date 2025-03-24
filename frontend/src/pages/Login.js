@@ -45,6 +45,9 @@ const Login = () => {
   return (
     <div className="login-page"> 
       <div className="login-box">
+      <div className="landing-page-link">
+        <Link to="/"className="top-left-text" style={{textDecoration: "none"}}>ROOMIIZE</Link>
+      </div>
         <h2 className="mb-3">ROOMIIZE</h2>
 
         {error && <Alert variant="danger">{error}</Alert>}

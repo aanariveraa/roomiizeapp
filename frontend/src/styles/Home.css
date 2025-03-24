@@ -1,6 +1,22 @@
 .home-container {
   display: flex;
   height: 100vh; 
+  background-color: white;  
+  margin: 0;
+  font-family: Arial, sans-serif;
+  width: 100%;             
+  min-height: 110vh;       
+  position: relative;      
+  box-sizing: border-box;
+  overflow: hidden;     
+  position: absolute;
+  top: -50px;           
+  left: 0;
+}
+
+.content h2 {
+  text-align: center;
+  margin-top: 50px;
 }
 /* side bar */
 .sidebar {
