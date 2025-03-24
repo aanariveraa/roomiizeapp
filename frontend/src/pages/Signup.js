@@ -4,15 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Alert, InputGroup } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import Eye icons
+import "../styles/SignUp.css";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(""); 
   const [showPassword, setShowPassword] = useState(false); 
 
   const [error, setError] = useState("");
-  const { signUp } = useUserAuth();
+  const { signUp } = useUserAuth(); 
   const navigate = useNavigate();
 
   // Toggle password visibility
@@ -28,7 +29,7 @@ const Signup = () => {
     try {
       await signUp(email, password, name);
 
-      //navigate("/login"); // Redirect to homepage after successful signup
+      // Redirect to homepage after successful signup
       navigate("/home");
 
     } catch (err) {
@@ -37,9 +38,11 @@ const Signup = () => {
   };
 
   return (
-    <>
-      <div className="p-4 box">
-        <h2 className="mb-3"> ROOMIIZE Signup</h2>
+
+    <div className="SignUp-Page">
+      <div className="SignUp-box">
+        <h2 className="mb-3"> ROOMIIZE</h2>
+        <h2 className="mb-3">Sign Up</h2> 
         
         {error && <Alert variant="danger">{error}</Alert>}
 
@@ -78,18 +81,19 @@ const Signup = () => {
                 </InputGroup.Text>
             </InputGroup>
           </Form.Group>
-
+          
           <div className="d-grid gap-2">
             <Button variant="primary" type="Submit">
               Sign up
             </Button>
           </div>
         </Form>
+
+        <div className="mt-3">
+        Already have an account? <Link to="/login">Log In</Link>
+        </div>
       </div>
-      <div className="p-4 box mt-3 text-center">
-        Already have an account? <Link to="/">Log In</Link>
-      </div>
-    </>
+    </div>
   );
 };
 

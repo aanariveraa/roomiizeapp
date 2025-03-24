@@ -1,0 +1,140 @@
+* Container for the entire customization page */
+.create-room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  /* Room preview section */
+  .room-preview {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .room-preview-image {
+    width: 100%;
+    border-radius: 8px;
+    opacity: 0.8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Room customization form styling */
+  .room-customization-form {
+    width: 100%;
+    max-width: 600px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .room-customization-form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Form group for inputs and labels */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Collaborator invitation input group */
+  .collaborator-input-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .collaborator-input-group input[type="email"] {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .collaborator-input-group button {
+    padding: 8px 12px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .collaborator-input-group button:hover {
+    background: #0056b3;
+  }
+  
+  /* List of added collaborators */
+  .collaborators-list {
+    margin-top: 10px;
+  }
+  
+  .collaborator-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .collaborator-item button {
+    margin-left: auto;
+    padding: 4px 8px;
+    border: none;
+    background: #dc3545;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .collaborator-item button:hover {
+    background: #c82333;
+  }
+  
+  /* Create Room button styling */
+  .create-room-button {
+    width: 100%;
+    padding: 10px;
+    background: #28a745;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s ease;
+  }
+  
+  .create-room-button:hover {
+    background: #218838;
+  }
+  
+  .create-room-button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
