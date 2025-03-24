@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%;
+    width: 100vw;
+    font-family: sans-serif;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  .landing-page {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+  }
+  
+
+  .section {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+  }
+  .inSection
+  {
+    display: grid;
+    grid-template-columns: 1fr;
+                
+  }
+  
+  #section-one {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+  }
+  
+  #section-two {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    margin-top: 100vh;
+    scroll-snap-align: start;
+  }
+
+  #section-three {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    margin-top: 200vh;
+    scroll-snap-align: start;
+  }
+  
+  #section-four {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 300vh;
+  }
+  
+  #section-five {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 400vh;
+  }
+  
+  #section-six {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 500vh;
+    background-color: rgb(224, 214, 200);
+  }
+
+  .landing-3d-model {
+    width: 500px;
+    height: 400px;
+    min-width: 300px;
+    transform: scale(0.9);
+  }
+
+  .team-members {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .member {
+    text-align: center;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+  }
+  .member p{
+    padding-top:10px;
+  }
+  
+  .member img {
+    width: 120px;      
+    height: 120px;    
+    object-fit: cover; 
+    border-radius: 50%; 
+    box-shadow: 20px 14px 8px rgba(0, 0, 0, 0.1); 
+  }
+  
+
+  .features-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1em;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  
+  .features-list li {
+    margin-bottom: 0.6em;
+    display: flex;
+    align-items: center;
+  }
+  
+  
