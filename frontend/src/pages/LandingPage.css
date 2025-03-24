@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
 * {
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -30,6 +33,12 @@
     padding: 0;
     margin: 0;
   }
+  .inSection
+  {
+    display: grid;
+    grid-template-columns: 1fr;
+                
+  }
   
   #section-one {
     background-color: white; 
@@ -45,13 +54,13 @@
     margin-top: 100vh;
     scroll-snap-align: start;
   }
-  
+
   #section-three {
     background-color: white; 
     left: 0;
     position: absolute;
-    scroll-snap-align: start;
     margin-top: 200vh;
+    scroll-snap-align: start;
   }
   
   #section-four {
@@ -62,6 +71,23 @@
     margin-top: 300vh;
   }
   
+  #section-five {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 400vh;
+  }
+  
+  #section-six {
+    background-color: white; 
+    left: 0;
+    position: absolute;
+    scroll-snap-align: start;
+    margin-top: 500vh;
+    background-color: rgb(224, 214, 200);
+  }
+
   .landing-3d-model {
     width: 500px;
     height: 400px;
@@ -79,6 +105,13 @@
   
   .member {
     text-align: center;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+  }
+  .member p{
+    padding-top:10px;
   }
   
   .member img {
@@ -86,7 +119,7 @@
     height: 120px;    
     object-fit: cover; 
     border-radius: 50%; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    box-shadow: 20px 14px 8px rgba(0, 0, 0, 0.1); 
   }
   
 
