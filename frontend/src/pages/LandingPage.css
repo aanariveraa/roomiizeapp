@@ -22,6 +22,10 @@
     scroll-snap-type: y mandatory;
   }
   
+  p {
+    font-size: 20px
+  }
+
 
   .section {
     height: 100vh;
@@ -32,7 +36,9 @@
     text-align: center;
     padding: 0;
     margin: 0;
+    font-family: 'Courier New', Courier, monospace;
   }
+
   .inSection
   {
     display: grid;
@@ -41,14 +47,15 @@
   }
   
   #section-one {
-    background-color: white; 
+    color: #0b0b0b;
+    background-color: #fbf9eb; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
   }
   
   #section-two {
-    background-color: white; 
+    background-color: #fbf9eb; 
     left: 0;
     position: absolute;
     margin-top: 100vh;
@@ -56,7 +63,7 @@
   }
 
   #section-three {
-    background-color: white; 
+    background-color: #fbf9eb; 
     left: 0;
     position: absolute;
     margin-top: 200vh;
@@ -64,7 +71,7 @@
   }
   
   #section-four {
-    background-color: white; 
+    background-color: #fbf9eb; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
@@ -72,7 +79,7 @@
   }
   
   #section-five {
-    background-color: white; 
+    background-color: #fbf9eb; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
@@ -80,7 +87,7 @@
   }
   
   #section-six {
-    background-color: white; 
+    background-color: #fbf9eb !important; 
     left: 0;
     position: absolute;
     scroll-snap-align: start;
@@ -137,4 +144,52 @@
     align-items: center;
   }
   
-  
+/* log in button */
+  .log-in-button {
+    background-color: #ddb395 !important;
+    color: black !important;
+    border-color: #ddb395 !important;
+  }
+
+  .log-in-button:hover {
+    background-color: #FFEFD5 !important;
+  }
+
+  .get-started-btn {
+    background-color: #ddb395 !important;
+    color: black !important;
+    border-color: #ddb395 !important;
+  }
+
+  .get-started-btn:hover {
+    background-color: #FFEFD5 !important;
+  }
+
+  .logo-image {
+    width: 400px;
+  }
+
+  .inSection h1 {
+    font-weight: 600;
+    color: #0b0b0b;
+  }
+
+  #section-two h2 {
+    font-weight: 600;
+  }
+
+  #section-three h2 {
+    font-weight: 600;
+  }
+
+  #section-four h2 {
+    font-weight: 600;
+  }
+
+  #section-five h2 {
+    font-weight: 600;
+  }
+
+  #section-six h2 {
+    font-weight: 600;
+  }

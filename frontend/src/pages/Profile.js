@@ -7,6 +7,7 @@ import { db, storage } from '../firebase/firebaseConfig';
 import { Form, Button, Alert, Container, Card, InputGroup } from "react-bootstrap";
 import { useNavigate} from "react-router-dom";
 import { Eye, EyeSlash } from "react-bootstrap-icons"; // Import icons
+import "../styles/Profile.css";
 
 const Profile = () => {
   const { user } = useUserAuth();

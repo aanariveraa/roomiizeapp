@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #fbf9eb !important;
+}
+
+.mt-4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #fbf9eb;
+}
+
+.p-4 {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin: 0;
+    font-weight: bold;
+}
+
