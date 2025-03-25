@@ -20,11 +20,11 @@ useGLTF.preload("/models/suite2.glb");
 useGLTF.preload("/models/suite3.glb");
 
 // Preload Object Models
-useGLTF.preload("/objects/test.glb");
+useGLTF.preload("/objects/shelf.glb");
 
 // Object Options
 const objectOptions = [
-  { id: 1, name: "test", modelPath: "/objects/test.glb", image: "/images/test.png" }
+  { id: 1, name: "mini fridge", modelPath: "/objects/shelf.glb", image: "/images/mini_fridge.png" }
 ];
 
 // Room List
