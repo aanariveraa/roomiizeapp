@@ -7,7 +7,7 @@ body {
 }
 
 .chat-page {
-  background-color: white;  
+  background-color: #fbf9eb;  
   margin: 0;
   font-family: Arial, sans-serif;
   width: 100%;             
@@ -58,17 +58,13 @@ body {
   text-align: center;
 }
 
-.chat-page .create-chat-button a:hover {
-  color: #fff;
+.chat-page .create-chat-button:hover {
+  background-color: #e3cec0 !important;
   text-decoration: none;
 }
 
-.create-chat-button:hover {
-  color: white;
-}
-
 .create-chat-room {
-  background-color: white;  
+  background-color: #fbf9eb;  
   margin: 0;
   font-family: Arial, sans-serif;
   width: 100%;             
@@ -86,6 +82,7 @@ body {
   color: #333;
   text-align: center;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .create-chat-room form {
@@ -143,6 +140,7 @@ body {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .chat-page h3 {
@@ -151,6 +149,7 @@ body {
   font-size: 1.2rem;
   margin-top: 90px;
   margin-bottom: 40px;
+  font-weight: bold;
 }
 
 .chat-page ul {
@@ -206,7 +205,7 @@ body {
 }
 
 .chat-room {
-  background-color: white;  
+  background-color: #fbf9eb;  
   margin: 0;
   font-family: Arial, sans-serif;
   width: 100%;             
@@ -225,20 +224,22 @@ body {
   color: #333;
   margin-bottom: 20px;
   padding-top: 10px;
+  font-weight: bold;
 }
 
 .chat-room .messages-container {
   margin: 10px auto 20px auto; 
-  flex-grow: 1;
-  max-height: 400px;
+  /*flex-grow: 1;*/
+  flex-direction: column-reverse;
   overflow-y: auto;
   margin-bottom: 20px;
   padding: 15px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 400px;
+  margin-top: 200px;
   width: 70%;
+  height: 500px;
 }
 
 .chat-room .message {
@@ -271,17 +272,18 @@ body {
   width: 50%;
 }
 
-
 .chat-room .form-group {
   width: 100%;
   margin-bottom: 15px;
 }
 
 .chat-room .message-input {
+  display: flex;
   margin: 10px auto 20px auto; 
   display: flex;
   margin-top: 10px;
   width: 40%;
+  bottom: 20px;
 }
 
 .chat-room .message-input-field {

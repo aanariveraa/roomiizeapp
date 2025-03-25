@@ -1,7 +1,7 @@
 /* Container for the entire My Designs page */
 .my-designs-container {
     padding: 20px;
-    background: #f5f5f5;
+    background: #fbf9eb;
     margin: 0;
     font-family: Arial, sans-serif;
     width: 100%;             
@@ -21,6 +21,7 @@
     margin-bottom: 20px;
     font-size: 2rem;
     color: #333;
+    font-weight: bold;
   }
   
   /* Grid layout for the design cards */
@@ -32,7 +33,7 @@
   
   /* Styling for each design card */
   .design-card {
-    background: #fff;
+    background: #fbf9eb;
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;

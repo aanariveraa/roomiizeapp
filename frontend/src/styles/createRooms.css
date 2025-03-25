@@ -4,7 +4,7 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background: #f5f5f5;
+    background: #fbf9eb;
     margin: 0;
     width: 100%;             
     min-height: 110vh;       
@@ -23,6 +23,7 @@ h2 {
 
   /* Room preview section */
   .room-preview {
+    background-color: rgba(255, 255, 255, 0.831);
     margin-top: 40px;
     width: 100%;
     max-width: 600px;
@@ -40,9 +41,10 @@ h2 {
   
   /* Room customization form styling */
   .room-customization-form {
+    background-color: rgba(255, 255, 255, 0.831);
     width: 100%;
     max-width: 600px;
-    background: #ffffff;
+    background: fbf9eb;
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 8px;
@@ -152,4 +154,8 @@ h2 {
   .create-room-button:disabled {
     background: #6c757d;
     cursor: not-allowed;
+  }
+  
+  .room-card {
+    background-color: rgba(255, 255, 255, 0.831);
   }
