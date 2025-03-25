@@ -1,12 +1,11 @@
 .home-container {
   display: flex;
   height: 100vh; 
-  background-color: white;  
+  background-color: #fbf9eb;  
   margin: 0;
   font-family: Arial, sans-serif;
   width: 100%;             
-  min-height: 110vh;       
-  position: relative;      
+  min-height: 110vh;           
   box-sizing: border-box;
   overflow: hidden;     
   position: absolute;
@@ -17,11 +16,12 @@
 .content h2 {
   text-align: center;
   margin-top: 50px;
+  font-weight: 600;
 }
 /* side bar */
 .sidebar {
   width: 250px; 
-  background-color: #f4f4f4;
+  background-color: #87cfb1;
   padding: 20px;
   position: fixed; 
   height: 100%; 
@@ -34,6 +34,8 @@
 .sidebar h3 {
   text-align: center;
   margin-bottom: 30px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
 }
 
 /* sidebar links */
@@ -51,7 +53,7 @@
 .sidebar-links a {
   text-decoration: none;
   font-size: 16px;
-  background-color: white;
+  background-color: #fbf9eb;;
   color: #333;
   display: block;
   padding: 10px;
@@ -60,7 +62,7 @@
 
 /* link hover */
 .sidebar-links a:hover {
-  background-color: #ddb395;
+  background-color: #FFEFD5;
 }
 
 /* content on page */
@@ -75,9 +77,9 @@
 /* button styling */
 .button {
   margin: 5px;
-  background-color: #ddb395 !important;
+  background-color: #fbf7eb !important;
   color: black !important;
-  border-color: #ddb395 !important;
+  border-color: #fbf9eb !important;
   padding: 10px 20px; 
   border-radius: 5px; 
   font-size: 16px; 

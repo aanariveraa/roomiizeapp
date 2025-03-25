@@ -6,12 +6,11 @@ import "./LandingPage.css";
 import Landing3DModel from "../pages/Landing3dModel"; 
 import StepSection from "../pages/StepSection";
 
-
 const LandingPage = () => {
   return (
     <div className="landing-page">
 
-      <Navbar expand="lg" bg="light" variant="light" fixed="top">
+      <Navbar expand="lg" style={{background: '#87cfb1'}} variant="light" fixed="top">
         <Container fluid>
           <Navbar.Brand as={Link} to="/">ROOMIIZE</Navbar.Brand>
           <Nav className="ms-auto">
@@ -23,10 +22,11 @@ const LandingPage = () => {
       </Navbar>
       <div className = "section" id = "section-one">
          <div className="inSection">
-          <h1>ROOMIIZE</h1>
+         <h1>ROOMIIZE</h1>
+         <img className="logo-image" src="../images/logo.jpeg" alt="logo"></img>
           <p></p>
           <Link to="/signup">
-            <button className="get-started-btn">Get Started</button>
+            <Button className="get-started-btn" variant="primary">Get Started</Button>
           </Link>
           </div>
       </div>
