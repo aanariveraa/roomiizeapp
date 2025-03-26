@@ -12,7 +12,7 @@ import { Navbar, Container, Nav, Button} from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate} from "react-router-dom";
 import { HexColorPicker } from "react-colorful";
-import "./rooms.css";
+import "../styles/rooms.css";
 
 // Preload Room Models
 useGLTF.preload("/models/suite1.glb");
@@ -20,11 +20,11 @@ useGLTF.preload("/models/suite2.glb");
 useGLTF.preload("/models/suite3.glb");
 
 // Preload Object Models
-useGLTF.preload("/objects/test.glb");
+useGLTF.preload("/objects/mini_fridge.glb");
 
 // Object Options
 const objectOptions = [
-  { id: 1, name: "test", modelPath: "/objects/test.glb", image: "/images/test.png" }
+  { id: 1, name: "mini fridge", modelPath: "/objects/mini_fridge.glb", image: "/images/mini_fridge.png" }
 ];
 
 // Room List

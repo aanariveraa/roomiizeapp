@@ -34,13 +34,6 @@ Install dependencies: npm install
 Start the app: npm start
 
 
-### Future Enhancements
-
-AR Support: Implement augmented reality for furniture placement.
-
-Multi-Platform Support: Expand support for iOS and Android.
-
-More AI Features: Enhance AI-driven recommendations and automation.
 
 ### Contributors
 

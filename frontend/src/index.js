@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './rooms/rooms.css';
+import './styles/rooms.css';
 import Rooms3d from './rooms/rooms3d';
 import App from './app.js';
 import "bootstrap/dist/css/bootstrap.min.css";
