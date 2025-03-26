@@ -43,7 +43,7 @@ function MyDesigns() {
       }
     };
     fetchDesigns();
-  }, [user, navigate]);
+  }, [user]);
 
   const handleDesignClick = (design) => {
     console.log("Selected design:", design);
@@ -53,7 +53,12 @@ function MyDesigns() {
   return (
     <div className="my-designs-container">
       <button className="back-button" onClick={goBack}>Back</button>
-      <h2>My Designs</h2>
+      <h2>{user.displayName} Room Designs</h2>
+      {user && (
+        <p className="user-greeting">
+          Welcome Back, {user.displayName ? user.displayName : user.email}!
+        </p>
+      )}
       {loading ? (
         <div>Loading designs...</div>
       ) : (
