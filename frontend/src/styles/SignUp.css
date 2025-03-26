@@ -6,7 +6,7 @@
     left: 0;
     width: 100vw; /* ✅ Prevents background from overflowing */
     height: 100vh;
-    background: url("/public/images/roomize.png") center/cover no-repeat;
+    background: url("/public/images/roomiizeEnhanced.png") center/cover no-repeat;
     z-index: -2;
 }
 
