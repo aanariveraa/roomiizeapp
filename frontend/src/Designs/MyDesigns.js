@@ -39,8 +39,7 @@ function MyDesigns() {
 
   const handleDesignClick = (design) => {
     console.log("Selected design:", design);
-    // Navigate to a detailed room view (e.g., rooms3d)
-    // You might want to load additional room data (including Items) in that component.
+    // Navigate to the 3D room editor with the selected design
     navigate("/rooms3d", { state: { selectedRoom: design } });
   };
 

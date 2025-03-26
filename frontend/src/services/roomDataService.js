@@ -1,7 +1,11 @@
+import React, { useEffect, useState } from "react";
+import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 import { db } from "../firebase/firebaseConfig";
 import { 
   doc,
   collection,
+  addDoc,
   setDoc, 
   getDoc, 
   getDocs,
@@ -10,19 +14,21 @@ import {
   writeBatch
 } from "firebase/firestore";
 
-// Create a new room
-export async function createRoom(roomId, roomData) {
-  console.log(`Attempting to create room with id: ${roomId}`);
+
+// Create a new room 
+export async function createRoom(roomData) {
   try {
-    const roomDocRef = doc(db, "rooms", roomId.toString());
-    await setDoc(roomDocRef, {
+    //automatically creates a unique document ID when you call addDoc
+    const docRef = await addDoc(collection(db, "rooms"), {
       ...roomData,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    console.log(`Room created successfully with id: ${roomId}`);
+    console.log(`Room created successfully with id: ${docRef.id}`);
+    return docRef.id;
   } catch (error) {
     console.error("Error creating room:", error);
+    throw error;
   }
 }
 
@@ -43,6 +49,7 @@ export const saveRoomMetadata = async (roomId, roomMetadata) => {
     console.error("Error saving room metadata:", error);
   }
 };
+
 
 // Save room items to the Items subcollection
 export const saveRoomItems = async (roomId, items) => {
