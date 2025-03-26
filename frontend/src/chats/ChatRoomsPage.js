@@ -36,7 +36,7 @@ const ChatRoomsPage = () => {
       // fetch chat rooms when user is logged in 
       fetchChatRooms();
     }
-  }, [user]); // run this effect when user changes
+  }, [user]); 
   
   const goBack = () => {
     navigate('/home');
