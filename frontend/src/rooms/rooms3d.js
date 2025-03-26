@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { 
-  loadRoomData, 
-  saveRoomMetadata, 
-  saveRoomItems } from "../services/roomDataService";
+import { loadRoomData, saveRoomMetadata, saveRoomItems } from "../services/roomDataService";
 import { HexColorPicker } from "react-colorful";
 import ModelViewer from "./roomComponents/ModelViewer";
 import ControlPanel from "./roomComponents/ControlPanel";
@@ -12,10 +9,6 @@ import SuiteModel from "./roomComponents/SuiteModel";
 import ObjectModel from "./roomComponents/ObjectModel";
 import ObjectSelectionPanel from "./roomComponents/ObjectSelection";
 import "../styles/rooms.css";
-
-//room3d: Main container for the 3D room editor.
-//Manages overall state, loads and saves room data from Firestore
-
 
 const Rooms3d = () => {
   const { user } = useUserAuth();
@@ -34,8 +27,6 @@ const Rooms3d = () => {
   const [isDragging, setIsDragging] = useState(false);
   const cameraRef = useRef();
   const autoSaveTimeoutRef = useRef(null);
-
-
 
   // Load saved room state from Firestore (if any)
   useEffect(() => {
@@ -63,12 +54,11 @@ const Rooms3d = () => {
   }, [selectedRoom]);
 
   // Save initial room metadata when the room is selected.
+  // (Now only saving lastPositionofRoom, not roomName or membersId.)
   useEffect(() => {
     const saveInitialRoom = async () => {
       try {
         await saveRoomMetadata(selectedRoom.id, {
-          roomName: selectedRoom.title,
-          membersId: [user.uid],
           lastPositionofRoom: cameraRef.current && cameraRef.current.position
             ? {
                 x: cameraRef.current.position.x,
@@ -90,11 +80,10 @@ const Rooms3d = () => {
   }, [selectedRoom, user.uid]);
 
   // Function to manually save the current room state.
+  // (Saves only lastPositionofRoom and room items.)
   const saveCurrentRoomState = async () => {
     try {
       await saveRoomMetadata(selectedRoom.id, {
-        roomName: selectedRoom.title,
-        membersId: [user.uid],
         lastPositionofRoom: cameraRef.current && cameraRef.current.position
           ? {
               x: cameraRef.current.position.x,
@@ -194,7 +183,6 @@ const Rooms3d = () => {
     });
   };
 
-
   const goBack = () => navigate(-1);
   const goHome = () => {
     navigate("/home");
@@ -221,7 +209,7 @@ const Rooms3d = () => {
         controlMode={controlMode}
         zoomFactor={zoomFactor}
         setIsDragging={setIsDragging}
-        objectColors={objectColors}   // Pass objectColors here
+        objectColors={objectColors}
       />
 
       {selectedObject && (
@@ -247,3 +235,4 @@ const Rooms3d = () => {
 };
 
 export default Rooms3d;
+

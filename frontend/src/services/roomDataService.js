@@ -11,9 +11,10 @@ import {
   getDocs,
   serverTimestamp, 
   onSnapshot,
-  writeBatch
+  writeBatch, 
+  query, 
+  where,
 } from "firebase/firestore";
-
 
 // Create a new room 
 export async function createRoom(roomData) {
@@ -69,8 +70,8 @@ export const saveRoomItems = async (roomId, items) => {
   }
 };
 
-// Load room data including items
-export const loadRoomData = async (roomId) => {
+// Load data for a single room including its items
+export async function loadRoomData(roomId) {
   try {
     const roomDocRef = doc(db, "rooms", roomId.toString());
     const roomSnap = await getDoc(roomDocRef);
@@ -88,8 +89,29 @@ export const loadRoomData = async (roomId) => {
     return { ...roomData, items };
   } catch (error) {
     console.error("Error loading room data:", error);
+    throw error;
   }
-};
+}
+
+
+// Load all rooms for a given user (rooms where the user's UID is in membersId)
+export async function loadRooms(userId) {
+  try {
+    const designsRef = collection(db, "rooms");
+    const q = query(designsRef, where("membersId", "array-contains", userId));
+    const querySnapshot = await getDocs(q);
+    const rooms = [];
+    querySnapshot.forEach((doc) => {
+      rooms.push({ id: doc.id, ...doc.data() });
+    });
+    console.log("Loaded rooms for user:", rooms);
+    return rooms;
+  } catch (error) {
+    console.error("Error loading rooms:", error);
+    throw error;
+  }
+}
+
 
 // Update an existing room
 export async function updateRoom(roomId, updatedData) {

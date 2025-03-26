@@ -47,3 +47,31 @@ export const getObjectOptions = async () => {
   }
 };
 
+//preview room image
+export async function getRoomPreviewURL(roomType) {
+  try {
+    // Map the room type to a specific file name.
+    // Adjust these values according to your naming convention.
+    const roomTypeMapping = {
+      1: "suite1",
+      2: "suite2",
+      3: "suite3"
+    };
+
+    const fileName = roomTypeMapping[roomType];
+    if (!fileName) {
+      throw new Error("No preview image mapping found for room type " + roomType);
+    }
+
+    // Assume your preview images are stored in a folder called "roomsPreview"
+    const fileRef = ref(storage, `preview/${fileName}.png`);
+    const url = await getDownloadURL(fileRef);
+    return url;
+    
+  } catch (error) {
+    console.error("Error fetching room preview URL:", error);
+    // Fallback URL or rethrow error as needed
+    return "/defaultRoomImage.png";
+  }
+
+};
