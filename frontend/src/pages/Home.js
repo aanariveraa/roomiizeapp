@@ -32,7 +32,7 @@ const Home = () => {
                 <Link to="/design"> Create New Design</Link>
             </li>
             <li>
-                <Link to="/myDesigns">My Custom Designs</Link>
+                <Link to="/myDesigns">My Rooms</Link>
             </li>
 
           <li>

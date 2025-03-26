@@ -26,6 +26,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize App Check for more security - NOT yet figured out tho :(
 /*initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider('6Le_ueYqAAAAANQ1FEhpKaNJLMljUb2r-MQ9wV1R'), // Replace with your site key from the Firebase console
+  isTokenAutoRefreshEnabled: true, // Optional: auto refresh token for background functions.
 });*/
 
 const auth = getAuth(app); // Initialize Authentication 
