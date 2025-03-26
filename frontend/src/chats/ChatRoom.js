@@ -126,7 +126,7 @@ const ChatRoom = () => {
       </div>
 
       <div className='chat-sidebar'>
-        <h3>Participants</h3>
+        <h3>Members</h3>
         <ul>
         {participants.map((participant, idx) => (
               <li key={idx}>{participant}</li>

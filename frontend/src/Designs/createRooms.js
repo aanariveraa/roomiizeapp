@@ -169,7 +169,7 @@ function CreateRooms() {
                   <span>
                     {userObj.email} {userObj.username && `(${userObj.username})`}
                   </span>
-                  <button type="button" onClick={() => handleAddCollaborator(userObj)}> Add</button>
+                  <button type="button" className="Add-button" onClick={() => handleAddCollaborator(userObj)}> Add</button>
                 </div>
               ))}
             </div>

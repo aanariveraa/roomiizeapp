@@ -11,16 +11,19 @@ const CreateChatRoom = () => {
   const [emails, setEmails] = useState('');
   const [usersList, setUsersList] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // fetch users based on email input
   useEffect(() => {
     const fetchUsers = async () => {
       if (emails.trim()) {
-        const q = query(collection(db, 'users'), where('email', '>=', emails.trim()));
+        const q = query(collection(db, 'users'), where('email', '==', emails.trim()));
         const snapshot = await getDocs(q);
         const users = snapshot.docs.map(doc => doc.data());
         setUsersList(users);
+      } else {
+        setUsersList([]); // 
       }
     };
 
@@ -38,9 +41,15 @@ const CreateChatRoom = () => {
     });
   };
 
+  //
+  const handleSearchChange = (e) => {
+    setEmails(e.target.value);
+  };
+
   // create the chat room and add a default message
   const handleCreateChatRoom = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     try {
       const invitedUsers = [user.uid, ...selectedUsers];
@@ -99,23 +108,27 @@ const CreateChatRoom = () => {
             type="text"
             placeholder="Search for users by email"
             value={emails}
-            onChange={(e) => setEmails(e.target.value)}
+            onChange={handleSearchChange}
           />
         </Form.Group>
         <div>
-          {usersList.map((user, idx) => (
-            <div key={idx}>
-              <input
-                type="checkbox"
-                id={`user-${user.uid}`}
-                checked={selectedUsers.includes(user.uid)}
-                onChange={() => handleUserSelection(user.uid)}
-              />
-              <label htmlFor={`user-${user.uid}`}>{user.email}</label>
+          {usersList.length > 0 && (
+            <div className='search-results'>
+              {usersList.map((user, idx) => (
+                <div key={idx} className='search-result-item'>
+                  <span>{user.email}</span>
+                  <button 
+                    type="button" className='Add-button'
+                    onClick={() => handleUserSelection(user.uid)}
+                    >
+                      {selectedUsers.includes(user.uid) ? 'Remove' : 'Add'}
+                    </button>
+                    </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-        <Button type="submit">Create Chat Room</Button>
+        <Button type="submit" className='create-chat-room-button'>Create Chat Room</Button>
       </Form>
     </div>
   );
