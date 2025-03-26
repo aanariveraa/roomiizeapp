@@ -13,7 +13,7 @@ const CreateChatRoom = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch users in real-time based on email input
+  // fetch users based on email input
   useEffect(() => {
     const fetchUsers = async () => {
       if (emails.trim()) {
@@ -27,7 +27,7 @@ const CreateChatRoom = () => {
     fetchUsers();
   }, [emails]);
 
-  // Handle user selection for invitations
+  // handle user selection for invitations
   const handleUserSelection = (uid) => {
     setSelectedUsers((prev) => {
       if (prev.includes(uid)) {
@@ -38,14 +38,14 @@ const CreateChatRoom = () => {
     });
   };
 
-  // Create the chat room and add a default message
+  // create the chat room and add a default message
   const handleCreateChatRoom = async (event) => {
     event.preventDefault();
 
     try {
       const invitedUsers = [user.uid, ...selectedUsers];
 
-      // Create new chat room in the 'Chats' collection
+      // create new chat room in the 'Chats' collection
       const newChatRoom = {
         ChatName: chatName,
         Users: invitedUsers,
@@ -54,21 +54,21 @@ const CreateChatRoom = () => {
       const chatRoomRef = await addDoc(collection(db, 'Chats'), newChatRoom);
       const chatRoomId = chatRoomRef.id;
 
-      // Create a default welcome message in the 'Messages' subcollection
+      // create a default welcome message in the 'Messages' subcollection
       await addDoc(collection(db, 'Chats', chatRoomId, 'Messages'), {
         Sender: 'System',
         Content: 'Welcome to the chat room!',
         Date: serverTimestamp(), // Automatically timestamp the message
       });
 
-      // Update the user's document with the new chat room ID
+      // update the user's document with the new chat room ID
       const userRef = doc(db, 'users', user.uid);
       await updateDoc(userRef, {
         chatRooms: arrayUnion(chatRoomId),
       });
 
       alert('Chat room created successfully!');
-      navigate(`/chat/${chatRoomId}`); // Navigate to the newly created chat room
+      navigate(`/chat/${chatRoomId}`); 
     } catch (error) {
       console.error('Error creating chat room:', error);
       alert('There was an error creating the chat room.');

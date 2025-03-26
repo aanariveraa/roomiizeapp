@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { db } from '../firebase/firebaseConfig';
 import { collection, doc, getDoc, addDoc, query, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
 import { Button, Form, InputGroup } from 'react-bootstrap';
@@ -13,7 +13,9 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([]); 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [participants, setParticipants] = useState([]); 
   const navigate = useNavigate();
+  const messageEndRef = useRef(null);
 
   // fetch chat room details when chatID changes
   useEffect(() => {
@@ -39,8 +41,13 @@ const ChatRoom = () => {
         const chatRoomDoc = await getDoc(doc(db, 'Chats', chatId));
         if(chatRoomDoc.exists()) {
           // extract participants list from chat room document 
-          const paricipantsData = chatRoomDoc.data().Paricipants || [];
-          setParticipants(paricipantsData);
+          const participantsData = chatRoomDoc.data().Users || [];
+        //  setParticipants(participantsData);
+          const participantDetails = await Promise.all(participantsData.map(async (uid) => {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            return userDoc.exists() ? userDoc.data().displayName || userDoc.data().email : null;
+          }));
+          setParticipants(participantDetails);
         }
       } catch(error) {
         console.error("Error fetching participants:", error);
@@ -65,6 +72,13 @@ const ChatRoom = () => {
 
     return () => unsubscribe();
   }, [chatId]);
+
+  // scroll to the bottom when new message is received 
+  useEffect(() => {
+    if(messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({behavior: "smooth"});
+    }
+  }, [messages]); 
 
   // function to send a new message 
   const sendMessage = async (e) => {
@@ -108,6 +122,16 @@ const ChatRoom = () => {
             </div>
           ))
         )}
+        <div ref={messageEndRef} />
+      </div>
+
+      <div className='chat-sidebar'>
+        <h3>Participants</h3>
+        <ul>
+        {participants.map((participant, idx) => (
+              <li key={idx}>{participant}</li>
+            ))}
+        </ul>
       </div>
 
       <Form onSubmit={sendMessage} className="message-input"> 
