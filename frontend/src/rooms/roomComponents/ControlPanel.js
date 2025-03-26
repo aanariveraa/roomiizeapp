@@ -15,7 +15,8 @@ const ControlPanel = ({
     setDisplayMode, 
     controlMode, 
     toggleControlMode, 
-    onSave 
+    toggleColorPicker
+    //onSave 
 }) => (
     <div className="control-panel">
         <button onClick={onZoomIn} className="zoom-button">
@@ -39,9 +40,10 @@ const ControlPanel = ({
                 <img src="/icons/person_view.svg" alt="Person View" className="person-view-icon" />
                 Person View
             </button>
-        <button onClick={onSave} className="save-button">
-            Save
-        </button>
+        {/* New Color Picker Toggle Button */}
+            <button onClick={toggleColorPicker} className="control-button">
+                <img src="/icons/color_palette.svg" alt="Toggle Color Picker" />
+            </button>
     </div>
 );
 

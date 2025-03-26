@@ -297,6 +297,17 @@ canvas {
   background-color: #e3cec0 !important;
 }
 
+.color-picker-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 100;
+}
+
 .color-picker-panel {
   position: fixed; /* Keep it fixed to stay in view */
   top: 100px; /* Distance from the top */
@@ -311,6 +322,16 @@ canvas {
   align-items: center;
 }
 
+.color-picker-toggle {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
 .color-picker-panel h3 {
   margin: 0 0 10px 0;
   font-size: 16px;
@@ -321,4 +342,10 @@ canvas {
 .color-picker-panel .react-colorful {
   width: 250px !important; /* Adjust width of the color wheel */
   height: 250px !important; /* Adjust height to keep it circular */
+}
+
+/* Ensure all control panel icons are sized consistently */
+.control-button img {
+  width: 24px;
+  height: 24px;
 }

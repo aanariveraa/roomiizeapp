@@ -25,8 +25,17 @@ const Rooms3d = () => {
   const [controlMode, setControlMode] = useState("orbit");
   const [zoomFactor, setZoomFactor] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
+  // New state for the color picker open/close toggle:
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  //
   const cameraRef = useRef();
   const autoSaveTimeoutRef = useRef(null);
+  // New state for the color picker open/close toggle:
+
+  // Toggle function for the color picker
+  const toggleColorPicker = () => {
+    setIsColorPickerOpen((prev) => !prev);
+  };
 
   // Load saved room state from Firestore (if any)
   useEffect(() => {
@@ -212,7 +221,7 @@ const Rooms3d = () => {
         objectColors={objectColors}
       />
 
-      {selectedObject && (
+      {selectedObject && isColorPickerOpen && (
         <div className="color-picker-panel">
           <h3>Color Picker</h3>
           <HexColorPicker
@@ -229,6 +238,7 @@ const Rooms3d = () => {
         controlMode={controlMode}
         toggleControlMode={() => setControlMode(controlMode === "orbit" ? "person" : "orbit")}
         onSave={saveCurrentRoomState}
+        toggleColorPicker={toggleColorPicker} // pass the toggle function
       />
     </div>
   );

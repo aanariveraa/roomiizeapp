@@ -23,7 +23,7 @@ const LandingPage = () => {
       <div className = "section" id = "section-one">
          <div className="inSection">
          <h1>ROOMIIZE</h1>
-         <img className="logo-image" src="../images/logo.jpeg" alt="logo"></img>
+         <img className="logo-image" src="../images/logoEnhanced.png" alt="logo"></img>
           <p></p>
           <Link to="/signup">
             <Button className="get-started-btn" variant="primary">Get Started</Button>
