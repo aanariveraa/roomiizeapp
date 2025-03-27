@@ -1,28 +1,35 @@
+import React, { useEffect, useState } from "react";
+import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 import { db } from "../firebase/firebaseConfig";
 import { 
   doc,
   collection,
+  addDoc,
   setDoc, 
   getDoc, 
   getDocs,
   serverTimestamp, 
   onSnapshot,
-  writeBatch
+  writeBatch, 
+  query, 
+  where,
 } from "firebase/firestore";
 
-// Create a new room
-export async function createRoom(roomId, roomData) {
-  console.log(`Attempting to create room with id: ${roomId}`);
+// Create a new room 
+export async function createRoom(roomData) {
   try {
-    const roomDocRef = doc(db, "rooms", roomId.toString());
-    await setDoc(roomDocRef, {
+    //automatically creates a unique document ID when you call addDoc
+    const docRef = await addDoc(collection(db, "rooms"), {
       ...roomData,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    console.log(`Room created successfully with id: ${roomId}`);
+    console.log(`Room created successfully with id: ${docRef.id}`);
+    return docRef.id;
   } catch (error) {
     console.error("Error creating room:", error);
+    throw error;
   }
 }
 
@@ -44,6 +51,7 @@ export const saveRoomMetadata = async (roomId, roomMetadata) => {
   }
 };
 
+
 // Save room items to the Items subcollection
 export const saveRoomItems = async (roomId, items) => {
   try {
@@ -62,8 +70,8 @@ export const saveRoomItems = async (roomId, items) => {
   }
 };
 
-// Load room data including items
-export const loadRoomData = async (roomId) => {
+// Load data for a single room including its items
+export async function loadRoomData(roomId) {
   try {
     const roomDocRef = doc(db, "rooms", roomId.toString());
     const roomSnap = await getDoc(roomDocRef);
@@ -81,8 +89,29 @@ export const loadRoomData = async (roomId) => {
     return { ...roomData, items };
   } catch (error) {
     console.error("Error loading room data:", error);
+    throw error;
   }
-};
+}
+
+
+// Load all rooms for a given user (rooms where the user's UID is in membersId)
+export async function loadRooms(userId) {
+  try {
+    const designsRef = collection(db, "rooms");
+    const q = query(designsRef, where("membersId", "array-contains", userId));
+    const querySnapshot = await getDocs(q);
+    const rooms = [];
+    querySnapshot.forEach((doc) => {
+      rooms.push({ id: doc.id, ...doc.data() });
+    });
+    console.log("Loaded rooms for user:", rooms);
+    return rooms;
+  } catch (error) {
+    console.error("Error loading rooms:", error);
+    throw error;
+  }
+}
+
 
 // Update an existing room
 export async function updateRoom(roomId, updatedData) {

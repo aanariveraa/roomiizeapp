@@ -25,22 +25,20 @@ const Home = () => {
       <div className="sidebar">
         <h3 className="sidebar-title">Menu</h3>
         <ul className="sidebar-links">
-            <li>
-                <Link to="/defaultRooms"> OG rooms</Link>
-            </li>
+
             <li>
                 <Link to="/design"> Create New Design</Link>
             </li>
             <li>
-                <Link to="/myDesigns">My Custom Designs</Link>
+                <Link to="/myDesigns">My Rooms</Link>
             </li>
-
-          <li>
-            <Link to="/profile">Profile Settings</Link>
-          </li>
-          <li>
-            <Link to="/chat-rooms">Chats</Link>
-          </li>
+            <li>
+                <Link to="/chat-rooms">Chats</Link>
+            </li>
+            <li>
+              <Link to="/profile">Profile Settings</Link>
+            </li>
+          
           <li>
             <Button variant="danger" className="button" onClick={handleLogout}>
               Sign Out
@@ -50,7 +48,7 @@ const Home = () => {
       </div>
 
       <div className="content">
-          <h2>Welcome, {user?.email}!</h2>
+          <h2>Welcome, {user.displayName}!</h2>
       </div>
     </div>
   );

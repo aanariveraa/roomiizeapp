@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { saveRoomMetadata } from "../services/roomDataService";
+import { createRoom } from "../services/roomDataService";
 import { searchUsersByEmail } from "../services/userService";
 import { useUserAuth } from "../context/UserAuthContext";
 import "../styles/createRooms.css";
@@ -39,6 +39,7 @@ function CreateRooms() {
   const [loading, setLoading] = useState(false);
 
   // Handle searching for collaborators by email.
+  // using UserService 
   const handleSearchCollaborator = async () => {
     console.log("Searching for collaborator with input:", collaboratorInput);
     if (collaboratorInput.trim() !== "" && user) {
@@ -79,24 +80,40 @@ function CreateRooms() {
   const handleCreateRoom = async () => {
     console.log("Creating room with roomName:", roomName, "and collaborators:", collaborators);
     setLoading(true);
+
     try {
-      const memberIds = collaborators.map((user) => user.id);
-      console.log("Member IDs to save:", memberIds);
-      await saveRoomMetadata(selectedRoom.id, {
+      const memberIds = [user.uid, ...collaborators.map((user) => user.id)];
+      // Create the room in Firestore; Firestore generates the unique document ID.
+      const newRoomId = await createRoom({
         roomName: roomName,
+        roomType: selectedRoom.type, // Add room type here
+        creator: user.uid, // Add the currently logged-in user's id here
         membersId: memberIds,
+        modelPath: selectedRoom.modelPath, // Firebase Storage URL for the room model
       });
-      console.log("Room metadata saved successfully.");
+      
+      console.log("Member IDs to be saved:", memberIds);
+      console.log("Room created successfully with id:", newRoomId );
+      console.log("Room created  by :", user.displayName || user.email);
+
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/rooms3d", {
+          state: { 
+            selectedRoom: { 
+              id: newRoomId, 
+              title: roomName, 
+              image: selectedRoom.image, 
+              modelPath: selectedRoom.modelPath, 
+              collaborators 
+            }
+          },
+        });
+      }, 2000);
     } catch (error) {
-      console.error("Error saving room metadata:", error);
-    }
-    setTimeout(() => {
+      console.error("Error creating room:", error);
       setLoading(false);
-      console.log("Navigating to 3D room view with updated room info.");
-      navigate("/rooms3d", {
-        state: { selectedRoom: { ...selectedRoom, title: roomName, collaborators } },
-      });
-    }, 2000);
+    }
   };
 
   return (
@@ -152,7 +169,7 @@ function CreateRooms() {
                   <span>
                     {userObj.email} {userObj.username && `(${userObj.username})`}
                   </span>
-                  <button type="button" onClick={() => handleAddCollaborator(userObj)}> Add</button>
+                  <button type="button" className="Add-button" onClick={() => handleAddCollaborator(userObj)}> Add</button>
                 </div>
               ))}
             </div>

@@ -12,7 +12,7 @@ import { Navbar, Container, Nav, Button} from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate} from "react-router-dom";
 import { HexColorPicker } from "react-colorful";
-import "./rooms.css";
+import "../styles/rooms.css";
 
 // Preload Room Models
 useGLTF.preload("/models/suite1.glb");
