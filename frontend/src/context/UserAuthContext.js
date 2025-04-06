@@ -31,19 +31,19 @@ export function UserAuthProvider({ children }) {
 
     // Check auth state on mount
     useEffect(() => {
-      console.log("🔥 Setting up auth state listener...");
+      console.log(" Setting up auth state listener...");
       const unsubscribe = onAuthStateChanged(auth, async (currentuser) => {
         if(currentuser){
-          console.log("✅ User logged in:", currentuser);
+          console.log(" User logged in:", currentuser);
           setUser(currentuser);
         }else{
-          console.log("🚫 No user logged in.");
+          console.log(" No user logged in.");
           setUser(null);
         }
       });
     
       return () => { 
-        console.log("🛑 Cleaning up auth state listener...");
+        console.log(" Cleaning up auth state listener...");
         unsubscribe();
       };
     }, []);
@@ -89,11 +89,11 @@ export function UserAuthProvider({ children }) {
           //FULL FIREBASE user object
           //full access to firebase methods
 
-          console.log("✅ Signup complete:", newUser.email);
+          console.log("Signup complete:", newUser.email);
           return newUser;
 
       }catch (error) {
-        console.error("❌ Error signing up:", error.message);
+        console.error(" Error signing up:", error.message);
         throw error;
       }  
     }
@@ -102,11 +102,11 @@ export function UserAuthProvider({ children }) {
     async function logIn(email, password) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("✅ Login successful:", userCredential.user.email);
+        console.log(" Login successful:", userCredential.user.email);
         return userCredential.user;
 
       } catch (error) {
-        console.error("❌ Login failed:", error.message);
+        console.error("Login failed:", error.message);
         throw error;
       }
     }
@@ -115,13 +115,13 @@ export function UserAuthProvider({ children }) {
     // clear firebase auth sessions, reset global state
     async function logOut() {
       try {
-        console.log("🚪 Logging out user...");
+        console.log("Logging out user...");
         await signOut(auth);
-        console.log("✅ User logged out.");
+        console.log(" User logged out.");
         setUser(null); // Ensure state is updated
         
       } catch (error) {
-        console.error("❌ Logout error:", error.message);
+        console.error("Logout error:", error.message);
         throw error;
       }
     }
@@ -129,13 +129,13 @@ export function UserAuthProvider({ children }) {
     // GOOGLE SIGN IN + save user data
     async function googleSignIn() {
       try{
-        console.log("🔄 Signing in with Google...");
+        console.log("Signing in with Google...");
 
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
         const googleUser = userCredential.user;
     
-        console.log("✅ Google Sign-in successful:", googleUser.email);
+        console.log("Google Sign-in successful:", googleUser.email);
 
         // Check if user already exists in Firestore
         // Save Google user info in Firestore (if not exists)
@@ -167,7 +167,7 @@ export function UserAuthProvider({ children }) {
         return googleUser;
 
       }catch (error) {
-        console.error("❌ Google Sign-in error:", error.message);
+        console.error("Google Sign-in error:", error.message);
         throw error;
       }
     }

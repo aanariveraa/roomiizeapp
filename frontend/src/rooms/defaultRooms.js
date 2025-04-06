@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 import {
   OrbitControls,
   PerspectiveCamera,
@@ -48,9 +49,20 @@ const RoomNav = ({ selectedRoom, onSelectRoom }) => (
   </div>
 );
 
-const SuiteModel = ({ modelPath }) => {
+
+
+const SuiteModel = ({ modelPath, onBoundsCalculated }) => {
   const { scene } = useGLTF(modelPath);
-  return <primitive object={scene} scale={[2, 2, 2]} />;
+  const modelRef = useRef();
+
+  useEffect(() => {
+    if (modelRef.current) {
+      const box = new THREE.Box3().setFromObject(modelRef.current);
+      onBoundsCalculated && onBoundsCalculated(box);
+    }
+  }, [scene, onBoundsCalculated]);
+
+  return <primitive object={scene} ref={modelRef} scale={[2, 2, 2]} />;
 };
 
 const ObjectModel = ({
@@ -216,7 +228,41 @@ const DefaultRooms = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const cameraRef = useRef();
+  //
+  const [roomBounds, setRoomBounds] = useState(null);
 
+
+
+  const roundArray = (arr, precision = 2) =>
+    arr.map((n) =>
+      typeof n === "number" ? +n.toFixed(precision) : n
+    );
+  
+  const CameraTracker = ({ cameraRef }) => {
+    const lastCamState = useRef(null);
+  
+    useFrame(() => {
+      if (!cameraRef.current) return;
+  
+      const cam = cameraRef.current;
+      const camData = {
+        position: roundArray(cam.position.toArray(), 0), 
+        rotation: roundArray(cam.rotation.toArray(), 0),
+        zoom: +cam.zoom.toFixed(1),
+      };
+  
+      const hasChanged = JSON.stringify(camData) !== JSON.stringify(lastCamState.current);
+  
+      if (hasChanged) {
+        //console.log("📸 Camera changed:", camData);
+        lastCamState.current = camData;
+      }
+    });
+  
+    return null;
+  };
+  
+  
   const addObject = (object) => {
     const newObject = {
       ...object,
@@ -251,8 +297,20 @@ const DefaultRooms = () => {
       return updatedObjects;
     });
   };  
+  
+  //const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
+  ///
+  const isInsideRoom = (position) => {
+  if (!roomBounds) return true; // assume valid
+  return roomBounds.containsPoint(new THREE.Vector3(...position));
+};
   const transformObject = (object, position, rotation) => {
+    if (!isInsideRoom(position)) {
+      console.warn("❌ Object is out of room bounds!");
+      return; // don't apply transform
+    }
+
     const updated = { ...object, position, rotation };
     setRoomObjects((prev) => ({
       ...prev,
@@ -264,7 +322,9 @@ const DefaultRooms = () => {
       setSelectedObject(updated);
     }
   };
+    
 
+  ///
   const rotateObject = (object, angle) => {
     const currentRotation = object.rotation || [0, 0, 0];
     const newY = currentRotation[1] + (angle * Math.PI) / 180;
@@ -313,6 +373,7 @@ const DefaultRooms = () => {
    <ObjectSelectionPanel onAddObject={addObject} />
    <div className="model-viewer">
      <Canvas onPointerMissed={() => { if (!isDragging) setSelectedObject(null); }}>
+          
        {displayMode === "3D" ? (
          <PerspectiveCamera
            makeDefault
@@ -334,10 +395,17 @@ const DefaultRooms = () => {
            far={1000}
          />
        )}
+       <CameraTracker cameraRef={cameraRef} />
+
        <ambientLight intensity={1.0} />
        <pointLight position={[10, 10, 10]} />
        <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
-         <SuiteModel modelPath={selectedRoom.modelPath} />
+         
+         <SuiteModel 
+            modelPath={selectedRoom.modelPath} 
+            onBoundsCalculated={(bounds) => setRoomBounds(bounds)}
+         />
+
          {(roomObjects[selectedRoom.id] || []).map((obj) => (
            <ObjectModel
              key={obj.uid}
@@ -350,14 +418,15 @@ const DefaultRooms = () => {
              onDragStart={() => setIsDragging(true)}
              onDragEnd={() => setIsDragging(false)}
              color={objectColors[obj.uid] || "#ffffff"} // ✅ Pass stored color
+             
            />
          ))}
        </Suspense>
-       <OrbitControls enabled={!selectedObject} />
+       <OrbitControls enabled={!selectedObject} makeDefault />
      </Canvas>
    </div>
 
-   {/* ✅ Floating Color Wheel (Top-Right) */}
+   {/* ✅ Floating Color Wheel (Top-Right)
    {selectedObject && (
      <div className="color-picker-panel">
        <h3>Color Picker</h3>
@@ -366,7 +435,7 @@ const DefaultRooms = () => {
          onChange={(color) => applyColor(selectedObject, color)}
        />
      </div>
-   )}
+   )}*/}
 
    <ControlPanel
      onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
