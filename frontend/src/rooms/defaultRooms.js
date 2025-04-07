@@ -228,10 +228,8 @@ const DefaultRooms = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const cameraRef = useRef();
-  //
+
   const [roomBounds, setRoomBounds] = useState(null);
-
-
 
   const roundArray = (arr, precision = 2) =>
     arr.map((n) =>
@@ -300,7 +298,6 @@ const DefaultRooms = () => {
   
   //const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-  ///
   const isInsideRoom = (position) => {
   if (!roomBounds) return true; // assume valid
   return roomBounds.containsPoint(new THREE.Vector3(...position));
@@ -312,19 +309,27 @@ const DefaultRooms = () => {
     }
 
     const updated = { ...object, position, rotation };
-    setRoomObjects((prev) => ({
-      ...prev,
-      [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
-        obj.uid === object.uid ? updated : obj
-      )
-    }));
+    setRoomObjects((prev) => {
+      const updatedState = {
+        ...prev,
+        [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
+          obj.uid === object.uid ? updated : obj
+        )
+      };
+    
+      // ✅ Delay save to allow state update to apply
+      setTimeout(() => {
+        saveRoomItems(selectedRoom.id, updatedState[selectedRoom.id]);
+        console.log("Delayed save after transform");
+      }, 100); // Short delay
+    
+      return updatedState;
+    });    
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
   };
     
-
-  ///
   const rotateObject = (object, angle) => {
     const currentRotation = object.rotation || [0, 0, 0];
     const newY = currentRotation[1] + (angle * Math.PI) / 180;
@@ -425,17 +430,6 @@ const DefaultRooms = () => {
        <OrbitControls enabled={!selectedObject} makeDefault />
      </Canvas>
    </div>
-
-   {/* ✅ Floating Color Wheel (Top-Right)
-   {selectedObject && (
-     <div className="color-picker-panel">
-       <h3>Color Picker</h3>
-       <HexColorPicker
-         color={objectColors[selectedObject.uid] || "#ffffff"}
-         onChange={(color) => applyColor(selectedObject, color)}
-       />
-     </div>
-   )}*/}
 
    <ControlPanel
      onZoomIn={() => setZoomFactor((prev) => Math.max(prev * 0.9, 0.5))}
