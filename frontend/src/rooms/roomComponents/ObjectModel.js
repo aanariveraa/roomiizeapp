@@ -36,6 +36,18 @@ const ObjectModel = ({
     }
   }, [object]); 
   
+  useFrame(() => {
+    if (isSelected && transformRef.current?.object) {
+      const obj = transformRef.current.object;
+      const { x, y, z } = obj.position;
+  
+      console.log(`📦 Moving object (${object.name || object.uid}):`, {
+        x: x.toFixed(2),
+        y: y.toFixed(2),
+        z: z.toFixed(2)
+      });
+    }
+  });  
 
   /*useEffect(() => {
     if (isSelected && transformRef.current && groupRef.current) {
