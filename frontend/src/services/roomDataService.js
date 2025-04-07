@@ -14,6 +14,7 @@ import {
   writeBatch, 
   query, 
   where,
+  deleteDoc
 } from "firebase/firestore";
 
 // Create a new room 
@@ -60,7 +61,10 @@ export const saveRoomItems = async (roomId, items) => {
       const itemDocRef = doc(db, "rooms", roomId.toString(), "Items", item.uid.toString());
       batch.set(itemDocRef, {
         ...item,
+        position: item.position || [0, 0, 0],    
+        rotation: item.rotation || [0, 0, 0], 
         placedAt: serverTimestamp(),
+        //placedBy: user.userId
       });
     });
     await batch.commit();
@@ -83,8 +87,16 @@ export async function loadRoomData(roomId) {
     const itemsColRef = collection(db, "rooms", roomId.toString(), "Items");
     const itemsSnapshot = await getDocs(itemsColRef);
     const items = [];
+
     itemsSnapshot.forEach((doc) => {
-      items.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      items.push({ 
+        //id: doc.id, ...doc.data() 
+        id: doc.id,
+        ...data,
+        position: Array.isArray(data.position) ? data.position.map(Number) : [0, 0, 0],
+        rotation: Array.isArray(data.rotation) ? data.rotation.map(Number) : [0, 0, 0],
+      });
     });
     return { ...roomData, items };
   } catch (error) {
@@ -155,4 +167,19 @@ export const subscribeRoomData = (roomId, callback) => {
     };
   });
   return unsubscribeRoom;
+};
+
+
+//delte room item 
+// Delete a specific item from a room's Items subcollection
+export const deleteRoomItem = async (roomId, itemId) => {
+  try {
+    const itemDocRef = doc(db, "rooms", roomId.toString(), "Items", itemId.toString());
+    console.log("Trying to delete doc:", `rooms/${roomId}/Items/${itemId}`);
+    
+    await deleteDoc(itemDocRef);
+    console.log(`🗑️ Successfully deleted item ${itemId} from room ${roomId}`);
+  } catch (error) {
+    console.error("Error deleting item from room:", error);
+  }
 };

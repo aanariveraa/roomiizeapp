@@ -4,7 +4,7 @@
 // Displays the base room model (using SuiteModel) and 
 // all placed objects (using ObjectModel), sets up the camera, lights, and controls.
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { 
     OrbitControls, 
@@ -15,14 +15,16 @@ import {
 import SuiteModel from "./SuiteModel";
 import ObjectModel from "./ObjectModel";
 import ObjectSelectionPanel from "./ObjectSelection";
-
+import CameraTracker from "./CameraTracker";
+import Rooms3d from "../rooms3d"; 
 
 const ModelViewer = 
 ({ selectedRoom, 
     roomObjects, 
     selectedObject, 
     setSelectedObject, 
-    transformObject,
+    //transformObject,
+    onTransform,
     rotateObject,
     removeObject,
     cameraRef, 
@@ -35,7 +37,8 @@ const ModelViewer =
 
   return (
     <div className="model-viewer">
-      <Canvas onPointerMissed={() => { if (!selectedObject) setSelectedObject(null); }}>
+      {/*got rid of if(!selectobject) -> unlocks room now */}
+      <Canvas onPointerMissed={() => { setSelectedObject(null); }}>
         {displayMode === "3D" ? (
           <PerspectiveCamera
             makeDefault
@@ -48,11 +51,14 @@ const ModelViewer =
             makeDefault
             ref={cameraRef}
             position={[0, 50, 0]}
-            zoom={50 * zoomFactor}
+            //zoom={50 * zoomFactor}
             near={0.1}
             far={1000}
           />
         )}
+
+        <CameraTracker cameraRef={cameraRef} selectedRoom={selectedRoom}/>
+
         <ambientLight intensity={1.0} />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<Html center><div>Loading 3D Model...</div></Html>}>
@@ -63,7 +69,7 @@ const ModelViewer =
               object={obj}
               isSelected={selectedObject && selectedObject.uid === obj.uid}
               onSelect={setSelectedObject}
-              onTransform={transformObject}
+              onTransform={onTransform}
               rotateObject={rotateObject}
               onRemoveObject={removeObject}
               onDragStart={() => setIsDragging(true)}
@@ -74,6 +80,8 @@ const ModelViewer =
           ))}
         </Suspense>
         <OrbitControls enabled={!selectedObject} />
+
+
       </Canvas>
     </div>
 
