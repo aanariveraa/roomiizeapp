@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { loadRoomData, saveRoomMetadata, saveRoomItems } from "../services/roomDataService";
+import { loadRoomData, saveRoomMetadata, saveRoomItems, deleteRoomItem } from "../services/roomDataService";
 import { HexColorPicker } from "react-colorful";
 import ModelViewer from "./roomComponents/ModelViewer";
 import ControlPanel from "./roomComponents/ControlPanel";
@@ -15,8 +15,10 @@ const Rooms3d = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Retrieve initial room from router state or fallback to the first room.
+  // Retrieve initial room from router state fall back
   const initialRoom = location.state?.selectedRoom || roomsData[0];
+  const [initialCameraState, setInitialCameraState] = useState(null);
+
   const [selectedRoom, setSelectedRoom] = useState(initialRoom);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
@@ -37,13 +39,39 @@ const Rooms3d = () => {
     setIsColorPickerOpen((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (initialCameraState) {
+      const timeout = setTimeout(() => {
+        if (cameraRef.current) {
+          const { position, rotation, zoom } = initialCameraState;
+          cameraRef.current.position.set(...position);
+          const [x, y, z] = rotation.length === 4 ? rotation.slice(0, 3) : rotation;
+          cameraRef.current.rotation.set(x, y, z);
+          cameraRef.current.zoom = zoom;
+          cameraRef.current.updateProjectionMatrix();
+          console.log(" Camera restored:", initialCameraState);
+        }
+      }, 100); // short delay to let the camera initialize
+      return () => clearTimeout(timeout);
+    }
+  }, [initialCameraState]);
+  
+
   // Load saved room state from Firestore (if any)
   useEffect(() => {
     const loadRoomState = async () => {
+      
       try {
+
         const savedData = await loadRoomData(selectedRoom.id);
+
+        if (savedData.lastCameraState) {
+          setInitialCameraState(savedData.lastCameraState);
+        }
+
         if (savedData) {
           console.log("Loaded room state:", savedData);
+          //
           if (savedData.lastPositionofRoom && cameraRef.current) {
             const { x, y, z } = savedData.lastPositionofRoom;
             cameraRef.current.position.set(x, y, z);
@@ -54,6 +82,21 @@ const Rooms3d = () => {
               [selectedRoom.id]: savedData.items
             }));
           }
+
+          //CAMERA 
+          if (savedData.lastCameraState && cameraRef.current) {
+            const { position, rotation, zoom } = savedData.lastCameraState;
+          
+            cameraRef.current.position.set(...position);
+            
+            //  convert to Euler safely
+            const [x, y, z] = rotation.length === 4 ? rotation.slice(0, 3) : rotation;
+            cameraRef.current.rotation.set(x, y, z);
+          
+            cameraRef.current.zoom = zoom;
+            cameraRef.current.updateProjectionMatrix();
+          }
+          
         }
       } catch (error) {
         console.error("Error loading room state:", error);
@@ -66,6 +109,7 @@ const Rooms3d = () => {
   // (Now only saving lastPositionofRoom, not roomName or membersId.)
   useEffect(() => {
     const saveInitialRoom = async () => {
+      if (!roomObjects[selectedRoom.id] || roomObjects[selectedRoom.id].length === 0) return; 
       try {
         await saveRoomMetadata(selectedRoom.id, {
           lastPositionofRoom: cameraRef.current && cameraRef.current.position
@@ -76,7 +120,8 @@ const Rooms3d = () => {
               }
             : null,
         });
-        console.log("Room metadata saved successfully.");
+        console.log("Room Initial metadata saved .");
+
         if (roomObjects[selectedRoom.id] && roomObjects[selectedRoom.id].length > 0) {
           await saveRoomItems(selectedRoom.id, roomObjects[selectedRoom.id]);
           console.log("Room items saved successfully.");
@@ -136,8 +181,12 @@ const Rooms3d = () => {
     saveCurrentRoomState();
   };
 
+  //////OBJECT MOVEMENT ---------------------------------------------
   const transformObject = (object, position, rotation) => {
+    console.log("📦 Incoming position to transformObject:", position);
+
     const updated = { ...object, position, rotation };
+
     setRoomObjects((prev) => ({
       ...prev,
       [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
@@ -147,10 +196,11 @@ const Rooms3d = () => {
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
-    console.log("Transformed object:", object.name, "to position:", position, "and rotation:", rotation);
-    saveCurrentRoomState();
+    //saveCurrentRoomState();
+    console.log(" ✅Transformed object:", updated);
   };
 
+  //rotate
   const rotateObject = (object, angle) => {
     const currentRotation = object.rotation || [0, 0, 0];
     const newY = currentRotation[1] + (angle * Math.PI) / 180;
@@ -159,16 +209,25 @@ const Rooms3d = () => {
     saveCurrentRoomState();
   };
 
-  const removeObject = () => {
+  /////////--------------------------------------------------------
+  const removeObject = async () => {
     if (!selectedObject) return;
+  
+    const roomId = selectedRoom.id;  
+    const objectUid = selectedObject.uid;
+
     setRoomObjects((prev) => ({
       ...prev,
-      [selectedRoom.id]: (prev[selectedRoom.id] || []).filter(
-        (obj) => obj.uid !== selectedObject.uid
-      )
+      [roomId]: (prev[roomId] || []).filter((obj) => obj.uid !== objectUid)
     }));
+
+    console.log("Selected object:", selectedObject);
+    //Delete from Firestore
+    await deleteRoomItem(roomId, objectUid);
+  
     console.log("Removing object:", selectedObject.name);
-    saveCurrentRoomState();
+    
+    //saveCurrentRoomState(); --this still saved the delteed object 
     setSelectedObject(null);
   };
 
@@ -206,6 +265,7 @@ const Rooms3d = () => {
       {/* Pass state down to ModelViewer */}
       <ModelViewer 
         selectedRoom={selectedRoom}
+        initialCameraState={initialCameraState} //
         roomObjects={roomObjects}
         setRoomObjects={setRoomObjects}
         selectedObject={selectedObject}
@@ -239,6 +299,9 @@ const Rooms3d = () => {
         toggleControlMode={() => setControlMode(controlMode === "orbit" ? "person" : "orbit")}
         onSave={saveCurrentRoomState}
         toggleColorPicker={toggleColorPicker} // pass the toggle function
+        selectedObject={selectedObject}              
+        rotateObject={rotateObject}                   
+        onRemoveObject={removeObject} 
       />
     </div>
   );

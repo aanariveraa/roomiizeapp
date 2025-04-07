@@ -254,7 +254,7 @@ const DefaultRooms = () => {
       const hasChanged = JSON.stringify(camData) !== JSON.stringify(lastCamState.current);
   
       if (hasChanged) {
-        //console.log("📸 Camera changed:", camData);
+        console.log("📸 Camera changed:", camData);
         lastCamState.current = camData;
       }
     });

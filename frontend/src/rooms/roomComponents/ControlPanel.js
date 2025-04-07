@@ -15,8 +15,11 @@ const ControlPanel = ({
     setDisplayMode, 
     controlMode, 
     toggleControlMode, 
-    toggleColorPicker
+    toggleColorPicker,
     //onSave 
+    selectedObject,           
+    rotateObject,              
+    onRemoveObject 
 }) => (
     <div className="control-panel">
         <button onClick={onZoomIn} className="zoom-button">
@@ -34,7 +37,8 @@ const ControlPanel = ({
             className={`display-tab ${displayMode === "2D" ? "active" : ""}`} 
             onClick={() => setDisplayMode("2D")}> 2D
         </button>
-        </div>
+        
+        </div> 
             <button onClick={toggleControlMode} 
                 className={`control-button ${controlMode === "person" ? "active" : ""}`}>
                 <img src="/icons/person_view.svg" alt="Person View" className="person-view-icon" />
@@ -44,6 +48,19 @@ const ControlPanel = ({
             <button onClick={toggleColorPicker} className="control-button">
                 <img src="/icons/color_palette.svg" alt="Toggle Color Picker" />
             </button>
+            {selectedObject && (
+                <div className="selected-object-controls">
+                    <button onClick={() => rotateObject(selectedObject, -15)} className="control-button">
+                    <img src="/icons/rotate_left.svg" alt="Rotate Left" />
+                    </button>
+                    <button onClick={() => rotateObject(selectedObject, 15)} className="control-button">
+                    <img src="/icons/rotate_right.svg" alt="Rotate Right" />
+                    </button>
+                    <button onClick={onRemoveObject} className="control-button">
+                    <img src="/icons/remove.svg" alt="Delete" />
+                    </button>
+                </div>
+            )}
     </div>
 );
 
