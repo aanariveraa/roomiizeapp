@@ -183,24 +183,32 @@ const Rooms3d = () => {
 
   //////OBJECT MOVEMENT ---------------------------------------------
   const transformObject = (object, position, rotation) => {
-    console.log("📦 Incoming position to transformObject:", position);
-
-    const updated = { ...object, position, rotation };
-
-    setRoomObjects((prev) => ({
-      ...prev,
-      [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
-        obj.uid === object.uid ? updated : obj
-      )
-    }));
-    saveCurrentRoomState();
-    
+    const updated = {
+      ...object,
+      position: [...position],
+      rotation: [...rotation]
+    };
+  
+    setRoomObjects((prev) => {
+      const updatedRoomObjects = {
+        ...prev,
+        [selectedRoom.id]: prev[selectedRoom.id].map((obj) =>
+          obj.uid === object.uid ? updated : obj
+        )
+      };
+  
+      // 💾 Save directly here with the correct, fresh object data
+      saveRoomItems(selectedRoom.id, updatedRoomObjects[selectedRoom.id]);
+  
+      return updatedRoomObjects;
+    });
+  
+    // Update selected object if it was the one moved
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
-    //saveCurrentRoomState();
-    console.log(" ✅Transformed object:", updated);
   };
+  
 
   //rotate
   const rotateObject = (object, angle) => {

@@ -264,9 +264,10 @@ const DefaultRooms = () => {
   const addObject = (object) => {
     const newObject = {
       ...object,
-      uid: Date.now() + Math.random(),
+      uid: crypto.randomUUID(), // ✅ use consistent UUIDs (or doc ID if pulling from DB)
       position: [0, 0, 0],
-      rotation: [0, 0, 0]
+      rotation: [0, 0, 0],
+      color: "#ffffff"
     };
     setRoomObjects((prev) => ({
       ...prev,
@@ -338,12 +339,12 @@ const DefaultRooms = () => {
 
   const removeObject = () => {
     if (!selectedObject) return;
-    setRoomObjects((prev) => ({
+    t ({
       ...prev,
       [selectedRoom.id]: (prev[selectedRoom.id] || []).filter(
         (obj) => obj.uid !== selectedObject.uid
       )
-    }));
+    });
     setSelectedObject(null);
   };
     
