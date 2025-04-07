@@ -193,6 +193,8 @@ const Rooms3d = () => {
         obj.uid === object.uid ? updated : obj
       )
     }));
+    saveCurrentRoomState();
+    
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
@@ -206,7 +208,7 @@ const Rooms3d = () => {
     const newY = currentRotation[1] + (angle * Math.PI) / 180;
     transformObject(object, object.position, [currentRotation[0], newY, currentRotation[2]]);
     console.log("Rotated object:", object.name, "by angle:", angle);
-    saveCurrentRoomState();
+    saveCurrentRoomState(); //<----saves instantly
   };
 
   /////////--------------------------------------------------------
@@ -255,6 +257,7 @@ const Rooms3d = () => {
   const goHome = () => {
     navigate("/home");
   };
+
 
   return (
     <div className="App">

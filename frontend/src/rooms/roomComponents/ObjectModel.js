@@ -94,8 +94,11 @@ const ObjectModel = ({
           const pos = obj.position.toArray();
           const rot = obj.rotation.toArray().slice(0, 3);
           console.log("🎯 Drag ended at", pos);
+          
           onTransform(object, pos, rot); // Save the updated state
           onDragEnd?.(); // Clean up if needed
+
+          transformRef.current.detach(); ///deattcach manually ? 
           console.log("🔍 transformRef.current.object:", transformRef.current?.object);
 
         }
