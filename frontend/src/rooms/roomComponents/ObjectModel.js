@@ -91,18 +91,21 @@ const ObjectModel = ({
       onDragEnd={() => {
         const obj = transformRef.current?.object;
         if (obj) {
-          const pos = obj.position.toArray();
-          const rot = obj.rotation.toArray().slice(0, 3);
-          console.log("🎯 Drag ended at", pos);
-          
-          onTransform(object, pos, rot); // Save the updated state
-          onDragEnd?.(); // Clean up if needed
-
-          transformRef.current.detach(); ///deattcach manually ? 
-          console.log("🔍 transformRef.current.object:", transformRef.current?.object);
-
+          // Force the object's matrix to update before reading values
+          obj.updateMatrixWorld(true);
+      
+          const pos = [obj.position.x, obj.position.y, obj.position.z];
+          const rot = [obj.rotation.x, obj.rotation.y, obj.rotation.z];
+      
+          console.log("✅ Drag finished. Saving position:", pos, "rotation:", rot);
+      
+          onTransform(object, pos, rot); // Call with live values
+          onDragEnd?.();
+      
+          transformRef.current.detach();
         }
       }}
+      
     >
       <group
         ref={(el) => {
