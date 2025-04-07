@@ -157,6 +157,11 @@ canvas {
   align-items: center;
 }
 
+.control-button, .save-button{
+  
+}
+
+
 .control-button:hover,
 .control-button.active {
   background-color: rgb(151, 148, 148);

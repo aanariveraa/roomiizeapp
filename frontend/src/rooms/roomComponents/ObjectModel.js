@@ -22,8 +22,8 @@ const ObjectModel = ({
   const groupRef = useRef();
   const transformRef = useRef();
 
-  const [prevPos, setPrevPos] = useState(null);
-  const [prevRot, setPrevRot] = useState(null);
+  //const [prevPos, setPrevPos] = useState(null);
+  //const [prevRot, setPrevRot] = useState(null);
 
   //Set initial position ONCE when object is mounted
   useEffect(() => {
@@ -36,6 +36,7 @@ const ObjectModel = ({
     }
   }, [object]); 
   
+  /////console lOG MOVEMENT OF OBJECT 
   useFrame(() => {
     if (isSelected && transformRef.current?.object) {
       const obj = transformRef.current.object;
@@ -57,7 +58,7 @@ const ObjectModel = ({
 
   useEffect(() => {
     if (isSelected) {
-      console.log("👆 TransformControls attached to:", groupRef.current?.name || object.name);
+      console.log(" TransformControls attached to:", groupRef.current?.name || object.name);
     }
   }, [isSelected]);*/
   
@@ -90,17 +91,70 @@ const ObjectModel = ({
     }
   });*/
 
+  useEffect(() => {
+    const controls = transformRef.current;
+    if (!controls) return;
+  
+    const callback = (event) => {
+      if (!event.value) {
+        console.log("🧪 TransformControls finished dragging!");
+  
+        const obj = controls.object;
+        if (obj) {
+          obj.updateMatrixWorld(true);
+  
+          const pos = [
+            Number(obj.position.x),
+            Number(obj.position.y),
+            Number(obj.position.z),
+          ];
+          const rot = [
+            Number(obj.rotation.x),
+            Number(obj.rotation.y),
+            Number(obj.rotation.z),
+          ];
+  
+          console.log("✅ Final position:", pos, "rotation:", rot);
+  
+          onTransform(
+            {
+              ...object,
+              position: pos,
+              rotation: rot,
+            },
+            pos,
+            rot
+          );
+  
+          controls.detach();
+        }
+      }
+    };
+  
+    controls.addEventListener("dragging-changed", callback);
+  
+    return () => controls.removeEventListener("dragging-changed", callback);
+  }, [object, onTransform]);
+  
+
+
+
   return (
     <TransformControls
       ref={transformRef}
       mode="translate"
       enabled={isSelected}
+      showX={true}
+      showY={true}
+      showZ={true}
       //onMouseDown={(e) => e.stopPropagation()}
       //onPointerDown={(e) => e.stopPropagation()}
       onDragStart={() => onDragStart?.()}
       //&& onDragStart()}
       //onDragEnd={() => onDragEnd && onDragEnd()}
       onDragEnd={() => {
+        console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
+
         const obj = transformRef.current?.object;
         if (obj) {
           // Force the object's matrix to update before reading values
@@ -111,12 +165,22 @@ const ObjectModel = ({
       
           console.log("✅ Drag finished. Saving position:", pos, "rotation:", rot);
       
-          onTransform(object, pos, rot); // Call with live values
+          //onTransform(object, pos, rot); // Call with live values
+          onTransform(
+            {
+              ...object,
+              position: pos,
+              rotation: rot
+            },
+            pos,
+            rot
+          );
           onDragEnd?.();
       
           transformRef.current.detach();
         }
       }}
+      onMouseUp={() => console.log("🖱️ Mouse up on TransformControls")}
       
     >
       <group
@@ -136,22 +200,6 @@ const ObjectModel = ({
         }}
       >
         <primitive object={scene} scale={[1, 1, 1]} />
-
-        {/*isSelected && (
-          <Html position={[0, 1.5, 0]} transform occlude>
-            <div className="object-popup">
-              <button onClick={() => rotateObject(object, -15)}>
-                <img src="/icons/rotate_left.svg" alt="Rotate Left" />
-              </button>
-              <button onClick={() => rotateObject(object, 15)}>
-                <img src="/icons/rotate_right.svg" alt="Rotate Right" />
-              </button>
-              <button onClick={onRemoveObject}>
-                <img src="/icons/remove.svg" alt="Remove" />
-              </button>
-            </div>
-          </Html>
-        )*/}
       </group>
     </TransformControls>
   );

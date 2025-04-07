@@ -10,6 +10,7 @@ import ObjectModel from "./roomComponents/ObjectModel";
 import ObjectSelectionPanel from "./roomComponents/ObjectSelection";
 import "../styles/rooms.css";
 
+
 const Rooms3d = () => {
   const { user } = useUserAuth();
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Rooms3d = () => {
   const [isDragging, setIsDragging] = useState(false);
   // New state for the color picker open/close toggle:
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);   ///saving/syncing 
   //
   const cameraRef = useRef();
   const autoSaveTimeoutRef = useRef(null);
@@ -136,6 +138,7 @@ const Rooms3d = () => {
   // Function to manually save the current room state.
   // (Saves only lastPositionofRoom and room items.)
   const saveCurrentRoomState = async () => {
+    setIsSaving(true); // show syncing icon
     try {
       await saveRoomMetadata(selectedRoom.id, {
         lastPositionofRoom: cameraRef.current && cameraRef.current.position
@@ -152,6 +155,8 @@ const Rooms3d = () => {
       console.log("Room state saved");
     } catch (error) {
       console.error("Error saving room state:", error);
+    }finally {
+      setIsSaving(false); // back to normal icon
     }
   };
 
@@ -182,7 +187,7 @@ const Rooms3d = () => {
   };
 
   //////OBJECT MOVEMENT ---------------------------------------------
-  const transformObject = (object, position, rotation) => {
+  /*const transformObject = (object, position, rotation) => {
     const updated = {
       ...object,
       position: [...position],
@@ -198,16 +203,51 @@ const Rooms3d = () => {
       };
   
       // 💾 Save directly here with the correct, fresh object data
-      saveRoomItems(selectedRoom.id, updatedRoomObjects[selectedRoom.id]);
+      //saveRoomItems(selectedRoom.id, updatedRoomObjects[selectedRoom.id]);
   
-      return updatedRoomObjects;
-    });
+      // Delay save until after state is updated
+        setTimeout(() => {
+          saveRoomItems(selectedRoom.id, updatedRoomObjects[selectedRoom.id]);
+          console.log("✅ Saved to ITEMS tras Firestore:", updated);
+        }, 0);
+            return updatedRoomObjects;
+          });
   
     // Update selected object if it was the one moved
     if (selectedObject && selectedObject.uid === object.uid) {
       setSelectedObject(updated);
     }
+  };*/
+  const transformObject = (object, position, rotation) => {
+    const updated = {
+      ...object,
+      position: [...position],
+      rotation: [...rotation]
+    };
+    //const updated = { ...object };
+  
+    setRoomObjects((prev) => {
+      const updatedObjects = (prev[selectedRoom.id] || []).map((obj) =>
+        obj.uid === object.uid ? updated : obj
+      );
+
+      // debug log
+      console.log("🛠 Updated object before saving:", updated)
+  
+      // ✅ Save only the updated object for now, or the full updated list if you prefer
+      saveRoomItems(selectedRoom.id, updatedObjects);
+  
+      return {
+        ...prev,
+        [selectedRoom.id]: updatedObjects
+      };
+    });
+  
+    if (selectedObject && selectedObject.uid === object.uid) {
+      setSelectedObject(updated);
+    }
   };
+  
   
 
   //rotate
@@ -290,6 +330,8 @@ const Rooms3d = () => {
         zoomFactor={zoomFactor}
         setIsDragging={setIsDragging}
         objectColors={objectColors}
+        onSave={saveCurrentRoomState}
+        isSaving={isSaving}
       />
 
       {selectedObject && isColorPickerOpen && (
@@ -308,11 +350,11 @@ const Rooms3d = () => {
         setDisplayMode={setDisplayMode}
         controlMode={controlMode}
         toggleControlMode={() => setControlMode(controlMode === "orbit" ? "person" : "orbit")}
-        onSave={saveCurrentRoomState}
         toggleColorPicker={toggleColorPicker} // pass the toggle function
         selectedObject={selectedObject}              
         rotateObject={rotateObject}                   
         onRemoveObject={removeObject} 
+        onSave={saveCurrentRoomState}  //sa
       />
     </div>
   );
