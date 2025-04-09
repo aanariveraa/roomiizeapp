@@ -201,3 +201,28 @@ export const deleteRoomItem = async (roomId, itemId) => {
     console.error("Error deleting item from room:", error);
   }
 };
+
+
+//delete a room by creator 
+export const deleteRoom = async (roomId) => {
+  try {
+    const roomDocRef = doc(db, "rooms", roomId);
+    const itemsCollection = collection(db, "rooms", roomId, "Items");
+
+    // Delete all items
+    const itemDocs = await getDocs(itemsCollection);
+    const batch = writeBatch(db);
+    itemDocs.forEach((docSnap) => {
+      batch.delete(doc(db, "rooms", roomId, "Items", docSnap.id));
+    });
+
+    // Delete the room document
+    batch.delete(roomDocRef);
+    await batch.commit();
+
+    console.log(`🔥 Deleted room ${roomId} and its items`);
+  } catch (error) {
+    console.error("Error deleting room:", error);
+    throw error;
+  }
+};
