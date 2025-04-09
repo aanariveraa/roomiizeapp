@@ -56,23 +56,41 @@ export const saveRoomMetadata = async (roomId, roomMetadata) => {
 // Save room items to the Items subcollection
 export const saveRoomItems = async (roomId, items) => {
   try {
+    if (!items || items.length === 0) {
+      console.warn("🛑 No items to save.");
+      return;
+    }
+
+    console.log("🔥 saveRoomItems CALLED with:", items.map(item => ({
+      uid: item.uid,
+      position: item.position,
+      rotation: item.rotation
+    })));
+
     const batch = writeBatch(db);
     items.forEach((item) => {
+      console.log("🔥🔥 FINAL item data to save:", item.uid, item.position, item.rotation); // NEW
       const itemDocRef = doc(db, "rooms", roomId.toString(), "Items", item.uid.toString());
+
       batch.set(itemDocRef, {
         ...item,
-        position: item.position || [0, 0, 0],    
-        rotation: item.rotation || [0, 0, 0], 
-        placedAt: serverTimestamp(),
-        //placedBy: user.userId
+        position: item.position || [0, 0, 0],
+        rotation: item.rotation || [0, 0, 0],
+        updatedAt: serverTimestamp(), // <-- better than overwriting placedAt
       });
     });
+
     await batch.commit();
-    console.log("Room items saved successfully!");
+    console.log("✅ Room items saved to Firestore.");
+    items.forEach(item => {
+      console.log(`🧩 ${item.name || item.uid} -> pos: ${item.position.map(n => n.toFixed(2))}, rot: ${item.rotation.map(n => n.toFixed(2))}`);
+    });
+    
   } catch (error) {
-    console.error("Error saving room items:", error);
+    console.error("❌ Error saving room items:", error);
   }
 };
+
 
 // Load data for a single room including its items
 export async function loadRoomData(roomId) {
@@ -181,5 +199,30 @@ export const deleteRoomItem = async (roomId, itemId) => {
     console.log(`🗑️ Successfully deleted item ${itemId} from room ${roomId}`);
   } catch (error) {
     console.error("Error deleting item from room:", error);
+  }
+};
+
+
+//delete a room by creator 
+export const deleteRoom = async (roomId) => {
+  try {
+    const roomDocRef = doc(db, "rooms", roomId);
+    const itemsCollection = collection(db, "rooms", roomId, "Items");
+
+    // Delete all items
+    const itemDocs = await getDocs(itemsCollection);
+    const batch = writeBatch(db);
+    itemDocs.forEach((docSnap) => {
+      batch.delete(doc(db, "rooms", roomId, "Items", docSnap.id));
+    });
+
+    // Delete the room document
+    batch.delete(roomDocRef);
+    await batch.commit();
+
+    console.log(`🔥 Deleted room ${roomId} and its items`);
+  } catch (error) {
+    console.error("Error deleting room:", error);
+    throw error;
   }
 };

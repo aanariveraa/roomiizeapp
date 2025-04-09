@@ -4,7 +4,7 @@
 // and displays the object in the scene.
 
 import React, { useEffect, useRef, useState } from "react";
-import { useGLTF, TransformControls, Html } from "@react-three/drei";
+import { useGLTF, TransformControls, Center } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
 const ObjectModel = ({
@@ -22,20 +22,24 @@ const ObjectModel = ({
   const groupRef = useRef();
   const transformRef = useRef();
 
-  const [prevPos, setPrevPos] = useState(null);
-  const [prevRot, setPrevRot] = useState(null);
+  //const [prevPos, setPrevPos] = useState(null);
+  //const [prevRot, setPrevRot] = useState(null);
 
-  //Set initial position ONCE when object is mounted
+  //wait for scene to load before applying position
   useEffect(() => {
-    if (groupRef.current) {
-      const pos = object.position || [0, 0, 0];
-      const rot = object.rotation || [0, 0, 0];
-      groupRef.current.position.set(...pos);
-      groupRef.current.rotation.set(...rot);
-
-    }
-  }, [object]); 
+    if (!scene || !groupRef.current) return;
   
+    const pos = object.position || [0, 0, 0];
+    const rot = object.rotation || [0, 0, 0];
+  
+    // Apply position & rotation to the group after model loads
+    groupRef.current.position.set(...pos);
+    groupRef.current.rotation.set(...rot);
+  
+    console.log("📍 Object loaded and positioned:", object.name, pos);
+  }, [scene, object]); 
+  
+  /////console lOG MOVEMENT OF OBJECT 
   useFrame(() => {
     if (isSelected && transformRef.current?.object) {
       const obj = transformRef.current.object;
@@ -49,22 +53,22 @@ const ObjectModel = ({
     }
   });  
 
-  /*useEffect(() => {
+  //deattach and reattach transform controls cleanly 
+  useEffect(() => {
     if (isSelected && transformRef.current && groupRef.current) {
       transformRef.current.attach(groupRef.current);
+    } else {
+      transformRef.current?.detach();
     }
-  }, [isSelected]);
+  }, [isSelected]);  
 
-  useEffect(() => {
-    if (isSelected) {
-      console.log("👆 TransformControls attached to:", groupRef.current?.name || object.name);
-    }
-  }, [isSelected]);*/
-  
 
   // Update material color
   useEffect(() => {
     if (scene) {
+      scene.position.set(0, 0, 0); // Important!
+      scene.rotation.set(0, 0, 0); 
+
       scene.traverse((child) => {
         if (child.isMesh && child.material) {
           child.material.color.set(color);
@@ -90,17 +94,68 @@ const ObjectModel = ({
     }
   });*/
 
+  useEffect(() => {
+    const controls = transformRef.current;
+    if (!controls) return;
+  
+    const callback = (event) => {
+      if (!event.value) {
+        console.log("🧪 TransformControls finished dragging!");
+  
+        const obj = controls.object;
+        if (obj) {
+          obj.updateMatrixWorld(true);
+  
+          const pos = [
+            Number(obj.position.x),
+            Number(obj.position.y),
+            Number(obj.position.z),
+          ];
+          const rot = [
+            Number(obj.rotation.x),
+            Number(obj.rotation.y),
+            Number(obj.rotation.z),
+          ];
+  
+          console.log("✅ Final position:", pos, "rotation:", rot);
+  
+          onTransform(
+            {
+              ...object,
+              position: pos,
+              rotation: rot,
+            },
+            pos,
+            rot
+          );
+  
+          controls.detach();
+        }
+      }
+    };
+  
+    controls.addEventListener("dragging-changed", callback);
+  
+    return () => controls.removeEventListener("dragging-changed", callback);
+  }, [object, onTransform]);
+  
+
   return (
     <TransformControls
       ref={transformRef}
       mode="translate"
       enabled={isSelected}
+      showX={true}
+      showY={true}
+      showZ={true}
       //onMouseDown={(e) => e.stopPropagation()}
       //onPointerDown={(e) => e.stopPropagation()}
       onDragStart={() => onDragStart?.()}
       //&& onDragStart()}
       //onDragEnd={() => onDragEnd && onDragEnd()}
       onDragEnd={() => {
+        //console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
+
         const obj = transformRef.current?.object;
         if (obj) {
           // Force the object's matrix to update before reading values
@@ -111,18 +166,28 @@ const ObjectModel = ({
       
           console.log("✅ Drag finished. Saving position:", pos, "rotation:", rot);
       
-          onTransform(object, pos, rot); // Call with live values
+          //onTransform(object, pos, rot); // Call with live values
+          onTransform(
+            {
+              ...object,
+              position: pos,
+              rotation: rot
+            },
+            pos,
+            rot
+          );
           onDragEnd?.();
       
           transformRef.current.detach();
         }
       }}
+      onMouseUp={() => console.log("🖱️ Mouse up on TransformControls")}
       
     >
       <group
         ref={(el) => {
           groupRef.current = el;
-          if (transformRef.current) {
+          if (isSelected && transformRef.current) {
             transformRef.current.attach(el);
           }
         }}
@@ -135,23 +200,7 @@ const ObjectModel = ({
           onSelect(object);
         }}
       >
-        <primitive object={scene} scale={[1, 1, 1]} />
-
-        {/*isSelected && (
-          <Html position={[0, 1.5, 0]} transform occlude>
-            <div className="object-popup">
-              <button onClick={() => rotateObject(object, -15)}>
-                <img src="/icons/rotate_left.svg" alt="Rotate Left" />
-              </button>
-              <button onClick={() => rotateObject(object, 15)}>
-                <img src="/icons/rotate_right.svg" alt="Rotate Right" />
-              </button>
-              <button onClick={onRemoveObject}>
-                <img src="/icons/remove.svg" alt="Remove" />
-              </button>
-            </div>
-          </Html>
-        )*/}
+          <primitive object={scene} scale={[1, 1, 1]} />
       </group>
     </TransformControls>
   );
