@@ -40,6 +40,10 @@ const Profile = () => {
       
       // Get photoURL from user.photoURL 
       // or fall back to the providerData array
+      /*if (isGoogleUser) {
+        // Force default photo for Google users
+        setPhotoURL(defaultPhotoURL);
+      } else {*/
       let userPhoto = user.photoURL;
       if (!userPhoto && user.providerData && user.providerData.length > 0) {
         userPhoto = user.providerData[0].photoURL;
