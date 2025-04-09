@@ -4,7 +4,7 @@
 // and displays the object in the scene.
 
 import React, { useEffect, useRef, useState } from "react";
-import { useGLTF, TransformControls, Html } from "@react-three/drei";
+import { useGLTF, TransformControls, Center } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
 const ObjectModel = ({
@@ -25,16 +25,19 @@ const ObjectModel = ({
   //const [prevPos, setPrevPos] = useState(null);
   //const [prevRot, setPrevRot] = useState(null);
 
-  //Set initial position ONCE when object is mounted
+  //wait for scene to load before applying position
   useEffect(() => {
-    if (groupRef.current) {
-      const pos = object.position || [0, 0, 0];
-      const rot = object.rotation || [0, 0, 0];
-      groupRef.current.position.set(...pos);
-      groupRef.current.rotation.set(...rot);
-
-    }
-  }, [object]); 
+    if (!scene || !groupRef.current) return;
+  
+    const pos = object.position || [0, 0, 0];
+    const rot = object.rotation || [0, 0, 0];
+  
+    // Apply position & rotation to the group after model loads
+    groupRef.current.position.set(...pos);
+    groupRef.current.rotation.set(...rot);
+  
+    console.log("📍 Object loaded and positioned:", object.name, pos);
+  }, [scene, object]); 
   
   /////console lOG MOVEMENT OF OBJECT 
   useFrame(() => {
@@ -50,22 +53,22 @@ const ObjectModel = ({
     }
   });  
 
-  /*useEffect(() => {
+  //deattach and reattach transform controls cleanly 
+  useEffect(() => {
     if (isSelected && transformRef.current && groupRef.current) {
       transformRef.current.attach(groupRef.current);
+    } else {
+      transformRef.current?.detach();
     }
-  }, [isSelected]);
+  }, [isSelected]);  
 
-  useEffect(() => {
-    if (isSelected) {
-      console.log(" TransformControls attached to:", groupRef.current?.name || object.name);
-    }
-  }, [isSelected]);*/
-  
 
   // Update material color
   useEffect(() => {
     if (scene) {
+      scene.position.set(0, 0, 0); // Important!
+      scene.rotation.set(0, 0, 0); 
+
       scene.traverse((child) => {
         if (child.isMesh && child.material) {
           child.material.color.set(color);
@@ -137,8 +140,6 @@ const ObjectModel = ({
   }, [object, onTransform]);
   
 
-
-
   return (
     <TransformControls
       ref={transformRef}
@@ -153,7 +154,7 @@ const ObjectModel = ({
       //&& onDragStart()}
       //onDragEnd={() => onDragEnd && onDragEnd()}
       onDragEnd={() => {
-        console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
+        //console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
 
         const obj = transformRef.current?.object;
         if (obj) {
@@ -186,7 +187,7 @@ const ObjectModel = ({
       <group
         ref={(el) => {
           groupRef.current = el;
-          if (transformRef.current) {
+          if (isSelected && transformRef.current) {
             transformRef.current.attach(el);
           }
         }}
@@ -199,7 +200,7 @@ const ObjectModel = ({
           onSelect(object);
         }}
       >
-        <primitive object={scene} scale={[1, 1, 1]} />
+          <primitive object={scene} scale={[1, 1, 1]} />
       </group>
     </TransformControls>
   );
