@@ -25,7 +25,7 @@ const Home = () => {
       <div className="sidebar">
         <h3 className="sidebar-title">Menu</h3>
         <ul className="sidebar-links">
-           {/* <li>
+           {/*<li>
                 <Link to="/defaultRooms"> OG </Link>
             </li>*/}
             <li>

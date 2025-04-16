@@ -160,7 +160,7 @@ const Rooms3d = () => {
     }
   };
 
-  // Auto-save: debounce changes in roomObjects and save after 2 seconds of inactivity.
+  // Auto-save: debounce changes in roomObjects and save after 20 seconds of inactivity?
   useEffect(() => {
     if (autoSaveTimeoutRef.current) clearTimeout(autoSaveTimeoutRef.current);
     autoSaveTimeoutRef.current = setTimeout(() => {

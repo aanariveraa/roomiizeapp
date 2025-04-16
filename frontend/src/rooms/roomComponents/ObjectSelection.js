@@ -26,21 +26,27 @@ const ObjectSelectionPanel = ({ onAddObject }) => {
   }, []);
 
   return (
-    <div className={`object-selection-panel ${isOpen ? "open" : ""}`}>
+    <>
       <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? "Close" : "Objects"}
       </button>
-      {isOpen && (
-        <div className="object-grid">
-          {objectOptions.map((object) => (
-            <div key={object.id} className="object-item">
-              <img src={object.image} alt={object.name} className="object-preview-image" />
-              <button onClick={() => onAddObject(object)}>Place Item</button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+
+      <div className={`object-selection-panel ${isOpen ? "open" : ""}`}>
+        {isOpen && (
+          <div className="object-grid">
+            {objectOptions.map((object) => (
+              <div key={object.id} className="object-item">
+                <img src={object.image} alt={object.name} className="object-preview-image" />
+                <button onClick={() => onAddObject(object)}>
+                  Place {object.name.replace(/_/g, " ").replace(/\.glb$/i, "")}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+
   );
 };
 
