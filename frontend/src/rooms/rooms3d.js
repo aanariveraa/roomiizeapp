@@ -309,8 +309,11 @@ const Rooms3d = () => {
 
   return (
     <div className="App">
-      <button className="back-button" onClick={goBack}>Back</button>
-      <button className="back-button" onClick={goHome}>Home</button>
+      <div className="top-nav-bar">
+        <button onClick={goHome}>Home</button>
+        <button onClick={goBack}>Designs</button>
+      </div>
+
       <ObjectSelectionPanel onAddObject={addObject} />
 
       {/* Pass state down to ModelViewer */}
