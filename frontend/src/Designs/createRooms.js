@@ -118,12 +118,6 @@ function CreateRooms() {
 
   return (
     <div className="create-room-container">
-      <button className="back-button" onClick={() => {
-        console.log("Navigating back.");
-        navigate(-1);
-      }}>
-        Back
-      </button>
       <div className="room-preview">
         <img
           src={selectedRoom.image}

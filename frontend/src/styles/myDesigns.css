@@ -1,27 +1,32 @@
 /* Container for the entire My Designs page */
 .my-designs-container {
-    padding: 20px;
-    background: #fbf9eb;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    width: 100%;             
-    min-height: 110vh;       
-    position: relative;      
-    box-sizing: border-box;
-    overflow: hidden;     
-    position: absolute;
-    top: -50px;           
-    left: 0;
-  }
+  background-color: #fbf9eb;
+
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  overflow: auto;
+  width: 100%;      
+  position: static; 
+  left: auto;
+  top: auto;
+  max-width: 1600px;
+  margin: 0 auto;
+  
+  
+}
   
   /* Header styling */
   .my-designs-container h2 {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 0px;
     margin-bottom: 20px;
     font-size: 2rem;
     color: #333;
     font-weight: bold;
+    position: relative;
+    top:0;
   }
   
   /* Grid layout for the design cards */
@@ -33,12 +38,15 @@
   
   /* Styling for each design card */
   .design-card {
+    position: relative;
     background: #fbf9eb;
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex: 1 1 1000px; 
+    max-width: 350px;
   }
   
   .design-card:hover {
@@ -61,3 +69,99 @@
     font-weight: bold;
     color: #333;
   }  
+
+  .design-members {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  .delete-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    border: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease;
+  }
+  
+  .delete-button:hover {
+    background-color: #e04345;
+  }
+  
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* ✅ Ensure it's above everything */
+  }
+  
+  .modal {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10000; /* ✅ Ensure it's above overlay content */
+  }
+  
+  
+  .modal-buttons button {
+    margin: 0 10px;
+    padding: 6px 12px;
+  }
+
+  @media (min-width: 1200px) {
+    .my-designs-container h2 {
+      font-size: 2.5rem;
+    }
+  
+    .design-title {
+      font-size: 1.4rem;
+    }
+  
+    .design-members {
+      font-size: 1rem;
+    }
+  }
+
+  .design-image {
+    width: 100%;
+    height: 500px; 
+    object-fit: cover;
+  }
+  
+  @media (min-width: 1400px) {
+    .design-image {
+      height: 200px;
+    }
+  }
+  
+  
+
+
+@media (min-width: 1200px) {
+  .design-card {
+    max-width: 600px; /* Bump the width for larger screens */
+  }
+}
+
+@media (min-width: 1400px) {
+  .design-card {
+    max-width: 1000px; /* Even larger on very big screens */
+  }
+}

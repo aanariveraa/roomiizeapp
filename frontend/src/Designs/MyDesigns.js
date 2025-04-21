@@ -52,7 +52,6 @@ function MyDesigns() {
 
   return (
     <div className="my-designs-container">
-      <button className="back-button" onClick={goBack}>Back</button>
       <h2>{user.displayName} Room Designs</h2>
       {user && (
         <p className="user-greeting">
