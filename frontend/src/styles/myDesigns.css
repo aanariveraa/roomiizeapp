@@ -145,4 +145,22 @@
     object-fit: cover;
   }
 
+  @media (min-width: 1400px) {
+    .design-image {
+      height: 200px;
+    }
+  }
+
+
+@media (min-width: 1200px) {
+  .design-card {
+    max-width: 600px; 
+  }
+}
+
+@media (min-width: 1400px) {
+  .design-card {
+    max-width: 1000px; 
+  }
+}
 
