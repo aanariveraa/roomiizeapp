@@ -11,7 +11,7 @@ import ObjectSelectionPanel from "./roomComponents/ObjectSelection";
 import "../styles/rooms.css";
 
 
-const Rooms3d = () => {
+const Rooms3d = ({sidebarCollapsed}) => {
   const { user } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -301,17 +301,21 @@ const Rooms3d = () => {
     });
   };
 
-  const goBack = () => navigate(-1);
-  const goHome = () => {
-    navigate("/home");
-  };
-
-
   return (
-    <div className="App">
-      <button className="back-button" onClick={goBack}>Back</button>
-      <button className="back-button" onClick={goHome}>Home</button>
-      <ObjectSelectionPanel onAddObject={addObject} />
+    <div
+    className="App"
+    style={{
+      margin: 0,
+      marginLeft: sidebarCollapsed ? "5px" : "5px",
+      transition: "margin-left 0.3s ease",
+      position: "relative",
+      height: "100%",
+      overflow: "hidden"
+    }}
+  >
+  
+  <ObjectSelectionPanel onAddObject={addObject} sidebarCollapsed={sidebarCollapsed} />
+
 
       {/* Pass state down to ModelViewer */}
       <ModelViewer 
@@ -361,4 +365,5 @@ const Rooms3d = () => {
 };
 
 export default Rooms3d;
+
 

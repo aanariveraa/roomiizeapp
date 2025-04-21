@@ -38,10 +38,6 @@ const RoomSelection = () => {
   
   return (
     <div className="room-selection-container">
-      {/* Back Button */}
-      <button className="back-button" onClick={() => navigate(-1)}>
-        Back
-      </button>
 
       <h2>Select a Room to Design</h2>
       <div className="room-grid">

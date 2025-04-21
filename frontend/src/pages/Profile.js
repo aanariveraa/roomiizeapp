@@ -118,11 +118,6 @@ const Profile = () => {
     }
   };
 
-  const goBack = () => {
-    //goes back one page 
-    navigate(-1);
-  }
-
   return (
     <Container className="mt-4">
       <Card className="p-4">
@@ -137,10 +132,6 @@ const Profile = () => {
           Note: Since you signed in with Google, your email and display name are managed by your Google account and cannot be edited here.
         </Alert>
       )}
-
-        <button className="back-button" onClick={goBack}>
-          Back
-        </button>
 
         <Form onSubmit={handleUpdate}>
 
