@@ -150,18 +150,16 @@
       height: 200px;
     }
   }
-  
-  
 
 
 @media (min-width: 1200px) {
   .design-card {
-    max-width: 600px; /* Bump the width for larger screens */
+    max-width: 600px; 
   }
 }
 
 @media (min-width: 1400px) {
   .design-card {
-    max-width: 1000px; /* Even larger on very big screens */
+    max-width: 1000px; 
   }
 }
