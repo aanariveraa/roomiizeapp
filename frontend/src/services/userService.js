@@ -1,6 +1,6 @@
 // In userService.js
 import { db } from "../firebase/firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 
 /**
  * Search for Other Users to add
@@ -26,3 +26,13 @@ export const searchUsersByEmail = async (searchTerm) => {
     return [];
   }
 };
+
+// fetch other user data by UID
+export async function getUserById(uid) {
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    return { uid, ...userSnap.data() };
+  }
+  return null;
+}
