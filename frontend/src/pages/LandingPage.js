@@ -20,9 +20,9 @@ const LandingPage = () => {
   const [isSectionFiveVisible, setIsSectionFiveVisible] = useState(false);
 
   useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
-  }, []);
-  
+  AOS.init({ duration: 1000, once: true });
+}, []);
+
   
  
   return (
@@ -39,16 +39,18 @@ const LandingPage = () => {
         </Container>
       </Navbar>
       <div className = "section" id = "section-one">
-         <div className="inSection">
-         <h1>ROOMIIZE</h1>
-         <img className="logo-image" src="../images/logoEnhanced.png" alt="logo"></img>
-          <p></p>
-          <Link to="/signup">
-            <Button className="get-started-btn" variant="primary">Get Started</Button>
-          </Link>
+        <div className="inSection">
+          <h1>ROOMIIZE</h1>
+          <img className="logo-image" src="../images/logoEnhanced.png" alt="logo"></img>
+          <div className="button-row">
+            <Link to="/signup">
+              <Button className="get-started-btn" variant="primary">Get Started</Button>
+            </Link>
+            <a href="#section-two" className="btn tour-btn">Take a Tour</a>
           </div>
+        </div>
       </div>
-
+      
       <div className="section" id="section-two">
         <div className="mission-lottie-wrapper">
           <div className="mission-text">
