@@ -58,7 +58,7 @@
     background-color: #fbf9eb; 
     left: 0;
     position: absolute;
-    margin-top: 100vh;
+    margin-top: 90vh;
     scroll-snap-align: start;
   }
 
@@ -66,7 +66,7 @@
     background-color: #fbf9eb; 
     left: 0;
     position: absolute;
-    margin-top: 200vh;
+    margin-top: 190vh;
     scroll-snap-align: start;
   }
   
@@ -75,7 +75,7 @@
     left: 0;
     position: absolute;
     scroll-snap-align: start;
-    margin-top: 300vh;
+    margin-top: 270vh;
   }
   
   #section-five {
@@ -83,7 +83,7 @@
     left: 0;
     position: absolute;
     scroll-snap-align: start;
-    margin-top: 400vh;
+    margin-top: 330vh;
   }
   
   #section-six {
@@ -91,7 +91,7 @@
     left: 0;
     position: absolute;
     scroll-snap-align: start;
-    margin-top: 500vh;
+    margin-top: 400vh;
     background-color: rgb(224, 214, 200);
   }
 
@@ -241,3 +241,27 @@
 [data-aos].aos-animate {
   opacity: 1;
 }
+
+.button-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.tour-btn {
+  background-color: transparent;
+  color: #0b0b0b;
+  border: 2px solid #ddb395;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.tour-btn:hover {
+  background-color: #FFEFD5;
+  color: black;
+}
+
