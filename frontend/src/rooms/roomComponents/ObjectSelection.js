@@ -55,7 +55,9 @@ const ObjectSelectionPanel = ({ onAddObject, sidebarCollapsed }) => {
                   alt={object.name}
                   className="object-preview-image"
                 />
-                <button onClick={() => onAddObject(object)}>Place Item</button>
+                <button onClick={() => onAddObject(object)}>
+                  Place {object.name.replace(/_/g, " ").replace(/\.glb$/i, "")}
+                </button>
               </div>
             ))}
           </div>
@@ -66,4 +68,3 @@ const ObjectSelectionPanel = ({ onAddObject, sidebarCollapsed }) => {
 };
 
 export default ObjectSelectionPanel;
-
