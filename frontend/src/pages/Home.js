@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   // sidebar for users to navigate between pages
-  return (
+  return ( 
     
     <div className="home-container">
       <div className="content">

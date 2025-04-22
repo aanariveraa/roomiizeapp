@@ -37,7 +37,14 @@ const ObjectModel = ({
     groupRef.current.rotation.set(...rot);
   
     console.log("📍 Object loaded and positioned:", object.name, pos);
-  }, [scene, object]); 
+    
+    // 🛠 IF SELECTED, re-attach after the position is set
+    /*if (isSelected && transformRef.current) {
+      transformRef.current.attach(groupRef.current);
+      console.log("✅ Attaching to:", groupRef.current.name || object.name);
+    }*/
+
+  }, [scene, object /*, isSelected*/]); 
   
   /////console lOG MOVEMENT OF OBJECT 
   useFrame(() => {
@@ -45,11 +52,11 @@ const ObjectModel = ({
       const obj = transformRef.current.object;
       const { x, y, z } = obj.position;
   
-      console.log(`📦 Moving object (${object.name || object.uid}):`, {
+      /*console.log(`📦 Moving object (${object.name || object.uid}):`, {
         x: x.toFixed(2),
         y: y.toFixed(2),
         z: z.toFixed(2)
-      });
+      });*/
     }
   });  
 
@@ -148,11 +155,7 @@ const ObjectModel = ({
       showX={true}
       showY={true}
       showZ={true}
-      //onMouseDown={(e) => e.stopPropagation()}
-      //onPointerDown={(e) => e.stopPropagation()}
       onDragStart={() => onDragStart?.()}
-      //&& onDragStart()}
-      //onDragEnd={() => onDragEnd && onDragEnd()}
       onDragEnd={() => {
         //console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
 
@@ -191,9 +194,6 @@ const ObjectModel = ({
             transformRef.current.attach(el);
           }
         }}
-        //ref={groupRef}
-        //position={object.position || [0, 0, 0]}
-        //rotation={object.rotation || [0, 0, 0]}
         onPointerDown={(e) => {
           e.stopPropagation();
           console.log("✅ Object clicked:", object.name);
@@ -201,10 +201,10 @@ const ObjectModel = ({
         }}
       >
           <primitive object={scene} scale={[1, 1, 1]} />
+
       </group>
     </TransformControls>
   );
 };
 
 export default ObjectModel;
-//export default React.memo(ObjectModel);
