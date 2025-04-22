@@ -3,10 +3,10 @@ import { db } from '../firebase/firebaseConfig';
 import { collection, doc, getDoc, addDoc, query, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { useUserAuth } from '../context/UserAuthContext';
-import { useParams, useNavigate } from 'react-router-dom';
-import "../styles/ChatRoomsPage.css"
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import "../styles/ChatRoomsPage.css";
 
-const ChatRoom = () => {
+const ChatRoom = ({sidebarCollapsed}) => {
   const { user } = useUserAuth();
   const { chatId } = useParams();
   const [chatRoomName, setChatRoomName] = useState('');
@@ -16,14 +16,15 @@ const ChatRoom = () => {
   const [participants, setParticipants] = useState([]); 
   const navigate = useNavigate();
   const messageEndRef = useRef(null);
+  
 
-  // fetch chat room details when chatID changes
+  // fetch chat room details
   useEffect(() => {
     const fetchChatRoom = async () => {
       try {
-        const chatRoomDoc = await getDoc(doc(db, 'Chats', chatId)); // fetch chat room data from database 
+        const chatRoomDoc = await getDoc(doc(db, 'Chats', chatId)); 
         if (chatRoomDoc.exists()) {
-          setChatRoomName(chatRoomDoc.data().ChatName); // set chat room name 
+          setChatRoomName(chatRoomDoc.data().ChatName); 
         } else {
           console.error('Chat room does not exist');
         }
@@ -32,17 +33,15 @@ const ChatRoom = () => {
       }
     };
     fetchChatRoom();
-  }, [chatId]); 
+  }, [chatId]);
 
-  // fetch paricipants from Firestore
+  // fetch participants
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
         const chatRoomDoc = await getDoc(doc(db, 'Chats', chatId));
         if(chatRoomDoc.exists()) {
-          // extract participants list from chat room document 
           const participantsData = chatRoomDoc.data().Users || [];
-        //  setParticipants(participantsData);
           const participantDetails = await Promise.all(participantsData.map(async (uid) => {
             const userDoc = await getDoc(doc(db, 'users', uid));
             return userDoc.exists() ? userDoc.data().displayName || userDoc.data().email : null;
@@ -56,16 +55,14 @@ const ChatRoom = () => {
     fetchParticipants();
   }, [chatId]);
 
-  // fetch messages from Firestore and listen for real-time updates 
+  // fetch messages and listen for real-time updates
   useEffect(() => {
-    // query to fetch messages from Messages subcollection
     const q = query(
-      collection(db, 'Chats', chatId, 'Messages'), // reference to Messages subcollection
+      collection(db, 'Chats', chatId, 'Messages'),
       orderBy('Date', 'asc')
     );
-    // real-time listener for messages
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messagesList = snapshot.docs.map(doc => doc.data()); // extract message data 
+      const messagesList = snapshot.docs.map(doc => doc.data()); 
       setMessages(messagesList);
       setLoading(false);
     });
@@ -73,21 +70,20 @@ const ChatRoom = () => {
     return () => unsubscribe();
   }, [chatId]);
 
-  // scroll to the bottom when new message is received 
+  // scroll to bottom when a new message arrives
   useEffect(() => {
     if(messageEndRef.current) {
       messageEndRef.current.scrollIntoView({behavior: "smooth"});
     }
   }, [messages]); 
 
-  // function to send a new message 
+  // send a new message
   const sendMessage = async (e) => {
     e.preventDefault();
 
     if (!message.trim()) return;
 
     try {
-      // add a new message to the Messages subcollection 
       await addDoc(collection(db, 'Chats', chatId, 'Messages'), {
         Sender: user.displayName,
         Content: message,
@@ -100,32 +96,28 @@ const ChatRoom = () => {
     }
   };
 
-  // navigate back to chat rooms
-  const goBack = () => {
-    navigate('/chat-rooms');
-  }
-
   return (
-    <div className="chat-room">
-      <h2>{chatRoomName}</h2>
-      <button className="back-button" onClick={goBack}>Back</button> 
+    <div className={`chat-room ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+    <div className="chat-content" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, marginLeft: '0px', marginTop: '0px'}}>
+        <h2 style={{ left: sidebarCollapsed ? "70px" : "150px", width: sidebarCollapsed ? "100%" : "calc(100% - 200px)",}} >
+          {chatRoomName}
+        </h2>
+        <div className="messages" style={{ flex: 1, overflowY: 'auto', padding: '10px', }}>
+          {loading ? (
+            <p>Loading messages...</p>
+          ) : (
+            messages.map((msg, idx) => (
+              <div key={idx} className={`message ${msg.Sender === user.displayName ? 'outgoing' : 'incoming'}`}>
+                <strong>{msg.Sender}:</strong> {msg.Content}
+                <br />
+                <small>{new Date(msg.Date.seconds * 1000).toLocaleString()}</small>
+              </div>
+            ))
+          )}
+          <div ref={messageEndRef} />
+        </div>
 
-      <div className="messages-container" style={{ maxHeight: '400px', overflowY: 'scroll', marginBottom: '20px' }}>
-        {loading ? (
-          <p>Loading messages...</p>
-        ) : (
-          messages.map((msg, idx) => (
-            <div key={idx} className={`message ${msg.Sender === user.displayName ? 'outgoing' : 'incoming'}`}>
-              <strong>{msg.Sender}:</strong> {msg.Content}
-              <br />
-              <small>{new Date(msg.Date.seconds * 1000).toLocaleString()}</small>
-            </div>
-          ))
-        )}
-        <div ref={messageEndRef} />
-      </div>
-
-      <div className='chat-sidebar'>
+        <div className='chat-sidebar'>
         <h3>Members</h3>
         <ul>
         {participants.map((participant, idx) => (
@@ -134,25 +126,22 @@ const ChatRoom = () => {
         </ul>
       </div>
 
-      <Form onSubmit={sendMessage} className="message-input"> 
-        <InputGroup>
-          <Form.Control
-            type="text"
-            placeholder="Type your message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="message-input-field"
-          />
-          <Button type="submit" variant="primary">Send</Button>
-        </InputGroup>
-      </Form>
+        <Form onSubmit={sendMessage} className="message-input" style={{ padding: '10px', backgroundColor: '#fbf9eb ', borderTop: '1px solid #ddd', marginLeft: sidebarCollapsed ? "0px" : "5px",}}>
+          <InputGroup>
+            <Form.Control
+              type="text"
+              placeholder="Type your message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="message-input-field"
+            />
+            <Button type="submit" variant="primary">Send</Button>
+          </InputGroup>
+        </Form>
+      </div>
     </div>
   );
 };
 
 export default ChatRoom;
-
-
-
-
 

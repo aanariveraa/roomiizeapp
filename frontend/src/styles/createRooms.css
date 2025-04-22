@@ -1,21 +1,20 @@
 /* Container for the entire customization page */
 .create-room-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background: #fbf9eb;
-    margin: 0;
-    width: 100%;             
-    min-height: 110vh;       
-    position: relative;      
-    box-sizing: border-box;
-    overflow: hidden;     
-    position: absolute;
-    top: -50px;           
-    left: 0;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #fbf9eb;
+  margin: 0;             
+  box-sizing: border-box;
+  overflow: hidden;     
+  min-height: 100vh;
+  overflow: auto;
+  width: auto;      
+  position: static; 
+  left: auto;
+  top: auto;
+}
   
 h2 {
   text-align: center;
@@ -52,6 +51,7 @@ h2 {
   }
   
   .room-customization-form h2 {
+    margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
   }

@@ -20,107 +20,102 @@ import LandingPage from "./pages/LandingPage";
 import ChatRoom from "./chats/ChatRoom";
 import CreateChatRoom from "./chats/CreateChatRoom";
 import ChatRoomsPage from "./chats/ChatRoomsPage";
+import Sidebar from "./pages/Sidebar";
 
 function App() {
   return (
     <BrowserRouter>
-    <Container style={{ width: "800px" }}>
-      <Row>
-        <Col>
-          <UserAuthProvider>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route 
-                    path="/home" 
-                    element={
-                      <ProtectedRoute>
-                        <Home />
-                      </ProtectedRoute>
-                    } 
-                />
-                <Route
-                  path="/defaultRooms"
-                  element={
-                    <ProtectedRoute>
-                      <DefaultRooms/>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/rooms3d"
-                  element={
-                    <ProtectedRoute>
-                      <Rooms3d />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/createRooms"
-                  element={
-                    <ProtectedRoute>
-                      <CreateRooms />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/design"
-                  element={
-                    <ProtectedRoute>
-                      <RoomSelection />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/myDesigns"
-                  element={
-                    <ProtectedRoute>
-                      < MyDesigns/>
-                    </ProtectedRoute>
-                  }
-                />
+      <UserAuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/create-chat-room"
-                  element={
-                    <ProtectedRoute>
-                      <CreateChatRoom/>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route 
-                  path="/chat-rooms"
-                  element={
-                    <ProtectedRoute>
-                      <ChatRoomsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/chat/:chatId"  
-                  element={
-                    <ProtectedRoute>
-                      <ChatRoom />
-                    </ProtectedRoute>
-                  }
-                />
-            </Routes>
-          </UserAuthProvider>
-        </Col>
-      </Row>
-    </Container>
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Sidebar><Home /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/defaultRooms"
+            element={
+              <ProtectedRoute>
+                <Sidebar><DefaultRooms /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rooms3d"
+            element={
+              <ProtectedRoute>
+                <Sidebar><Rooms3d /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/createRooms"
+            element={
+              <ProtectedRoute>
+                <Sidebar><CreateRooms /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/design"
+            element={
+              <ProtectedRoute>
+                <Sidebar><RoomSelection /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/myDesigns"
+            element={
+              <ProtectedRoute>
+                <Sidebar><MyDesigns /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Sidebar><Profile /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat-rooms"
+            element={
+              <ProtectedRoute>
+                <Sidebar><ChatRoomsPage /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-chat-room"
+            element={
+              <ProtectedRoute>
+                <Sidebar><CreateChatRoom /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat/:chatId"
+            element={
+              <ProtectedRoute>
+                <Sidebar><ChatRoom /></Sidebar>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </UserAuthProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
+
