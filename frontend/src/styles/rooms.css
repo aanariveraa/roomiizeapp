@@ -157,10 +157,6 @@ canvas {
   align-items: center;
 }
 
-.control-button, .save-button{
-  
-}
-
 
 .control-button:hover,
 .control-button.active {
@@ -179,17 +175,21 @@ canvas {
 /* Object Selection Panel */
 .object-selection-panel {
   position: fixed;
+
   top: 140px;
   left: -220px; /* Initially hidden */
-  width: 200px;
+  width: 300px;
   height: auto;
-  background: rgba(255, 255, 255, 0.95);
+  max-height: 500px;
+  background: rgba(40, 40, 40, 0.95);
   padding: 15px;
   border-radius: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 20;
+  /*scroll*/
   transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
   opacity: 0;
+  overflow-y: auto;
 }
 
 .object-selection-panel.open {
@@ -205,10 +205,27 @@ canvas {
 
 .object-selection-panel.expanded {
   left: 250px;
+
+  /*opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  overflow-y: auto;
+ 
+}
+
+.object-selection-panel.open {
+  left: 10px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;*/
+
 }
 
 /* Object Selection Toggle Button (Now fixed) */
 .toggle-button {
+
   position: fixed; /* Keep it visible even when panel is closed */
   top: 100px;
   left: 10px;
@@ -223,7 +240,7 @@ canvas {
 }
 
 .toggle-button:hover {
-  background: #fbf9eb;
+  background:  #e3cec0 !important;
 }
 
 /* Object Grid */
@@ -369,4 +386,88 @@ canvas {
   width: 24px;
   height: 24px;
 }
+
+
+.top-nav-bar {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;      /*top/bottom padding added */
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.top-nav-bar button {
+  margin-top: 6px;          /*extra spacing from top */
+  padding: 8px 14px;
+  font-size: 14px;
+  background-color:  #ddb395 !important;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.top-nav-bar button:hover {
+  background-color:  #e3cec0 !important;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100vw; 
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #000000; /* solid black */
+  padding: 24px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 700px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: #ffffff;  /* white text for contrast */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: black;
+  background-color: rgb(147, 204, 183);;
+}
+
+.modal-content ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  color: black;
+  background-color: rgb(147, 204, 183);
+}
+
+.modal-content button {
+  background-color: rgb(147, 204, 183);
+  color: black;
+  padding: 8px 14px;
+  border: 2px solid #73AD21;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  display: block;
+  margin: 0 auto;
+
+}
+
+.modal-content button:hover {
+  background-color: #5c907a;
+}
+
 

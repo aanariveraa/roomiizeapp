@@ -9,7 +9,9 @@ import SuiteModel from "./roomComponents/SuiteModel";
 import ObjectModel from "./roomComponents/ObjectModel";
 import ObjectSelectionPanel from "./roomComponents/ObjectSelection";
 import "../styles/rooms.css";
-
+import { doc, collection } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
+import RoomPanel from "./roomComponents/roomPanel";
 
 const Rooms3d = ({sidebarCollapsed}) => {
   const { user } = useUserAuth();
@@ -20,6 +22,11 @@ const Rooms3d = ({sidebarCollapsed}) => {
   const initialRoom = location.state?.selectedRoom || roomsData[0];
   const [initialCameraState, setInitialCameraState] = useState(null);
 
+  //room management 
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [showRoomSettings, setShowRoomSettings] = useState(false);
+  
+  //
   const [selectedRoom, setSelectedRoom] = useState(initialRoom);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
@@ -160,7 +167,7 @@ const Rooms3d = ({sidebarCollapsed}) => {
     }
   };
 
-  // Auto-save: debounce changes in roomObjects and save after 2 seconds of inactivity.
+  // Auto-save: debounce changes in roomObjects and save after 20 seconds of inactivity?
   useEffect(() => {
     if (autoSaveTimeoutRef.current) clearTimeout(autoSaveTimeoutRef.current);
     autoSaveTimeoutRef.current = setTimeout(() => {
@@ -171,9 +178,11 @@ const Rooms3d = ({sidebarCollapsed}) => {
   }, [roomObjects]);
 
   const addObject = (object) => {
+    //const newUid = doc(collection(db, "temp")).id;  //gen a uid 
     const newObject = {
       ...object,
       uid: Date.now() + Math.random(),
+      //uid:  newUid,
       position: [0, 0, 0],
       rotation: [0, 0, 0],
       color: "#ffffff"
@@ -224,7 +233,6 @@ const Rooms3d = ({sidebarCollapsed}) => {
       position: [...position],
       rotation: [...rotation]
     };
-    //const updated = { ...object };
   
     setRoomObjects((prev) => {
       const updatedObjects = (prev[selectedRoom.id] || []).map((obj) =>
@@ -234,7 +242,7 @@ const Rooms3d = ({sidebarCollapsed}) => {
       // debug log
       console.log("🛠 Updated object before saving:", updated)
   
-      // ✅ Save only the updated object for now, or the full updated list if you prefer
+      // Save only the updated object for now, or the full updated list if you prefer
       saveRoomItems(selectedRoom.id, updatedObjects);
   
       return {
@@ -315,6 +323,57 @@ const Rooms3d = ({sidebarCollapsed}) => {
   >
   
   <ObjectSelectionPanel onAddObject={addObject} sidebarCollapsed={sidebarCollapsed} />
+
+     {/*</div><div className="App">*/}
+      <div className="top-nav-bar">
+        <button onClick={() => setShowInstructions(true)}>Instructions</button>
+        {/*<button onClick={() => setShowRoomSettings(true)}>Room Settings</button>*/}
+      </div>
+
+      {showInstructions && (
+        <div className="modal-overlay">
+        <div className="modal-content">
+          <h2> How to Design Your Room</h2>
+          <ul>
+            <li><strong>Click an object</strong> from the selection panel to add it to your room.</li>
+            <li> <strong>Click an object in the room</strong> to select it.</li>
+            <li> When selected, a 3D control box with colored arrows will appear:</li>
+            <ul style={{ paddingLeft: "20px" }}>
+              <li>🟥 <strong>Red (X)</strong> — move left/right</li>
+              <li>🟩 <strong>Green (Y)</strong> — move up/down</li>
+              <li>🟦 <strong>Blue (Z)</strong> — move forward/back</li>
+              <li>Drag an arrow to move the object along that axis with precision</li>
+            </ul>
+            <li> The Control Panel (bottom right) appears when an object is selected:</li>
+            <ul style={{ paddingLeft: "20px" }}>
+              <li> Change the object's color</li>
+              <li> Rotate the object</li>
+              <li> Delete the object</li>
+            </ul>
+            <li> <strong>Click outside the room</strong> to deselect an object and resume camera movement.</li>
+            <li> Use the view mode buttons to switch perspectives:</li>
+            <ul style={{ paddingLeft: "20px" }}>
+              <li><strong>3D View</strong> — orbit around the room</li>
+              <li><strong>2D View</strong> — top-down floor plan</li>
+              <li><strong>Person View</strong> — walkthrough from eye-level</li>
+            </ul>
+            <li>💾 <strong>Changes auto-save</strong> every 30 seconds, or click the Save button to sync instantly.</li>
+            <li>⚙️ Use the <strong>Room Settings</strong> button to rename the room or manage collaborators.</li>
+          </ul>
+          <button onClick={() => setShowInstructions(false)}>Close</button>
+        </div>
+      </div>      
+      )}
+
+      {showRoomSettings && (
+        <RoomPanel 
+          selectedRoom={selectedRoom}
+          onClose={() => setShowRoomSettings(false)}
+          currentUser={user}
+        />
+      )}
+
+      {/*<ObjectSelectionPanel onAddObject={addObject} />*/}
 
 
       {/* Pass state down to ModelViewer */}
