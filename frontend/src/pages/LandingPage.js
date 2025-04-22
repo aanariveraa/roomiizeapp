@@ -10,8 +10,11 @@ import roomAnimation from "../components/roomAnimation.json";
 import { useRef, useEffect, useState } from 'react';
 import AOS from "aos";
 import "aos/dist/aos.css";
-
-
+import dragDrop from '../components/dragDrop.json';
+import share from '../components/share.json';
+import chatanimation from '../components/chatanimation.json';
+import compliance from '../components/compliance.json';
+import { Fade } from 'react-awesome-reveal';
 
 
 
@@ -50,7 +53,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="section" id="section-two">
         <div className="mission-lottie-wrapper">
           <div className="mission-text">
@@ -83,29 +86,68 @@ const LandingPage = () => {
       <Landing3DModel />
       </div>
 
-      <div className="section" id="section-five">
-        <div className="inSection">
-          <h2 data-aos="fade-up">Features</h2>
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            <li data-aos="fade-up" data-aos-delay="100" style={{ marginBottom: '1rem' }}>
-              🎨 <strong>Drag & Drop Room Builder</strong><br />
-              Easily customize your dorm layout with a visual editor.
-            </li>
-            <li data-aos="fade-up" data-aos-delay="200" style={{ marginBottom: '1rem' }}>
-              🤝 <strong>Real-time Collaboration</strong><br />
-              Invite roommates or friends to co-design and plan together.
-            </li>
-            <li data-aos="fade-up" data-aos-delay="300" style={{ marginBottom: '1rem' }}>
-              📋 <strong>University Compliance</strong><br />
-              Know what’s allowed or banned with university’s dorm policy.
-            </li>
-            <li data-aos="fade-up" data-aos-delay="400" style={{ marginBottom: '1rem' }}>
-              💾 <strong>Save & Share Designs</strong><br />
-              Save your layouts and share with friends.
-            </li>
-          </ul>
+      <div className="section features-section" id="section-five">
+        <div className="container">
+          <h2 className="section-title text-center mb-5">Platform Features</h2>
+          <div className="row">
+
+            {/* Feature 1 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up">
+                <Lottie animationData={dragDrop} style={{ height: 150 }} />
+                <h4>Fully Interactive</h4>
+                <p>Drag-and-drop anything, just like in real life. Move, rotate, and explore your room your way.</p>
+              </Fade>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up" delay={100}>
+                <Lottie animationData={chatanimation} style={{ height: 150 }} />
+                <h4>Shoppable</h4>
+                <p>Place real products into your layout and shop from multiple retailers with a click.</p>
+              </Fade>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up" delay={200}>
+                <Lottie animationData={compliance} style={{ height: 150 }} />
+                <h4>VR-enabled</h4>
+                <p>Step into your room using VR – explore it from a browser or headset for full immersion.</p>
+              </Fade>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up" delay={300}>
+                <Lottie animationData={share} style={{ height: 150 }} />
+                <h4>Pixel Perfect</h4>
+                <p>Every pattern, every texture – we render your space exactly as it is, down to the floor.</p>
+              </Fade>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up" delay={400}>
+                <Lottie animationData={share} style={{ height: 150 }} />
+                <h4>Hyper Accurate</h4>
+                <p>Sub-millimeter precision from blueprints, scans, or manual input – your room, to scale.</p>
+              </Fade>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="col-md-4 text-center mb-5">
+              <Fade direction="up" delay={500}>
+                <Lottie animationData={chatanimation} style={{ height: 150 }} />
+                <h4>Collaborative</h4>
+                <p>Invite friends or roommates. Chat, plan, and vote on room designs in real time.</p>
+              </Fade>
+            </div>
+          </div>
         </div>
       </div>
+
 
 
 
