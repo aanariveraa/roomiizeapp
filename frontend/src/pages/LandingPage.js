@@ -5,8 +5,26 @@ import "../app.css";
 import "./LandingPage.css";
 import Landing3DModel from "../pages/Landing3dModel"; 
 import StepSection from "../pages/StepSection";
+import Lottie from "lottie-react";
+import roomAnimation from "../components/roomAnimation.json";
+import { useRef, useEffect, useState } from 'react';
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+
+
+
 
 const LandingPage = () => {
+  const sectionFiveRef = useRef(null);
+  const [isSectionFiveVisible, setIsSectionFiveVisible] = useState(false);
+
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+  
+  
+ 
   return (
     <div className="landing-page">
 
@@ -32,14 +50,24 @@ const LandingPage = () => {
       </div>
 
       <div className="section" id="section-two">
-        <div id="inSection">
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Our Mission</h2>
-          <p style={{ fontSize: '1.125rem', maxWidth: '700px', margin: '0 auto', lineHeight: '1.75' }}>
-            At <strong>ROOMIIZE</strong>, our mission is to give college students the opportunity to  design, personalize, and love their living space — no matter how small. 
-            We believe that your dorm should reflect who you are, and that designing it should be fun, collaborative, and stress-free.
-          </p>
+        <div className="mission-lottie-wrapper">
+          <div className="mission-text">
+            <h2>Our Mission</h2>
+            <p>
+              At <strong>ROOMIIZE</strong>, our mission is to give college students the opportunity to design, personalize, and love their living space — no matter how small. 
+              We believe that your dorm should reflect who you are, and that designing it should be fun, collaborative, and stress-free.
+            </p>
+          </div>
+          <div className="lottie-container">
+            <Lottie 
+              animationData={roomAnimation} 
+              loop={true} 
+              style={{ height: "100%", width: "100%" }} 
+            />
+          </div>
         </div>
       </div>
+
 
 
       <div className="section" id="section-three">
@@ -55,27 +83,29 @@ const LandingPage = () => {
 
       <div className="section" id="section-five">
         <div className="inSection">
-          <h2>Features</h2>
+          <h2 data-aos="fade-up">Features</h2>
           <ul style={{ listStyleType: 'none', padding: 0 }}>
-            <li style={{ marginBottom: '1rem' }}>
+            <li data-aos="fade-up" data-aos-delay="100" style={{ marginBottom: '1rem' }}>
               🎨 <strong>Drag & Drop Room Builder</strong><br />
               Easily customize your dorm layout with a visual editor.
             </li>
-            <li style={{ marginBottom: '1rem' }}>
+            <li data-aos="fade-up" data-aos-delay="200" style={{ marginBottom: '1rem' }}>
               🤝 <strong>Real-time Collaboration</strong><br />
               Invite roommates or friends to co-design and plan together.
             </li>
-            <li style={{ marginBottom: '1rem' }}>
+            <li data-aos="fade-up" data-aos-delay="300" style={{ marginBottom: '1rem' }}>
               📋 <strong>University Compliance</strong><br />
               Know what’s allowed or banned with university’s dorm policy.
             </li>
-            <li style={{ marginBottom: '1rem' }}>
+            <li data-aos="fade-up" data-aos-delay="400" style={{ marginBottom: '1rem' }}>
               💾 <strong>Save & Share Designs</strong><br />
               Save your layouts and share with friends.
             </li>
           </ul>
         </div>
       </div>
+
+
 
 
       <div className="section" id="section-six">

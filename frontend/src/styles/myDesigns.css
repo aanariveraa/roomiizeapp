@@ -1,23 +1,26 @@
 /* Container for the entire My Designs page */
 .my-designs-container {
-    padding: 20px;
-    background: #fbf9eb;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    width: 100%;             
-    min-height: 110vh;       
-    position: relative;      
-    box-sizing: border-box;
-    overflow: hidden;     
-    position: absolute;
-    top: -50px;           
-    left: 0;
-  }
+  background-color: #fbf9eb;
+
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  overflow: auto;
+  width: 100%;      
+  position: static; 
+  left: auto;
+  top: auto;
+  max-width: 1600px;
+  margin: 0 auto;
+  
+  
+}
   
   /* Header styling */
   .my-designs-container h2 {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 0px;
     margin-bottom: 20px;
     font-size: 2rem;
     color: #333;
@@ -42,6 +45,8 @@
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex: 1 1 1000px; 
+    max-width: 350px;
   }
   
   .design-card:hover {
@@ -70,6 +75,7 @@
     color: #555;
     margin-top: 4px;
   }
+
   .delete-button {
     width: 28px;
     height: 28px;
@@ -119,4 +125,42 @@
     padding: 6px 12px;
   }
 
+  @media (min-width: 1200px) {
+    .my-designs-container h2 {
+      font-size: 2.5rem;
+    }
   
+    .design-title {
+      font-size: 1.4rem;
+    }
+  
+    .design-members {
+      font-size: 1rem;
+    }
+  }
+
+  .design-image {
+    width: 100%;
+    height: 500px; 
+    object-fit: cover;
+  }
+
+  @media (min-width: 1400px) {
+    .design-image {
+      height: 200px;
+    }
+  }
+
+
+@media (min-width: 1200px) {
+  .design-card {
+    max-width: 600px; 
+  }
+}
+
+@media (min-width: 1400px) {
+  .design-card {
+    max-width: 1000px; 
+  }
+}
+

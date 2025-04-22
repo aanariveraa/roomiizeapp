@@ -13,7 +13,7 @@ import { doc, collection } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import RoomPanel from "./roomComponents/roomPanel";
 
-const Rooms3d = () => {
+const Rooms3d = ({sidebarCollapsed}) => {
   const { user } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -309,14 +309,22 @@ const Rooms3d = () => {
     });
   };
 
-  const goBack = () => navigate(-1);
-  const goHome = () => {
-    navigate("/home");
-  };
-
-
   return (
-    <div className="App">
+    <div
+    className="App"
+    style={{
+      margin: 0,
+      marginLeft: sidebarCollapsed ? "5px" : "5px",
+      transition: "margin-left 0.3s ease",
+      position: "relative",
+      height: "100%",
+      overflow: "hidden"
+    }}
+  >
+  
+  <ObjectSelectionPanel onAddObject={addObject} sidebarCollapsed={sidebarCollapsed} />
+
+    {/* <div className="App">
       <div className="top-nav-bar">
         <button onClick={goHome}>Home</button>
         <button onClick={goBack}>Designs</button>
@@ -367,7 +375,8 @@ const Rooms3d = () => {
         />
       )}
 
-      <ObjectSelectionPanel onAddObject={addObject} />
+      <ObjectSelectionPanel onAddObject={addObject} />*/}
+
 
       {/* Pass state down to ModelViewer */}
       <ModelViewer 
@@ -417,4 +426,5 @@ const Rooms3d = () => {
 };
 
 export default Rooms3d;
+
 

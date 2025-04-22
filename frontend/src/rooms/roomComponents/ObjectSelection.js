@@ -12,7 +12,7 @@ import {
     getObjectOptions 
 } from "../../services/firebaseService"; 
 
-const ObjectSelectionPanel = ({ onAddObject }) => {
+const ObjectSelectionPanel = ({ onAddObject, sidebarCollapsed }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [objectOptions, setObjectOptions] = useState([]);
 
@@ -27,26 +27,41 @@ const ObjectSelectionPanel = ({ onAddObject }) => {
 
   return (
     <>
-      <button className="toggle-button" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? "Close" : "Objects"}
+      <button
+        className="toggle-button"
+        onClick={() => setIsOpen(!isOpen)} 
+        style={{
+          position: "fixed",
+          top: "90px",
+          left: sidebarCollapsed ? "80px" : "250px", 
+          transition: "left 0.3s ease",
+          zIndex: 100,
+        }}
+      >
+        {isOpen ? "Close" : "Objects"} 
       </button>
 
-      <div className={`object-selection-panel ${isOpen ? "open" : ""}`}>
+      <div
+        className={`object-selection-panel ${isOpen ? "open" : ""} ${
+          sidebarCollapsed ? "collapsed" : "expanded"
+        }`}
+      >
         {isOpen && (
           <div className="object-grid">
             {objectOptions.map((object) => (
               <div key={object.id} className="object-item">
-                <img src={object.image} alt={object.name} className="object-preview-image" />
-                <button onClick={() => onAddObject(object)}>
-                  Place {object.name.replace(/_/g, " ").replace(/\.glb$/i, "")}
-                </button>
+                <img
+                  src={object.image}
+                  alt={object.name}
+                  className="object-preview-image"
+                />
+                <button onClick={() => onAddObject(object)}>Place Item</button>
               </div>
             ))}
           </div>
         )}
       </div>
     </>
-
   );
 };
 

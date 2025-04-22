@@ -46,51 +46,65 @@ const CreateChatRoom = () => {
     setEmails(e.target.value);
   };
 
-  // create the chat room and add a default message
   const handleCreateChatRoom = async (event) => {
     event.preventDefault();
     setLoading(true);
-
+  
     try {
-      const invitedUsers = [user.uid, ...selectedUsers];
-
-      // create new chat room in the 'Chats' collection
+      const creatorId = user.uid;
+      console.log("Creating chat room...");
+  
       const newChatRoom = {
         ChatName: chatName,
-        Users: invitedUsers,
+        Users: [creatorId], // Only creator for now
       };
-
+  
+      // Create chat room
       const chatRoomRef = await addDoc(collection(db, 'Chats'), newChatRoom);
       const chatRoomId = chatRoomRef.id;
-
-      // create a default welcome message in the 'Messages' subcollection
+      console.log("Chat room created:", chatRoomId);
+  
+      // Add welcome message
       await addDoc(collection(db, 'Chats', chatRoomId, 'Messages'), {
         Sender: 'System',
         Content: 'Welcome to the chat room!',
-        Date: serverTimestamp(), // Automatically timestamp the message
+        Date: serverTimestamp(),
       });
-
-      // update the user's document with the new chat room ID
-      const userRef = doc(db, 'users', user.uid);
+      console.log("Welcome message added");
+  
+      // Update creator's user document
+      const userRef = doc(db, 'users', creatorId);
       await updateDoc(userRef, {
         chatRooms: arrayUnion(chatRoomId),
       });
-
-      alert('Chat room created successfully!');
-      navigate(`/chat/${chatRoomId}`); 
+      console.log("User chatRooms updated");
+  
+      // Send invites
+      console.log("Selected users:", selectedUsers);
+      for (const invitedUserId of selectedUsers) {
+        console.log("Sending invite to:", invitedUserId);
+        await addDoc(collection(db, 'Invites'), {
+          chatRoomId,
+          from: creatorId,
+          to: invitedUserId,
+          chatRoomName: chatName,
+          status: 'pending',
+          timestamp: serverTimestamp(),
+        });
+      }
+      console.log("Invites sent");
+  
+      alert('Chat room created and invites sent!');
+      navigate(`/chat/${chatRoomId}`);
     } catch (error) {
       console.error('Error creating chat room:', error);
       alert('There was an error creating the chat room.');
     }
   };
-
-  const goBack = () => {
-    navigate('/chat-rooms');
-  };
+  
 
   return (
     <div className="create-chat-room">
-       <button className="back-button" onClick={goBack}>Back</button>
       <h3>Create a New Chat Room</h3>
       <Form onSubmit={handleCreateChatRoom}>
         <Form.Group controlId="chatName">
@@ -135,3 +149,4 @@ const CreateChatRoom = () => {
 };
 
 export default CreateChatRoom;
+

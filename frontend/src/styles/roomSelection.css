@@ -1,20 +1,19 @@
 .room-selection-container {
-    padding: 20px;
-    background: #fbf9eb;
-    margin: 0;
+    background-color: #fbf9eb;
+     margin: 0;
     font-family: Arial, sans-serif;
-    width: 100%;             
-    min-height: 110vh;       
-    position: relative;      
+    min-height: 100vh;
     box-sizing: border-box;
-    overflow: hidden;     
-    position: absolute;
-    top: -50px;           
-    left: 0;
-  }
+    padding: 20px;
+    overflow: auto;
+    width: auto;      
+    position: static; 
+    left: auto;
+    top: auto;
+}
 
   .room-selection-container h2 {
-    margin-top: 60px;
+    margin-top: 0px;
     margin-bottom: 200px;
     font-weight: bold;
   }
@@ -29,9 +28,13 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    max-width: 1600px;
   }
   
   .room-card {
+    flex: 1 1 300px; 
+    max-width: 100%;
+    min-width: 300px;
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 5px;
