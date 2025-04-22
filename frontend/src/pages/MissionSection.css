@@ -1,0 +1,28 @@
+/* MissionSection.css */
+.mission-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .mission-left,
+  .mission-right {
+    flex: 1;
+    min-width: 300px;
+    padding: 1rem;
+  }
+  
+  .mission-right h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: black; /* ✅ ensure text is visible */
+  }
+  
+  .mission-right p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333; /* ✅ adjust if theme is dark */
+  }
+  
