@@ -105,7 +105,7 @@ const LandingPage = () => {
               <Fade direction="up" delay={100}>
                 <Lottie animationData={chatanimation} style={{ height: 150 }} />
                 <h4>Collaborate</h4>
-                <p>Work with roommates and chat with them live to see your room come to life.</p>
+                <p>nvite friends or roommates. Chat, plan, and vote on room designs in real time.</p>
               </Fade>
             </div>
 
@@ -140,8 +140,8 @@ const LandingPage = () => {
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={500}>
                 <Lottie animationData={chatanimation} style={{ height: 150 }} />
-                <h4>Collaborative</h4>
-                <p>Invite friends or roommates. Chat, plan, and vote on room designs in real time.</p>
+                <h4>TBA</h4>
+                <p>i have ran out of ideas, need a break</p>
               </Fade>
             </div>
           </div>
