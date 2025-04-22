@@ -73,3 +73,30 @@
     font-size: 0.9rem;
   }
 }
+
+.home-content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  flex-wrap: wrap;
+}
+
+.left-content {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+}
+
+.right-lottie {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.right-lottie canvas {
+  max-width: 100%;
+  height: auto;
+}
