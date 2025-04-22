@@ -50,9 +50,10 @@ const RoomPanel = ({ selectedRoom, onClose, currentUser }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>{selectedRoom?.roomName} Management</h2>
-        <button /*onClick={handleRenameRoom}*/>Rename Room</button>
-        <button /*onClick={handleAddMember}*/>Add Member</button>
-        <button /*onClick={handleRemoveMember}*/>Remove Member</button>
+        <button>COMING SOON!</button>
+        {/*<button /*onClick={handleRenameRoom}*>Rename Room</button>
+        <button /*onClick={handleAddMember}*>Add Member</button>
+        <button /*onClick={handleRemoveMember}*>Remove Member</button>*/}
         <button onClick={onClose}>Close</button>
       </div>
     </div>

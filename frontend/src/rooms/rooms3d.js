@@ -324,33 +324,31 @@ const Rooms3d = ({sidebarCollapsed}) => {
   
   <ObjectSelectionPanel onAddObject={addObject} sidebarCollapsed={sidebarCollapsed} />
 
-    {/* <div className="App">
+     {/*</div><div className="App">*/}
       <div className="top-nav-bar">
-        <button onClick={goHome}>Home</button>
-        <button onClick={goBack}>Designs</button>
         <button onClick={() => setShowInstructions(true)}>Instructions</button>
-        <button onClick={() => setShowRoomSettings(true)}>Room Settings</button>
+        {/*<button onClick={() => setShowRoomSettings(true)}>Room Settings</button>*/}
       </div>
 
       {showInstructions && (
         <div className="modal-overlay">
         <div className="modal-content">
-          <h2>🛠 How to Design Your Room</h2>
+          <h2> How to Design Your Room</h2>
           <ul>
-            <li>🖱️<strong>Click an object</strong> from the selection panel to add it to your room.</li>
-            <li>🖱️ <strong>Click an object in the room</strong> to select it.</li>
+            <li><strong>Click an object</strong> from the selection panel to add it to your room.</li>
+            <li> <strong>Click an object in the room</strong> to select it.</li>
             <li> When selected, a 3D control box with colored arrows will appear:</li>
             <ul style={{ paddingLeft: "20px" }}>
               <li>🟥 <strong>Red (X)</strong> — move left/right</li>
               <li>🟩 <strong>Green (Y)</strong> — move up/down</li>
               <li>🟦 <strong>Blue (Z)</strong> — move forward/back</li>
-              <li>📌 Drag an arrow to move the object along that axis with precision</li>
+              <li>Drag an arrow to move the object along that axis with precision</li>
             </ul>
             <li> The Control Panel (bottom right) appears when an object is selected:</li>
             <ul style={{ paddingLeft: "20px" }}>
-              <li>🎨 Change the object's color</li>
-              <li>🔁 Rotate the object</li>
-              <li>🗑️ Delete the object</li>
+              <li> Change the object's color</li>
+              <li> Rotate the object</li>
+              <li> Delete the object</li>
             </ul>
             <li> <strong>Click outside the room</strong> to deselect an object and resume camera movement.</li>
             <li> Use the view mode buttons to switch perspectives:</li>
@@ -375,7 +373,7 @@ const Rooms3d = ({sidebarCollapsed}) => {
         />
       )}
 
-      <ObjectSelectionPanel onAddObject={addObject} />*/}
+      {/*<ObjectSelectionPanel onAddObject={addObject} />*/}
 
 
       {/* Pass state down to ModelViewer */}
