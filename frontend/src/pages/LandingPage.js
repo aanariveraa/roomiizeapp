@@ -104,8 +104,8 @@ const LandingPage = () => {
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={100}>
                 <Lottie animationData={chatanimation} style={{ height: 150 }} />
-                <h4>Shoppable</h4>
-                <p>Place real products into your layout and shop from multiple retailers with a click.</p>
+                <h4>Collaborate</h4>
+                <p>Work with roommates and chat with them live to see your room come to life.</p>
               </Fade>
             </div>
 
@@ -113,8 +113,8 @@ const LandingPage = () => {
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={200}>
                 <Lottie animationData={compliance} style={{ height: 150 }} />
-                <h4>VR-enabled</h4>
-                <p>Step into your room using VR – explore it from a browser or headset for full immersion.</p>
+                <h4>Built-in Chat</h4>
+                <p>Communicate without leaving the app to discuss designs or decisions.</p>
               </Fade>
             </div>
 
@@ -122,8 +122,8 @@ const LandingPage = () => {
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={300}>
                 <Lottie animationData={share} style={{ height: 150 }} />
-                <h4>Pixel Perfect</h4>
-                <p>Every pattern, every texture – we render your space exactly as it is, down to the floor.</p>
+                <h4>University Compliance</h4>
+                <p>Only see and place furniture that meets your school's policies.</p>
               </Fade>
             </div>
 
@@ -131,8 +131,8 @@ const LandingPage = () => {
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={400}>
                 <Lottie animationData={share} style={{ height: 150 }} />
-                <h4>Hyper Accurate</h4>
-                <p>Sub-millimeter precision from blueprints, scans, or manual input – your room, to scale.</p>
+                <h4>Help me out guys</h4>
+                <p>give me another feature to add puhhlease</p>
               </Fade>
             </div>
 

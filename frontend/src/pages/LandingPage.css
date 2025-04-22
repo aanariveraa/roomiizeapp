@@ -83,7 +83,7 @@
     left: 0;
     position: absolute;
     scroll-snap-align: start;
-    margin-top: 330vh;
+    margin-top: 390vh;
   }
   
   #section-six {
@@ -91,7 +91,7 @@
     left: 0;
     position: absolute;
     scroll-snap-align: start;
-    margin-top: 400vh;
+    margin-top: 500vh;
     background-color: rgb(224, 214, 200);
   }
 
