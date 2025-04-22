@@ -66,4 +66,3 @@ const ObjectSelectionPanel = ({ onAddObject, sidebarCollapsed }) => {
 };
 
 export default ObjectSelectionPanel;
-
