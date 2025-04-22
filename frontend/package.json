@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@firebase/app-check": "^0.8.12",
+    "@lottiefiles/dotlottie-react": "^0.13.4",
     "@mediapipe/tasks-vision": "^0.10.20",
     "@react-three/drei": "^9.120.5",
     "@react-three/fiber": "^8.17.10",
@@ -19,6 +20,7 @@
     "firebase": "^11.3.1",
     "lottie-react": "^2.4.1",
     "react": "^18.2.0",
+    "react-awesome-reveal": "^4.3.1",
     "react-bootstrap": "^2.10.9",
     "react-bootstrap-icons": "^1.11.5",
     "react-color": "^2.19.3",
