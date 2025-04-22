@@ -4,12 +4,15 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../styles/Home.css"; 
+import welcomeAnim from "../components/welcome.json"; 
+import Lottie from "lottie-react";
+
 
 const Home = () => {
   const { user, logOut } = useUserAuth();
   const navigate = useNavigate();
 
-  // Handle Logout
+  // Handle Logoutf
   const handleLogout = async () => {
     try {
       await logOut();
@@ -20,11 +23,15 @@ const Home = () => {
   };
 
   // sidebar for users to navigate between pages
-  return ( 
-    
+  return (
     <div className="home-container">
-      <div className="content">
+      <div className="home-content-wrapper">
+        <div className="left-content">
           <h2>Welcome, {user.displayName}!</h2>
+        </div>
+        <div className="right-lottie">
+          <Lottie animationData={welcomeAnim} loop={true} autoplay={true} />
+        </div>
       </div>
     </div>
   );
