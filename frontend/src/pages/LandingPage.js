@@ -15,7 +15,8 @@ import share from '../components/share.json';
 import chatanimation from '../components/chatanimation.json';
 import compliance from '../components/compliance.json';
 import { Fade } from 'react-awesome-reveal';
-
+import chats from '../components/chats.json';
+import ruler from '../components/ruler.json';
 
 
 const LandingPage = () => {
@@ -103,7 +104,7 @@ const LandingPage = () => {
             {/* Feature 2 */}
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={100}>
-                <Lottie animationData={chatanimation} style={{ height: 150 }} />
+                <Lottie animationData={chats} style={{ height: 150 }} />
                 <h4>Collaborate</h4>
                 <p>Invite friends or roommates. Chat, plan, and vote on room designs in real time.</p>
               </Fade>
@@ -112,7 +113,7 @@ const LandingPage = () => {
             {/* Feature 3 */}
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={200}>
-                <Lottie animationData={compliance} style={{ height: 150 }} />
+                <Lottie animationData={chatanimation} style={{ height: 150 }} />
                 <h4>Built-in Chat</h4>
                 <p>Communicate without leaving the app to discuss designs or decisions.</p>
               </Fade>
@@ -121,7 +122,7 @@ const LandingPage = () => {
             {/* Feature 4 */}
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={300}>
-                <Lottie animationData={share} style={{ height: 150 }} />
+                <Lottie animationData={compliance} style={{ height: 150 }} />
                 <h4>University Compliance</h4>
                 <p>Only see and place furniture that meets your school's policies.</p>
               </Fade>
@@ -139,7 +140,7 @@ const LandingPage = () => {
             {/* Feature 6 */}
             <div className="col-md-4 text-center mb-5">
               <Fade direction="up" delay={500}>
-                <Lottie animationData={chatanimation} style={{ height: 150 }} />
+                <Lottie animationData={ruler} style={{ height: 150 }} />
                 <h4>Dorm Size Accuracy</h4>
                 <p>Roomiize matches your exact dorm dimensions to help you design with precision</p>
               </Fade>
