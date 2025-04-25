@@ -250,18 +250,14 @@
 }
 
 .tour-btn {
-  background-color: transparent;
-  color: #0b0b0b;
-  border: 2px solid #ddb395;
-  padding: 10px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: all 0.3s ease;
+  background-color: #4e9af1;
+  color: white;             
+  border: none;
+  transition: 0.3s ease;
 }
 
 .tour-btn:hover {
-  background-color: #FFEFD5;
-  color: black;
+  background-color: #357ac9; 
 }
+
 
