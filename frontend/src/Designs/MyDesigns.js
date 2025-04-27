@@ -78,8 +78,8 @@ function MyDesigns() {
       }
 
       // 3. Remove from invites list locally
-      //setroomInvites(prev => prev.filter(i => i.id !== invite.id));
-      await reloadInvites();
+      setroomInvites(prev => prev.filter(i => i.id !== invite.id));
+      
     } catch (error) {
       console.error("Error responding to room invite:", error);
     }
