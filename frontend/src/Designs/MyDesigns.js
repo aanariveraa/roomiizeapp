@@ -20,6 +20,62 @@ function MyDesigns() {
   const [roominvites, setroomInvites] = useState([]);
   const [showroomInvites, setroomShowInvites] = useState(false);
 
+  const fetchDesigns = async () => {
+    try {
+      console.log("Fetching designs for user:", user.uid);
+      const userDesigns = await loadRooms(user.uid);
+  
+      // For each design, fetch the preview image URL based on the room type.
+      const designsWithPreview = await Promise.all(
+        userDesigns.map(async (design) => {
+          try {
+            // Here, design.roomType should be the room type identifier.
+            const previewURL = await getRoomPreviewURL(design.roomType);
+            //return { ...design, previewImage: previewURL };
+  
+            //get user name
+            const members = await Promise.all(
+              (design.membersId || []).map(async (uid) => {
+                const user = await getUserById(uid);
+                return user?.displayName || user?.email || uid;
+              })
+            );
+  
+            return {
+              ...design,
+              previewImage: previewURL,
+              memberNames: members,
+            };
+  
+          } catch (error) {
+            console.error("Error fetching preview for room:", design.id, error);
+            return { 
+              ...design, 
+              previewImage: "/defaultRoomImage.png",
+              memberNames: [],
+            };
+          }
+        })
+      );
+      console.log("Fetched designs with previews:", designsWithPreview);
+      //setDesigns(designsWithPreview);
+      //most recent room updated at the top
+      const sorted = designsWithPreview.sort((a, b) => {
+        const aTime = a.updatedAt?.seconds || 0;
+        const bTime = b.updatedAt?.seconds || 0;
+        return bTime - aTime; // Most recent first
+      });
+      setDesigns(sorted);
+  
+  
+    } catch (error) {
+      console.error("Error fetching user designs:", error);
+      setDesigns([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // FETCH ROOM INVITES
   useEffect(() => {
     if (!user) return;
@@ -77,9 +133,10 @@ function MyDesigns() {
         });
       }
 
+      await fetchDesigns(); // <-- Refresh designs after accepting!
       // 3. Remove from invites list locally
       setroomInvites(prev => prev.filter(i => i.id !== invite.id));
-      
+
     } catch (error) {
       console.error("Error responding to room invite:", error);
     }
@@ -88,61 +145,6 @@ function MyDesigns() {
   useEffect(() => {
     if (!user) return;
     
-    const fetchDesigns = async () => {
-      try {
-        console.log("Fetching designs for user:", user.uid);
-        const userDesigns = await loadRooms(user.uid);
-
-        // For each design, fetch the preview image URL based on the room type.
-        const designsWithPreview = await Promise.all(
-          userDesigns.map(async (design) => {
-            try {
-              // Here, design.roomType should be the room type identifier.
-              const previewURL = await getRoomPreviewURL(design.roomType);
-              //return { ...design, previewImage: previewURL };
-
-              //get user name
-              const members = await Promise.all(
-                (design.membersId || []).map(async (uid) => {
-                  const user = await getUserById(uid);
-                  return user?.displayName || user?.email || uid;
-                })
-              );
-
-              return {
-                ...design,
-                previewImage: previewURL,
-                memberNames: members,
-              };
-
-            } catch (error) {
-              console.error("Error fetching preview for room:", design.id, error);
-              return { 
-                ...design, 
-                previewImage: "/defaultRoomImage.png",
-                memberNames: [],
-              };
-            }
-          })
-        );
-        console.log("Fetched designs with previews:", designsWithPreview);
-        //setDesigns(designsWithPreview);
-        //most recent room updated at the top
-        const sorted = designsWithPreview.sort((a, b) => {
-          const aTime = a.updatedAt?.seconds || 0;
-          const bTime = b.updatedAt?.seconds || 0;
-          return bTime - aTime; // Most recent first
-        });
-        setDesigns(sorted);
-
-
-      } catch (error) {
-        console.error("Error fetching user designs:", error);
-        setDesigns([]);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDesigns();
   }, [user]);
   
