@@ -73,3 +73,21 @@
   padding: 20px;
   overflow-y: auto;
 }
+
+.online-users {
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.sidebar-links {
+  margin-bottom: 20px;
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  margin: 10px;
+  cursor: pointer;
+}

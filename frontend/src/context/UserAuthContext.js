@@ -14,7 +14,7 @@ import {
   GoogleAuthProvider, 
   updateProfile
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 
 //userAuthContext : Manage Authentication Across App
 //create a context
@@ -32,14 +32,42 @@ export function UserAuthProvider({ children }) {
     // Check auth state on mount
     useEffect(() => {
       console.log(" Setting up auth state listener...");
+      
       const unsubscribe = onAuthStateChanged(auth, async (currentuser) => {
         if(currentuser){
           console.log(" User logged in:", currentuser);
           setUser(currentuser);
+
+          const userRef = doc(db, "users", currentuser.uid);
+
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            if (userData.isOnline === undefined) {
+              console.log("User missing isOnline field. Setting it to false first.");
+              await updateDoc(userRef, { isOnline: false });
+            }
+          }
+
+          // After ensuring field exists, set online
+          await updateDoc(userRef, { isOnline: true });
+
+          // Handle tab close / browser unload
+          const handleBeforeUnload = async () => {
+            await updateDoc(userRef, { isOnline: false });
+          };
+          
+          window.addEventListener("beforeunload", handleBeforeUnload);
+
+          return () => {
+            console.log("Cleaning up onAuthStateChanged...");
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            updateDoc(userRef, { isOnline: false });
+          };
         }else{
           console.log(" No user logged in.");
           setUser(null);
-        }
+        }   
       });
     
       return () => { 
@@ -76,6 +104,7 @@ export function UserAuthProvider({ children }) {
             displayName: name,
             photoURL: profilePic || "", 
             createdAt: new Date(),
+            isOnline: false
           });
 
           // 4️⃣ Update Global User State
@@ -116,6 +145,12 @@ export function UserAuthProvider({ children }) {
     async function logOut() {
       try {
         console.log("Logging out user...");
+
+        if (auth.currentUser) {
+          const userRef = doc(db, "users", auth.currentUser.uid);
+          await updateDoc(userRef, { isOnline: false }); // Mark offline BEFORE logout
+        }
+        
         await signOut(auth);
         console.log(" User logged out.");
         setUser(null); // Ensure state is updated
@@ -150,6 +185,7 @@ export function UserAuthProvider({ children }) {
             displayName: googleUser.displayName || "",
             photoURL: googleUser.photoURL || "",
             createdAt: new Date(),
+            isOnline: false
           });
         }
 
