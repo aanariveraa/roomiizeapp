@@ -1,20 +1,89 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import { loadRooms, deleteRoom } from "../services/roomDataService";
 import { getUserById } from "../services/userService";
 import { getRoomPreviewURL } from "../services/firebaseService"; // adjust the path
+import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { db } from "../firebase/firebaseConfig"; // Make sure the path matches your project
 import "../styles/myDesigns.css";
+import "../styles/ChatRoomsPage.css";
+import { Button } from 'react-bootstrap';
 
 function MyDesigns() {
   const { user } = useUserAuth();
   const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roomToDelete, setRoomToDelete] = useState(null);
-
   const navigate = useNavigate();
+  //Room Invitations
+  const [roominvites, setroomInvites] = useState([]);
+  const [showroomInvites, setroomShowInvites] = useState(false);
 
-  const goBack = () => navigate(-1);
+  // FETCH ROOM INVITES
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchRoomInvites = async () => {
+      try {
+        const q = query(
+          collection(db, "RoomInvites"),
+          where("to", "==", user.uid),
+          where("status", "==", "pending")
+        );
+        const snapshot = await getDocs(q);
+    
+        const invites = await Promise.all(
+          snapshot.docs.map(async (docSnap) => {
+            const inviteData = { id: docSnap.id, ...docSnap.data() };
+    
+            // Fetch the inviter's user info
+            let fromName = "Unknown";
+            try {
+              const inviterData = await getUserById(inviteData.from);
+              fromName = inviterData?.displayName || inviterData?.email || "Unknown";
+            } catch (error) {
+              console.error("Error fetching inviter info:", error);
+            }
+    
+            return { ...inviteData, fromName };
+          })
+        );
+    
+        setroomInvites(invites);
+      } catch (error) {
+        console.error("Error fetching room invites:", error);
+      }
+    };
+
+    fetchRoomInvites();
+  }, [user]);
+  
+  // 💬 HANDLE ROOM INVITE RESPONSE
+  const handleRoomInviteResponse = async (invite, accepted) => {
+    const inviteRef = doc(db, "RoomInvites", invite.id);
+    const roomRef = doc(db, "rooms", invite.roomId);
+
+    try {
+      // 1. Update invite status
+      await updateDoc(inviteRef, {
+        status: accepted ? "accepted" : "declined",
+      });
+
+      // 2. If accepted, add user to room membersId array
+      if (accepted) {
+        await updateDoc(roomRef, {
+          membersId: arrayUnion(user.uid),
+        });
+      }
+
+      // 3. Remove from invites list locally
+      //setroomInvites(prev => prev.filter(i => i.id !== invite.id));
+      await reloadInvites();
+    } catch (error) {
+      console.error("Error responding to room invite:", error);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -76,16 +145,18 @@ function MyDesigns() {
     };
     fetchDesigns();
   }, [user]);
+  
 
   const handleDesignClick = (design) => {
     console.log("Selected design:", design);
     navigate("/rooms3d", { state: { selectedRoom: design } });
   };
 
+  //not comp x
   const handleDeleteClick = (design) => {
     setRoomToDelete(design); // triggers confirmation popup
   };
-  
+  //not comp x
   const confirmDelete = async () => {
     if (!roomToDelete) return;
     try {
@@ -99,7 +170,7 @@ function MyDesigns() {
       setRoomToDelete(null);
     }
   };
-  
+  //not comp x
   const cancelDelete = () => {
     setRoomToDelete(null);
   };
@@ -144,7 +215,7 @@ function MyDesigns() {
                       handleDeleteClick(design);
                     }}*/
                   >
-                    🗑
+                    C
                   </button>
                 )}
 
@@ -153,6 +224,38 @@ function MyDesigns() {
           ))}
         </div>
       )}
+
+      {/*ROOM INVITATIONS */}
+      <div>
+        <Button className='invite-button' onClick={() => setroomShowInvites(prev => !prev)}>
+          {showroomInvites ? 'Hide Invites' : 'Show Invites'}
+        </Button>
+
+        {showroomInvites && (
+            <div className="invites-container">
+              <h3>Your Room Invites</h3>
+              {roominvites.length === 0 ? (
+                <p>No room invites pending</p>
+              ) : (
+                <ul>
+                  {roominvites.map((invite) => (
+                    <li className="room-invite-item" key={invite.id}>
+                      <p>Room Name: {invite.roomName}</p>
+                      <p>Invited by: {invite.fromName}</p>
+                      <div className="invite-button-accept">
+                        <Button className="accept" onClick={() => handleRoomInviteResponse(invite, true)}>Accept</Button>{' '}
+                        <Button className="decline" variant="secondary" onClick={() => handleRoomInviteResponse(invite, false)}>Decline</Button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+      </div>
+
+
+
 
       {roomToDelete && (
         <div className="modal-overlay">

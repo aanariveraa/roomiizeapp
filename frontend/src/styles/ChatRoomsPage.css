@@ -393,7 +393,7 @@ body {
 }
 
 .accept:hover {
-  background-color: #e3cec0 !important;
+  background-color: lightgreen !important;
 }
 
 .decline {

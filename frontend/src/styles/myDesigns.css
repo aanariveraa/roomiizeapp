@@ -164,3 +164,16 @@
   }
 }
 
+.room-invite-item {
+  background-color: #e4f4ed !important; 
+  border: 2px solid #87cfb1; 
+  margin: 10px 0;
+  border-radius: 8px;
+  padding: 20px;
+  display: block;
+  width: 100%;  
+  max-width: 400px; 
+  text-align: center; 
+  box-sizing: border-box;
+}
+
