@@ -204,24 +204,23 @@ function MyDesigns() {
               <div className="design-title">{design.roomName}</div>
               
               <div className="design-members">
-                👥 Members: {design.memberNames?.join(", ") || "No members"}
+                👥 Members:
+                {design.memberNames?.length > 0 ? (
+                  design.memberNames.map((name, idx) => (
+                    <span key={idx} className="member-badge">{name}</span>
+                  ))
+                ) : (
+                  <span> No members</span>
+                )}
               </div>
 
-                {/*  Show delete button only for creator */}
+
+                {/*  Show for creator */}
                 {design.creator === user.uid && (
-                  <button
-                    className="delete-button"
-                    /*onClick={(e) => {
-                      e.stopPropagation(); // prevent room click
-                      console.log("🗑️ Delete clicked for:", design.roomName); // 👈
-                      handleDeleteClick(design);
-                    }}*/
-                  >
-                    C
-                  </button>
+                  <div className="creator-badge">
+                    <span>🌟You made this room</span>
+                  </div>
                 )}
-
-
             </div>
           ))}
         </div>

@@ -177,3 +177,26 @@
   box-sizing: border-box;
 }
 
+.creator-badge {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #097969;
+}
+
+.design-members {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #666; /* subtle gray text */
+  display: flex;
+  flex-wrap: wrap; /* allow wrapping */
+  gap: 5px; /* space between names */
+}
+
+.member-badge {
+  background-color: #e0f7fa; /* light blue */
+  color: #00796b; /* teal text */
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
