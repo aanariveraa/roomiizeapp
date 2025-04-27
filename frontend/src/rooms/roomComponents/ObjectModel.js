@@ -4,8 +4,10 @@
 // and displays the object in the scene.
 
 import React, { useEffect, useRef, useState } from "react";
-import { useGLTF, TransformControls, Center } from "@react-three/drei";
+import { useGLTF, TransformControls, Center, Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const ObjectModel = ({
   object,
@@ -16,7 +18,9 @@ const ObjectModel = ({
   onDragStart,
   onDragEnd,
   onRemoveObject,
-  color
+  color,
+  selectedRoom,      //
+  currentUser        //
 }) => {
   const { scene } = useGLTF(object.modelPath);
   const groupRef = useRef();
@@ -156,7 +160,7 @@ const ObjectModel = ({
       showY={true}
       showZ={true}
       onDragStart={() => onDragStart?.()}
-      onDragEnd={() => {
+      onDragEnd={async () => {
         //console.log("🧪 onDragEnd triggered!", transformRef.current?.object);
 
         const obj = transformRef.current?.object;
@@ -179,8 +183,15 @@ const ObjectModel = ({
             pos,
             rot
           );
+
+          // Unlock the object after moving
+            const objectRef = doc(db, "rooms", selectedRoom.id, "Items", String(object.uid));
+            await updateDoc(objectRef, {
+              lockedBy: null,
+              lockedByName: null
+            });
+
           onDragEnd?.();
-      
           transformRef.current.detach();
         }
       }}
@@ -194,13 +205,55 @@ const ObjectModel = ({
             transformRef.current.attach(el);
           }
         }}
-        onPointerDown={(e) => {
+        onPointerDown={ async (e) => {
           e.stopPropagation();
-          console.log("✅ Object clicked:", object.name);
-          onSelect(object);
+
+          // If someone else is editing this object
+          if (object.lockedBy && object.lockedBy !== currentUser.uid) {
+            alert(`${object.lockedByName || "Someone"} is editing this object.`);
+            return;
+          }
+
+          //  Lock object
+          const objectRef = doc(db, "rooms", selectedRoom.id, "Items", String(object.uid)); 
+          try {
+            await updateDoc(objectRef, {
+              lockedBy: currentUser.uid,
+              lockedByName: currentUser.displayName || currentUser.email || "User"
+            });
+            console.log(" Lock acquired, selecting:", object.name);
+            onSelect(object);
+          } catch (error) {
+            console.error(" Error locking object:", error);
+            alert("Failed to lock the object. Try again.");
+          }
         }}
       >
-          <primitive object={scene} scale={[1, 1, 1]} />
+        <primitive object={scene} scale={[1, 1, 1]} />
+
+        {/* ✍️ Floating label if locked */}
+        {object.lockedBy && (
+              <Html center distanceFactor={10}>
+              <div style={{
+                background: "rgba(255, 255, 255, 0.85)",
+                padding: "6px 12px",
+                borderRadius: "12px",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.25)",
+                fontSize: "14px",
+                fontWeight: 600,
+                color: "#333",
+                border: "1px solid #ddd",
+                backdropFilter: "blur(4px)",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.3s ease"
+              }}>
+                <span style={{ fontSize: "16px" }}>✍️</span> 
+                <span>{object.lockedByName || "Someone"}</span>
+              </div>
+            </Html>
+         )}
 
       </group>
     </TransformControls>

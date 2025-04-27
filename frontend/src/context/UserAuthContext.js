@@ -14,7 +14,9 @@ import {
   GoogleAuthProvider, 
   updateProfile
 } from "firebase/auth";
-import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import { unsubscribeAllListeners } from "../services/firestoreUnsubscribeService"; 
+
 
 //userAuthContext : Manage Authentication Across App
 //create a context
@@ -146,14 +148,25 @@ export function UserAuthProvider({ children }) {
       try {
         console.log("Logging out user...");
 
+        // 1. Unsubscribe first before signOut
+        unsubscribeAllListeners();
+
+        // 2. Set user offline (safe attempt)
         if (auth.currentUser) {
-          const userRef = doc(db, "users", auth.currentUser.uid);
-          await updateDoc(userRef, { isOnline: false }); // Mark offline BEFORE logout
+          try {
+            const userRef = doc(db, "users", auth.currentUser.uid);
+            await updateDoc(userRef, { isOnline: false });
+          } catch (error) {
+            console.warn("Failed to mark user offline. Proceeding to sign out anyway.", error);
+          }
         }
-        
+
+        // 3. Sign out
         await signOut(auth);
         console.log(" User logged out.");
-        setUser(null); // Ensure state is updated
+
+        // 4. Clear local user state
+        setUser(null); // Ensure state is update
         
       } catch (error) {
         console.error("Logout error:", error.message);

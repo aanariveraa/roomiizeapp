@@ -16,6 +16,7 @@ import {
   where,
   deleteDoc
 } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 // Create a new room 
 export async function createRoom(roomData) {
@@ -76,14 +77,16 @@ export const saveRoomItems = async (roomId, items) => {
         ...item,
         position: item.position || [0, 0, 0],
         rotation: item.rotation || [0, 0, 0],
-        updatedAt: serverTimestamp(), // <-- better than overwriting placedAt
+        updatedAt: serverTimestamp(), 
       });
     });
 
     await batch.commit();
     console.log("✅ Room items saved to Firestore.");
     items.forEach(item => {
-      console.log(`🧩 ${item.name || item.uid} -> pos: ${item.position.map(n => n.toFixed(2))}, rot: ${item.rotation.map(n => n.toFixed(2))}`);
+      console.log(`🧩 ${item.name || item.uid} 
+        -> pos: ${item.position.map(n => n.toFixed(2))},
+         rot: ${item.rotation.map(n => n.toFixed(2))}`);
     });
     
   } catch (error) {
@@ -165,26 +168,49 @@ export async function updateRoom(roomId, updatedData) {
 // Subscribe to real-time room data updates
 export const subscribeRoomData = (roomId, callback) => {
   const roomDocRef = doc(db, "rooms", roomId.toString());
-  const unsubscribeRoom = onSnapshot(roomDocRef, async (docSnap) => {
-    if (!docSnap.exists()) {
-      callback(null);
+  const itemsColRef = collection(db, "rooms", roomId.toString(), "Items");
+
+  let unsubscribeItems = null;
+
+  const unsubscribeRoom = onSnapshot(roomDocRef, (docSnap) => {
+    const currentUser = getAuth().currentUser;
+    if (!currentUser) {
+      console.warn("⚠️ User logged out. Ignoring room snapshot.");
       return;
     }
+
+    if (!docSnap.exists()) {
+      callback(null);
+      if (unsubscribeItems) unsubscribeItems(); // cleanup if room is deleted
+      return;
+    }
+
     const roomData = docSnap.data();
-    const itemsColRef = collection(db, "rooms", roomId.toString(), "Items");
-    const unsubscribeItems = onSnapshot(itemsColRef, (querySnapshot) => {
+
+    if (unsubscribeItems) {
+      unsubscribeItems(); // unsubscribe previous items listener before opening new one
+    }
+
+    unsubscribeItems = onSnapshot(itemsColRef, (querySnapshot) => {
+      const currentUserInner = getAuth().currentUser;
+      if (!currentUserInner) {
+        console.warn("⚠️ User logged out. Ignoring items snapshot.");
+        return;
+      }
+
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push({ id: doc.id, ...doc.data() });
       });
+
       callback({ ...roomData, items });
     });
-    return () => {
-      unsubscribeRoom();
-      unsubscribeItems();
-    };
   });
-  return unsubscribeRoom;
+
+  return () => {
+    if (unsubscribeItems) unsubscribeItems();
+    unsubscribeRoom();
+  };
 };
 
 
