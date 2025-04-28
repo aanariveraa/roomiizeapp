@@ -3,7 +3,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { app } from "./firebaseConfig"
 
 // 🚨 Enable App Check Debug Mode
-//self.FIREBASE_APPCHECK_DEBUG_TOKEN = true; 
+self.FIREBASE_APPCHECK_DEBUG_TOKEN = true; 
 //<<<<----this allows to for app check on local host to work. 
 
 
