@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createRoom } from "../services/roomDataService";
 import { searchUsersByEmail } from "../services/userService";
 import { useUserAuth } from "../context/UserAuthContext";
+import { db } from "../firebase/firebaseConfig";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore"; 
 import "../styles/createRooms.css";
 
 function CreateRooms() {
@@ -56,8 +58,10 @@ function CreateRooms() {
   };
 
   // Add collaborator from search results
+  // 
   const handleAddCollaborator = (userObj) => {
     console.log("Adding collaborator:", userObj);
+    
     if (!collaborators.some((collab) => collab.id === userObj.id)) {
       setCollaborators([...collaborators, userObj]);
       console.log("Collaborators list updated:", [...collaborators, userObj]);
@@ -82,7 +86,9 @@ function CreateRooms() {
     setLoading(true);
 
     try {
-      const memberIds = [user.uid, ...collaborators.map((user) => user.id)];
+      //const memberIds = [user.uid, ...collaborators.map((user) => user.id)];
+      const memberIds = [user.uid];  // ONLY creator for now for invitations
+
       // Create the room in Firestore; Firestore generates the unique document ID.
       const newRoomId = await createRoom({
         roomName: roomName,
@@ -92,10 +98,10 @@ function CreateRooms() {
         modelPath: selectedRoom.modelPath, // Firebase Storage URL for the room model
       });
       
-      console.log("Member IDs to be saved:", memberIds);
+      /*console.log("Member IDs to be saved:", memberIds);
       console.log("Room created successfully with id:", newRoomId );
       console.log("Room created  by :", user.displayName || user.email);
-
+      
       setTimeout(() => {
         setLoading(false);
         navigate("/rooms3d", {
@@ -109,7 +115,31 @@ function CreateRooms() {
             }
           },
         });
-      }, 2000);
+      }, 2000);*/
+
+      //room INVITAIONS System
+      // Send room invites to selected collaborators
+      for (const collaborator of collaborators) {
+        await addDoc(collection(db, 'RoomInvites'), {
+          roomId: newRoomId,
+          from: user.uid,
+          to: collaborator.id,
+          roomName: roomName,
+          status: 'pending',
+          timestamp: serverTimestamp(),
+        });
+      }
+
+      alert('Room created and invites sent!');
+      navigate("/rooms3d", 
+        { state: { selectedRoom: 
+          { id: newRoomId, 
+            title: roomName,
+            image: selectedRoom.image, 
+            modelPath: selectedRoom.modelPath 
+          } } 
+        });
+
     } catch (error) {
       console.error("Error creating room:", error);
       setLoading(false);
@@ -134,7 +164,7 @@ function CreateRooms() {
             id="roomName"
             value={roomName}
             onChange={(e) => {
-              console.log("Room name changed to:", e.target.value);
+              //console.log("Room name changed to:", e.target.value);
               setRoomName(e.target.value);
             }}
           />

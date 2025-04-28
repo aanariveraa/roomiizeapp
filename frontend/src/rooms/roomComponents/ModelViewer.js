@@ -17,6 +17,8 @@ import ObjectModel from "./ObjectModel";
 import ObjectSelectionPanel from "./ObjectSelection";
 import CameraTracker from "./CameraTracker";
 import Rooms3d from "../rooms3d"; 
+import { db } from "../../firebase/firebaseConfig"; // adjust path if needed
+import { doc, updateDoc } from "firebase/firestore"; // also needed for unlock
 
 const ModelViewer = 
 ({ selectedRoom, 
@@ -32,13 +34,27 @@ const ModelViewer =
     controlMode, 
     zoomFactor, 
     setIsDragging, 
-    objectColors // Added here
+    objectColors, // Added here
+    currentUser   
   }) => {
 
   return (
     <div className="model-viewer">
       {/*got rid of if(!selectobject) -> unlocks room now */}
-      <Canvas onPointerMissed={() => { setSelectedObject(null); }}>
+      <Canvas 
+        /*onPointerMissed=
+            {() => { setSelectedObject(null); */
+        onPointerMissed={async () => {
+              if (selectedObject) {
+                const objectRef = doc(db, "rooms", selectedRoom.id, "Items", String(selectedObject.uid));
+                await updateDoc(objectRef, {
+                  lockedBy: null,
+                  lockedByName: null
+                });
+              }
+              setSelectedObject(null);
+          }}
+        >
         {displayMode === "3D" ? (
           <PerspectiveCamera
             makeDefault
@@ -75,6 +91,8 @@ const ModelViewer =
               onDragStart={() => setIsDragging(true)}
               onDragEnd={() => setIsDragging(false)}
               color={objectColors[obj.uid] || obj.color || "#ffffff"}
+              selectedRoom={selectedRoom}        
+              currentUser={currentUser}   
               />
               
           ))}
