@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Button, Container } from "react-bootstrap";
+import { Navbar, Nav, Button, Container , Alert} from "react-bootstrap";
 import { Link } from "react-router-dom"; 
 import "../app.css";
 import "./LandingPage.css";
@@ -27,10 +27,60 @@ const LandingPage = () => {
   AOS.init({ duration: 1000, once: true });
 }, []);
 
+ //warn user about screen requierments
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); //  mobile breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  /*if (isMobile) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        backgroundColor: '#f8f9fa',
+        padding: '2rem',
+        textAlign: 'center'
+      }}>
+        <h2>ROOMIIZE is best experienced on a desktop or laptop!</h2>
+        <p>Please switch to a larger device for the best experience. 📺</p>
+      </div>
+    );
+  }*/
   
  
   return (
     <div className="landing-page">
+
+      {/* Mobile Warning Alert */}
+        {isMobile && (
+          <Alert 
+              variant="warning" 
+              style={{ 
+                textAlign: 'center', 
+                marginBottom: 0,
+                position: 'fixed', 
+                top: '56px',  // Bootstrap navbar default height
+                left: 0,
+                right: 0,
+                zIndex: 1050 // Make sure it stays above Navbar
+              }}
+              transition={true} 
+          >
+            📢 ROOMIIZE is best experienced on a desktop 🖥️ or laptop 💻! Please switch for the full experience.
+          </Alert>
+        )}
 
       <Navbar expand="lg" style={{background: '#87cfb1'}} variant="light" fixed="top">
         <Container fluid>
