@@ -1,6 +1,6 @@
-//app check
+//
 import { useEffect } from "react";
-import { setupAppCheck } from "./firebase/firebaseAppCheck";
+//import { setupAppCheck } from "./firebase/firebaseAppCheck";
 //
 import { Container, Row, Col } from "react-bootstrap";
 import { BrowserRouter } from "react-router-dom";
@@ -27,9 +27,9 @@ import ChatRoomsPage from "./chats/ChatRoomsPage";
 import Sidebar from "./pages/Sidebar";
 
 function App() {
-  useEffect(() => {
+  /*useEffect(() => {
     setupAppCheck(); //  Calling AppCheck initialization in a safe place
-  }, []);
+  }, []);*/
 
   return (
     <BrowserRouter>
