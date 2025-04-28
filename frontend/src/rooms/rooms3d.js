@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { loadRoomData, saveRoomMetadata, saveRoomItems, deleteRoomItem } from "../services/roomDataService";
+import { 
+  loadRoomData, 
+  subscribeRoomData,
+  saveRoomMetadata, 
+  saveRoomItems, 
+  deleteRoomItem 
+} from "../services/roomDataService";
 import { HexColorPicker } from "react-colorful";
 import ModelViewer from "./roomComponents/ModelViewer";
 import ControlPanel from "./roomComponents/ControlPanel";
@@ -9,9 +15,15 @@ import SuiteModel from "./roomComponents/SuiteModel";
 import ObjectModel from "./roomComponents/ObjectModel";
 import ObjectSelectionPanel from "./roomComponents/ObjectSelection";
 import "../styles/rooms.css";
-import { doc, collection } from "firebase/firestore";
+import { 
+  doc, collection, onSnapshot,  
+  getDocs, updateDoc, setDoc,
+  serverTimestamp} 
+from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import RoomPanel from "./roomComponents/roomPanel";
+import { addUnsubscribe } from "../services/firestoreUnsubscribeService";
+
 
 const Rooms3d = ({sidebarCollapsed}) => {
   const { user } = useUserAuth();
@@ -19,14 +31,15 @@ const Rooms3d = ({sidebarCollapsed}) => {
   const location = useLocation();
 
   // Retrieve initial room from router state fall back
-  const initialRoom = location.state?.selectedRoom || roomsData[0];
+  const initialRoom = location.state?.selectedRoom || null;
   const [initialCameraState, setInitialCameraState] = useState(null);
 
   //room management 
   const [showInstructions, setShowInstructions] = useState(false);
   const [showRoomSettings, setShowRoomSettings] = useState(false);
   
-  //
+  const unsubscribeRef = useRef(null);  //
+
   const [selectedRoom, setSelectedRoom] = useState(initialRoom);
   const [roomObjects, setRoomObjects] = useState({});
   const [selectedObject, setSelectedObject] = useState(null);
@@ -67,11 +80,10 @@ const Rooms3d = ({sidebarCollapsed}) => {
   
 
   // Load saved room state from Firestore (if any)
-  useEffect(() => {
+  /*useEffect(() => {
     const loadRoomState = async () => {
       
       try {
-
         const savedData = await loadRoomData(selectedRoom.id);
 
         if (savedData.lastCameraState) {
@@ -85,6 +97,7 @@ const Rooms3d = ({sidebarCollapsed}) => {
             const { x, y, z } = savedData.lastPositionofRoom;
             cameraRef.current.position.set(x, y, z);
           }
+
           if (savedData.items) {
             setRoomObjects((prev) => ({
               ...prev,
@@ -112,7 +125,54 @@ const Rooms3d = ({sidebarCollapsed}) => {
       }
     };
     loadRoomState();
-  }, [selectedRoom]);
+  }, [selectedRoom]);*/
+  // 1. Load camera state ONCE
+    useEffect(() => {
+      const loadCameraState = async () => {
+        try {
+          const savedData = await loadRoomData(selectedRoom.id);
+          if (savedData?.lastCameraState) {
+            setInitialCameraState(savedData.lastCameraState);
+          }
+          if (savedData?.lastPositionofRoom && cameraRef.current) {
+            const { x, y, z } = savedData.lastPositionofRoom;
+            cameraRef.current.position.set(x, y, z);
+          }
+        } catch (error) {
+          console.error("Error loading camera state:", error);
+        }
+      };
+      if (selectedRoom?.id) {
+        loadCameraState();
+      }
+    }, [selectedRoom]);
+
+    
+    // 2. Live subscribe to room items
+    useEffect(() => {
+      if (!selectedRoom?.id) return;
+
+      const unsubscribe = subscribeRoomData(selectedRoom.id, (roomData) => {
+        if (!roomData) {
+          console.log("Room deleted or not found.");
+          return;
+        }
+    
+        if (roomData.items) {
+          //console.log("🛠 Live items update:", roomData.items);
+          setRoomObjects((prev) => ({
+            ...prev,
+            [selectedRoom.id]: roomData.items
+          }));
+        }
+      });
+      addUnsubscribe(unsubscribe); 
+
+     // return () => unsubscribe();
+     return () => {
+        unsubscribe();
+     };
+    }, [selectedRoom]);
 
   // Save initial room metadata when the room is selected.
   // (Now only saving lastPositionofRoom, not roomName or membersId.)
@@ -177,7 +237,45 @@ const Rooms3d = ({sidebarCollapsed}) => {
     return () => clearTimeout(autoSaveTimeoutRef.current);
   }, [roomObjects]);
 
-  const addObject = (object) => {
+
+  //UNLOCK ITEMS 
+  useEffect(() => {
+    return () => {
+      async function unlockObjectsOnExit() {
+        try {
+          if (!user || !selectedRoom?.id) return;
+          
+          console.log(`🔓 Unlocking objects in room ${selectedRoom.id} on exit...`);
+          
+          const itemsCollectionRef = collection(db, "rooms", selectedRoom.id, "Items");
+          const itemsSnapshot = await getDocs(itemsCollectionRef);
+  
+          const unlockPromises = [];
+          itemsSnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (data.lockedBy === user.uid) {
+              const itemRef = doc(db, "rooms", selectedRoom.id, "Items", docSnap.id);
+              unlockPromises.push(updateDoc(itemRef, {
+                lockedBy: null,
+                lockedByName: null
+              }));
+            }
+          });
+  
+          await Promise.all(unlockPromises);
+          console.log("✅ All your locked objects were unlocked.");
+        } catch (error) {
+          console.error("❌ Error unlocking objects on page exit:", error);
+        }
+      }
+  
+      return () => { unlockObjectsOnExit(); };
+    };
+  }, [user, selectedRoom]);
+  
+
+
+  const addObject = async (object) => {
     //const newUid = doc(collection(db, "temp")).id;  //gen a uid 
     const newObject = {
       ...object,
@@ -187,12 +285,22 @@ const Rooms3d = ({sidebarCollapsed}) => {
       rotation: [0, 0, 0],
       color: "#ffffff"
     };
+
     setRoomObjects((prev) => ({
       ...prev,
       [selectedRoom.id]: [...(prev[selectedRoom.id] || []), newObject]
     }));
-    console.log("Adding object:", object.name, "to room:", selectedRoom.title);
-    saveCurrentRoomState();
+
+    try {
+      const newItemRef = doc(db, "rooms", selectedRoom.id, "Items", newObject.uid.toString());
+      await setDoc(newItemRef, {
+        ...newObject,
+        placedAt: serverTimestamp()
+      });
+      console.log("✅ Added new object to Firestore:", newObject.name);
+    } catch (error) {
+      console.error(" Failed to add object:", error);
+    }
   };
 
   //////OBJECT MOVEMENT ---------------------------------------------
@@ -291,10 +399,12 @@ const Rooms3d = ({sidebarCollapsed}) => {
 
   const applyColor = (object, newColor) => {
     if (!object || !object.uid) return;
+  
     setObjectColors((prev) => ({
       ...prev,
       [object.uid]: newColor
     }));
+  
     setRoomObjects((prev) => {
       const updatedObjects = { ...prev };
       if (updatedObjects[selectedRoom.id]) {
@@ -305,9 +415,14 @@ const Rooms3d = ({sidebarCollapsed}) => {
           return obj;
         });
       }
+  
+      // 🛠 Save immediately after color update
+      saveRoomItems(selectedRoom.id, updatedObjects[selectedRoom.id]);
+  
       return updatedObjects;
     });
   };
+  
 
   return (
     <div
@@ -395,6 +510,7 @@ const Rooms3d = ({sidebarCollapsed}) => {
         objectColors={objectColors}
         onSave={saveCurrentRoomState}
         isSaving={isSaving}
+        currentUser={user}      
       />
 
       {selectedObject && isColorPickerOpen && (
