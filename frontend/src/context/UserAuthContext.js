@@ -41,18 +41,21 @@ export function UserAuthProvider({ children }) {
           setUser(currentuser);
 
           const userRef = doc(db, "users", currentuser.uid);
-
           const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            const userData = userSnap.data();
-            if (userData.isOnline === undefined) {
-              console.log("User missing isOnline field. Setting it to false first.");
-              await updateDoc(userRef, { isOnline: false });
-            }
-          }
 
-          // After ensuring field exists, set online
-          await updateDoc(userRef, { isOnline: true });
+          if (!userSnap.exists()) {
+            console.warn("No user document found. Creating one...");
+            await setDoc(userRef, {
+              uid: currentuser.uid,
+              email: currentuser.email,
+              displayName: currentuser.displayName || "",
+              photoURL: currentuser.photoURL || DEFAULT_PROFILE_PIC,
+              createdAt: new Date(),
+              isOnline: true
+            });
+          } else {
+            await updateDoc(userRef, { isOnline: true });
+          }
 
           // Handle tab close / browser unload
           const handleBeforeUnload = async () => {
@@ -64,7 +67,9 @@ export function UserAuthProvider({ children }) {
           return () => {
             console.log("Cleaning up onAuthStateChanged...");
             window.removeEventListener("beforeunload", handleBeforeUnload);
-            updateDoc(userRef, { isOnline: false });
+            updateDoc(userRef, { isOnline: false }).catch((error) => {
+              console.warn("Failed to mark offline on cleanup.", error);
+            });
           };
         }else{
           console.log(" No user logged in.");
@@ -106,7 +111,7 @@ export function UserAuthProvider({ children }) {
             displayName: name,
             photoURL: profilePic || "", 
             createdAt: new Date(),
-            isOnline: false
+            isOnline: true
           });
 
           // 4️⃣ Update Global User State
@@ -198,7 +203,7 @@ export function UserAuthProvider({ children }) {
             displayName: googleUser.displayName || "",
             photoURL: googleUser.photoURL || "",
             createdAt: new Date(),
-            isOnline: false
+            isOnline: true
           });
         }
 

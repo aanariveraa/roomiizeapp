@@ -1,6 +1,8 @@
 / //////////////////////////////////////////////////////////////////
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+//import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check"; // ← App check
+
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from "firebase/firestore"; 
 import { getStorage } from "firebase/storage"; // Add Storage (if needed) 
@@ -21,6 +23,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+//  Initialize AppCheck immediately 
+/*initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Le-6CYrAAAAAL9HfXGn3VxC2rBnH_VoKafmlxgz'),
+  isTokenAutoRefreshEnabled: true,
+});*/
+
 //more tools
 const auth = getAuth(app); // Initialize Authentication 
 const db = getFirestore(app); // Initialize Firestore 
@@ -28,7 +36,7 @@ const storage = getStorage(app); // Initialize Storage
 const database = getDatabase(app); // Initilize Realtime databse 
 
 //export 
-export { app, auth, db, storage, firebaseConfig };
+export { app, auth, db, storage, database, firebaseConfig };
 export default app;
 
 
