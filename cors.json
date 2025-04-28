@@ -1,0 +1,8 @@
+[
+    {
+      "origin": ["https://roomiize-1c8df.web.app"],
+      "method": ["GET"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+  ]
