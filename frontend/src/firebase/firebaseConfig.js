@@ -1,7 +1,7 @@
 / //////////////////////////////////////////////////////////////////
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check"; // ← ADD THIS
+//import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check"; // ← App check
 
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from "firebase/firestore"; 
@@ -24,10 +24,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 //  Initialize AppCheck immediately 
-initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6LfjqiYrAAAAAHTsBUkhV3nH2LsnJSva-svTa-U9'),
+/*initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Le-6CYrAAAAAL9HfXGn3VxC2rBnH_VoKafmlxgz'),
   isTokenAutoRefreshEnabled: true,
-});
+});*/
 
 //more tools
 const auth = getAuth(app); // Initialize Authentication 
