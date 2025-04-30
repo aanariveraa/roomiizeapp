@@ -82,11 +82,7 @@
   flex-wrap: wrap;
 }
 
-.left-content {
-  flex: 1;
-  min-width: 300px;
-  padding: 20px;
-}
+
 
 .right-lottie {
   flex: 1;
@@ -100,3 +96,27 @@
   max-width: 100%;
   height: auto;
 }
+
+.left-content {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-lottie {
+  width: 100%;
+  max-width: 400px;
+}
+
+.welcome-subtext {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  text-align: center;
+  color: #333;
+  font-weight: 500;
+}
+
